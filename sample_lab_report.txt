@@ -1,0 +1,11 @@
+Patient Lab Report
+Name: Sample Patient
+
+TSH: 5.2 uIU/mL
+Free T3: 1.9 pg/mL
+Free T4: 0.7 ng/dL
+HbA1c: 6.0 %
+Insulin: 18.5 uIU/mL
+Cortisol: 22.3 ug/dL
+Total Cholesterol: 215 mg/dL
+Fasting Glucose: 112 mg/dL
