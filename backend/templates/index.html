@@ -76,6 +76,18 @@
       <h3>Extracted Markers</h3>
       <pre id="markers-json"></pre>
     </section>
+
+    <section id="chat-section" class="card">
+      <h2>Ask the Health Chat</h2>
+      <p class="small-note">Ask about your report: highest risk, tests, or next actions.</p>
+      <div id="chat-log" class="chat-log">
+        <div class="chat-msg bot">I can explain your endocrine risk report. Run analysis first, then ask a question.</div>
+      </div>
+      <form id="chat-form" class="chat-form">
+        <input id="chat-input" type="text" placeholder="Example: What is my highest risk?" required />
+        <button class="btn" type="submit">Ask</button>
+      </form>
+    </section>
   </main>
 
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>
