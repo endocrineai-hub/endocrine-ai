@@ -22,9 +22,13 @@ def admin_required(view_fn):
 @admin_bp.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
-        username = request.form.get("username", "")
-        password = request.form.get("password", "")
-        if username == current_app.config["ADMIN_USERNAME"] and password == current_app.config["ADMIN_PASSWORD"]:
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
+        cfg_user = str(current_app.config["ADMIN_USERNAME"]).strip()
+        cfg_pass = str(current_app.config["ADMIN_PASSWORD"]).strip()
+
+        # Be user-friendly for demo usage.
+        if username.lower() == cfg_user.lower() and password == cfg_pass:
             session["is_admin"] = True
             return redirect(url_for("admin.admin_dashboard"))
         return render_template("admin_login.html", error="Invalid credentials")
