@@ -39,7 +39,8 @@ def get_dashboard_assessments(limit: int | None = None):
     conn = get_connection()
     query = (
         "SELECT id, created_at, patient_name, age, gender, bmi, "
-        "thyroid_risk, diabetes_risk, pcos_risk, adrenal_risk, metabolic_risk "
+        "thyroid_risk, diabetes_risk, pcos_risk, adrenal_risk, metabolic_risk, "
+        "result_json "
         "FROM assessments ORDER BY id DESC"
     )
     if limit is not None:
