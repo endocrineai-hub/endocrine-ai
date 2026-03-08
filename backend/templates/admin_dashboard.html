@@ -7,29 +7,70 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
 <body>
-  <header class="admin-header">
-    <h1>Assessment Admin Dashboard</h1>
-    <div class="admin-actions">
-      <a class="btn btn-secondary" href="/admin/export.csv">Export CSV</a>
-      <a class="btn" href="/admin/logout">Logout</a>
-    </div>
-  </header>
+  <section class="admin-hero">
+    <header class="admin-header">
+      <div>
+        <p class="eyebrow">Clinical Command Center</p>
+        <h1>Assessment Admin Dashboard</h1>
+      </div>
+      <div class="admin-actions">
+        <a class="btn btn-secondary" href="/admin/export.csv">Export CSV</a>
+        <a class="btn" href="/admin/logout">Logout</a>
+      </div>
+    </header>
+  </section>
+
   <main class="container">
+    <section class="stats-grid stats-grid-hero">
+      <article class="stat-card stat-card-main">
+        <h3>Total Assessments</h3>
+        <p>{{ stats.total_assessments }}</p>
+      </article>
+      <article class="stat-card"><h3>Avg Thyroid</h3><p>{{ stats.avg_scores.thyroid_risk }}%</p></article>
+      <article class="stat-card"><h3>Avg Diabetes</h3><p>{{ stats.avg_scores.diabetes_risk }}%</p></article>
+      <article class="stat-card"><h3>Avg PCOS</h3><p>{{ stats.avg_scores.pcos_risk }}%</p></article>
+      <article class="stat-card"><h3>Avg Adrenal</h3><p>{{ stats.avg_scores.adrenal_risk }}%</p></article>
+      <article class="stat-card"><h3>Avg Metabolic</h3><p>{{ stats.avg_scores.metabolic_risk }}%</p></article>
+    </section>
+
     <section class="card">
-      <h2>Analytics</h2>
-      <div class="stats-grid">
-        <div class="stat-card"><h3>Total Assessments</h3><p>{{ stats.total_assessments }}</p></div>
-        <div class="stat-card"><h3>Avg Thyroid</h3><p>{{ stats.avg_scores.thyroid_risk }}%</p></div>
-        <div class="stat-card"><h3>Avg Diabetes</h3><p>{{ stats.avg_scores.diabetes_risk }}%</p></div>
-        <div class="stat-card"><h3>Avg PCOS</h3><p>{{ stats.avg_scores.pcos_risk }}%</p></div>
-        <div class="stat-card"><h3>Avg Adrenal</h3><p>{{ stats.avg_scores.adrenal_risk }}%</p></div>
-        <div class="stat-card"><h3>Avg Metabolic</h3><p>{{ stats.avg_scores.metabolic_risk }}%</p></div>
+      <h2>High-Risk Distribution (>=65%)</h2>
+      <div class="risk-bars">
+        <div class="risk-bar-row">
+          <span>Thyroid</span>
+          <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.thyroid_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
+          <strong>{{ stats.high_risk_counts.thyroid_risk }}</strong>
+        </div>
+        <div class="risk-bar-row">
+          <span>Diabetes</span>
+          <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.diabetes_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
+          <strong>{{ stats.high_risk_counts.diabetes_risk }}</strong>
+        </div>
+        <div class="risk-bar-row">
+          <span>PCOS</span>
+          <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.pcos_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
+          <strong>{{ stats.high_risk_counts.pcos_risk }}</strong>
+        </div>
+        <div class="risk-bar-row">
+          <span>Adrenal</span>
+          <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.adrenal_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
+          <strong>{{ stats.high_risk_counts.adrenal_risk }}</strong>
+        </div>
+        <div class="risk-bar-row">
+          <span>Metabolic</span>
+          <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.metabolic_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
+          <strong>{{ stats.high_risk_counts.metabolic_risk }}</strong>
+        </div>
       </div>
     </section>
+
     <section class="card">
-      <h2>Recent Assessments</h2>
+      <div class="table-top">
+        <h2>Recent Assessments</h2>
+        <input id="table-search" class="table-search" type="text" placeholder="Search patient, gender, risk..." />
+      </div>
       <div class="table-wrap">
-        <table>
+        <table id="assessments-table">
           <thead>
             <tr>
               <th>ID</th><th>Timestamp</th><th>Patient</th><th>Age</th><th>Gender</th><th>BMI</th>
@@ -40,8 +81,12 @@
             {% for a in assessments %}
             <tr>
               <td>{{ a.id }}</td><td>{{ a.created_at }}</td><td>{{ a.patient_name }}</td><td>{{ a.age }}</td>
-              <td>{{ a.gender }}</td><td>{{ a.bmi }}</td><td>{{ a.thyroid_risk }}</td><td>{{ a.diabetes_risk }}</td>
-              <td>{{ a.pcos_risk }}</td><td>{{ a.adrenal_risk }}</td><td>{{ a.metabolic_risk }}</td>
+              <td>{{ a.gender }}</td><td>{{ a.bmi }}</td>
+              <td><span class="risk-pill">{{ a.thyroid_risk }}</span></td>
+              <td><span class="risk-pill">{{ a.diabetes_risk }}</span></td>
+              <td><span class="risk-pill">{{ a.pcos_risk }}</span></td>
+              <td><span class="risk-pill">{{ a.adrenal_risk }}</span></td>
+              <td><span class="risk-pill">{{ a.metabolic_risk }}</span></td>
             </tr>
             {% endfor %}
           </tbody>
@@ -49,5 +94,18 @@
       </div>
     </section>
   </main>
+
+  <script>
+    const searchInput = document.getElementById("table-search");
+    const table = document.getElementById("assessments-table");
+    if (searchInput && table) {
+      searchInput.addEventListener("input", () => {
+        const q = searchInput.value.toLowerCase().trim();
+        table.querySelectorAll("tbody tr").forEach((row) => {
+          row.style.display = row.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      });
+    }
+  </script>
 </body>
 </html>
