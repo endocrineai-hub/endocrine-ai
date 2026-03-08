@@ -1,59 +1,97 @@
 {% extends "public_base.html" %}
 {% set title = "Home | Endocrine AI" %}
 {% block content %}
-<section class="hero-band">
-  <div class="container">
-    <h1>AI-Driven Endocrine Risk Analysis</h1>
-    <p>Early risk screening for thyroid, diabetes, PCOS, adrenal, and metabolic disorders.</p>
+<section class="hero-band hero-rich">
+  <div class="container hero-grid">
+    <div>
+      <p class="eyebrow">Preventive Endocrine Intelligence</p>
+      <h1>AI-Driven Endocrine Risk Analysis</h1>
+      <p class="hero-lead">A complete screening platform that analyzes lifestyle, symptoms, family history, stress, sleep, BMI, and labs for early endocrine risk signals.</p>
+      <div class="hero-tags">
+        <span>Thyroid</span><span>Diabetes</span><span>PCOS</span><span>Adrenal</span><span>Metabolic</span>
+      </div>
+    </div>
+    <div class="hero-metrics">
+      <div class="metric"><h3>8+</h3><p>Input Factors</p></div>
+      <div class="metric"><h3>5</h3><p>Risk Domains</p></div>
+      <div class="metric"><h3>JSON</h3><p>Structured Output</p></div>
+      <div class="metric"><h3>Admin</h3><p>Analytics + Export</p></div>
+    </div>
   </div>
 </section>
 
 <main class="container page-space">
-  <section class="card form-card">
-    <h2>Endocrine Risk Check Form</h2>
-    <p class="small-note">Fill details and click Analyze Risk.</p>
-    <form id="assessment-form">
-      <div class="grid">
-        <label>Patient Name <input name="patient_name" placeholder="Optional" /></label>
-        <label>Age <input type="number" name="age" required /></label>
-        <label>Gender
-          <select name="gender" required>
-            <option value="">Select</option>
-            <option>Female</option>
-            <option>Male</option>
-          </select>
+  <section class="card feature-strip">
+    <article><h3>Early Warning</h3><p>Detect risk patterns before severe symptoms.</p></article>
+    <article><h3>Explainable</h3><p>Clear triggers, risk levels, recommended actions, and tests.</p></article>
+    <article><h3>Clinical Workflow</h3><p>Admin dashboard with history tracking and CSV export.</p></article>
+  </section>
+
+  <section class="form-layout">
+    <section class="card form-card">
+      <h2>Endocrine Risk Check Form</h2>
+      <p class="small-note">Complete all key fields for accurate scoring.</p>
+      <form id="assessment-form">
+        <div class="grid">
+          <label>Patient Name <input name="patient_name" placeholder="Optional" /></label>
+          <label>Age <input type="number" name="age" required /></label>
+          <label>Gender
+            <select name="gender" required>
+              <option value="">Select</option>
+              <option>Female</option>
+              <option>Male</option>
+            </select>
+          </label>
+          <label>BMI <input type="number" step="0.1" name="bmi" required /></label>
+          <label>Sleep quality
+            <select name="sleep_quality" required>
+              <option>Poor</option><option>Average</option><option>Good</option>
+            </select>
+          </label>
+          <label>Stress level
+            <select name="stress_level" required>
+              <option>High</option><option>Moderate</option><option>Low</option>
+            </select>
+          </label>
+          <label>Exercise frequency <input name="exercise_frequency" placeholder="Low / 3 days/week / Daily" required /></label>
+          <label>Diet type <input name="diet_type" placeholder="High sugar, Balanced, etc." required /></label>
+        </div>
+
+        <label>Family history
+          <textarea name="family_history" rows="2" placeholder="Diabetes, thyroid, PCOS, etc."></textarea>
         </label>
-        <label>BMI <input type="number" step="0.1" name="bmi" required /></label>
-        <label>Sleep quality
-          <select name="sleep_quality" required>
-            <option>Poor</option><option>Average</option><option>Good</option>
-          </select>
+
+        <label>Symptoms (comma separated)
+          <textarea name="symptoms" rows="2" placeholder="Fatigue, irregular cycles, sugar cravings"></textarea>
         </label>
-        <label>Stress level
-          <select name="stress_level" required>
-            <option>High</option><option>Moderate</option><option>Low</option>
-          </select>
+
+        <label>Lab report text (optional)
+          <textarea name="lab_report_text" rows="6" placeholder="Paste complete lab report text here"></textarea>
         </label>
-        <label>Exercise frequency <input name="exercise_frequency" placeholder="Low / 3 days/week / Daily" required /></label>
-        <label>Diet type <input name="diet_type" placeholder="High sugar, Balanced, etc." required /></label>
-      </div>
 
-      <label>Family history
-        <textarea name="family_history" rows="2" placeholder="Diabetes, thyroid, PCOS, etc."></textarea>
-      </label>
+        <div class="actions">
+          <button class="btn" type="submit">Analyze Risk</button>
+        </div>
+      </form>
+    </section>
 
-      <label>Symptoms (comma separated)
-        <textarea name="symptoms" rows="2" placeholder="Fatigue, irregular cycles, sugar cravings"></textarea>
-      </label>
-
-      <label>Lab report text (optional)
-        <textarea name="lab_report_text" rows="6" placeholder="Paste complete lab report text here"></textarea>
-      </label>
-
-      <div class="actions">
-        <button class="btn" type="submit">Analyze Risk</button>
-      </div>
-    </form>
+    <aside class="card brief-card">
+      <h3>How It Works</h3>
+      <ol>
+        <li>Fill profile + lifestyle + symptoms.</li>
+        <li>Paste lab text if available.</li>
+        <li>Get endocrine risk map instantly.</li>
+        <li>Review triggers and next tests.</li>
+      </ol>
+      <h3>Includes</h3>
+      <ul>
+        <li>Risk scores in %</li>
+        <li>Low/Moderate/High levels</li>
+        <li>Key trigger identification</li>
+        <li>Action and test guidance</li>
+      </ul>
+      <a class="btn btn-secondary" href="/methodology">View Methodology</a>
+    </aside>
   </section>
 
   <section id="result-section" class="card hidden">
