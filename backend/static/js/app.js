@@ -57,7 +57,9 @@ form.addEventListener("submit", async (e) => {
   });
 
   if (!res.ok) {
-    alert("Failed to run analysis");
+    const errorPayload = await res.json().catch(() => ({}));
+    const validationErrors = (errorPayload.errors || []).join("\n");
+    alert(validationErrors || errorPayload.message || "Failed to run analysis");
     return;
   }
 

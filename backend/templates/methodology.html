@@ -1,0 +1,17 @@
+{% extends "public_base.html" %}
+{% set title = "Methodology | Endocrine AI" %}
+{% block content %}
+<main class="container page-space">
+  <section class="card">
+    <h1>Methodology</h1>
+    <ol>
+      <li>Input profile and optional lab text.</li>
+      <li>Extract hormone markers (TSH, T3, T4, HbA1c, insulin, cortisol, cholesterol, fasting glucose).</li>
+      <li>Apply weighted risk scoring and correlation logic.</li>
+      <li>Return risk percentages, risk levels, key triggers, recommended actions, and suggested tests.</li>
+      <li>Store assessment in secure admin records.</li>
+    </ol>
+    <p class="muted">Correlation examples: poor sleep + high stress, high BMI + diabetes family history, and irregular cycles + insulin issues.</p>
+  </section>
+</main>
+{% endblock %}

@@ -1,0 +1,32 @@
+{
+  "required_columns": [
+    "age",
+    "gender",
+    "bmi",
+    "sleep_quality",
+    "stress_level",
+    "exercise_frequency",
+    "diet_type",
+    "family_history",
+    "symptoms",
+    "tsh",
+    "t3",
+    "t4",
+    "hba1c",
+    "insulin",
+    "cortisol",
+    "cholesterol",
+    "fasting_glucose",
+    "target_thyroid_risk",
+    "target_diabetes_risk",
+    "target_pcos_risk",
+    "target_adrenal_risk",
+    "target_metabolic_risk"
+  ],
+  "optional_columns": [
+    "patient_id",
+    "timestamp",
+    "source",
+    "notes"
+  ]
+}

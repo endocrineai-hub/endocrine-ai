@@ -117,12 +117,14 @@ AI-Driven Endocrine Risk Analysis/
 ## 5) What to Keep / Modify / Add
 
 ### Keep
+
 - Current Flask web app and admin panel
 - Current marker extraction logic
 - Current JSON response format
 - Current database logging of assessments
 
 ### Modify
+
 - Split `backend/app.py` into modular routes and services
 - Move `risk_engine.py` under `backend/services/`
 - Add model-based scoring path (not only rules)
@@ -130,6 +132,7 @@ AI-Driven Endocrine Risk Analysis/
 - Add role-safe admin auth config via environment variables
 
 ### Add
+
 - `ml/` training pipeline and notebooks
 - Model artifact loading in production API
 - Automated tests (`tests/`)
@@ -140,17 +143,20 @@ AI-Driven Endocrine Risk Analysis/
 ## 6) Immediate Step-by-Step Plan
 
 ### Phase-1 (Stabilize App)
+
 - Add missing chat UI + `/api/chat` integration in frontend.
 - Refactor backend into `routes/` and `services/`.
 - Add API input validation.
 
 ### Phase-2 (ML Core)
+
 - Prepare dataset schema in `ml/data/`.
 - Build EDA notebook.
 - Train and compare 3-5 classical models.
 - Save metrics and best model.
 
 ### Phase-3 (Temporal + Final Submission)
+
 - Add sequence model (LSTM/GRU).
 - Add final metrics table and confusion matrix.
 - Generate diagrams (flowchart, block diagram, gantt).
@@ -159,13 +165,17 @@ AI-Driven Endocrine Risk Analysis/
 ## 7) Change Decision Guide (When you ask "What should I change now?")
 
 If your goal is **demo working product**:
+
 - Focus on UI polish, admin analytics, and API stability.
 
 If your goal is **academic marks + viva**:
+
 - Focus first on `ml/notebooks`, model comparison, evaluation report, temporal model.
 
 If your goal is **deployment-ready project**:
+
 - Focus on modular architecture, tests, Docker, env-based config, logging.
 
 ---
+
 Use this file as the master checklist before each coding step.

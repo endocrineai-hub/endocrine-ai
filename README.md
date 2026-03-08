@@ -49,11 +49,19 @@ Default admin credentials (change in production):
 
 ## Project Structure
 
-- `backend/app.py` Flask server, routes, DB logic
-- `backend/risk_engine.py` endocrine scoring and marker extraction
+- `backend/app.py` app factory and blueprint registration
+- `backend/config.py` environment-based configuration
+- `backend/routes/` modular route groups (`public`, `admin`, `api`)
+- `backend/services/` risk and chat services
+- `backend/models/` DB initialization and assessment persistence
+- `backend/risk_engine.py` core risk logic (shared by service wrapper)
 - `backend/templates/` website and admin templates
 - `backend/static/` CSS and JS assets
 - `backend/data/app.db` SQLite database (auto-created)
+- `ml/` model training and evaluation scaffold
+- `docs/` architecture/flow/API/report notes
+- `tests/` baseline tests for API and risk logic
+- `scripts/` utility scripts
 - `endocrine_risk_analyzer.py` original CLI analyzer
 - `run.py` app entrypoint
 
@@ -101,6 +109,66 @@ Request:
 }
 ```
 
+### `POST /api/chat`
+Request:
+```json
+{
+  "message": "What is my highest risk?",
+  "assessment": {
+    "risk_scores": {
+      "thyroid": "60%",
+      "diabetes": "72%"
+    }
+  }
+}
+```
+
+## Tests
+
+```bash
+python3 -m pytest tests -q
+```
+
+## Dataset Preparation (Your Database + Public Sources)
+
+Use your own database export or table to create a unified training dataset:
+
+```bash
+python3 scripts/prepare_dataset.py --csv ml/data/raw/local_db_export.csv --source local_db
+```
+
+Or from SQLite directly:
+
+```bash
+python3 scripts/prepare_dataset.py --sqlite /absolute/path/to/your.db --table your_table_name --source local_db
+```
+
+Output file:
+- `ml/data/processed/unified_endocrine_dataset.csv`
+
+Source links are documented in:
+- `ml/data/data_sources.md`
+
+### Quick Demo Dataset (for immediate college demo)
+
+```bash
+python3 scripts/generate_demo_training_data.py
+```
+
+## Train Models (Classical ML)
+
+```bash
+python3 ml/training/train_classical_models.py
+python3 ml/training/evaluate_models.py
+```
+
+This saves:
+- `ml/artifacts/*_best_model.pkl`
+- `ml/artifacts/metrics.json`
+
+When artifacts exist, `/api/assess` automatically uses ML prediction (`prediction_source: "ml_model"`).  
+If artifacts are missing, it falls back to rule engine (`prediction_source: "rule_engine"`).
+
 ## CLI Steps (Existing)
 
 ```bash
@@ -116,4 +184,3 @@ git add .
 git commit -m "Build full endocrine risk web app with admin and APIs"
 git push
 ```
-

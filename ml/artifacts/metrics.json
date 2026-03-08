@@ -1,0 +1,172 @@
+{
+  "thyroid": {
+    "logistic_regression": {
+      "accuracy": 0.8417,
+      "precision": 0.7547,
+      "recall": 0.6154,
+      "f1": 0.678
+    },
+    "random_forest": {
+      "accuracy": 0.9,
+      "precision": 1.0,
+      "recall": 0.6308,
+      "f1": 0.7736
+    },
+    "gradient_boosting": {
+      "accuracy": 0.95,
+      "precision": 0.8841,
+      "recall": 0.9385,
+      "f1": 0.9104
+    },
+    "svm": {
+      "accuracy": 0.8417,
+      "precision": 0.7547,
+      "recall": 0.6154,
+      "f1": 0.678
+    },
+    "best": {
+      "model": "gradient_boosting",
+      "accuracy": 0.95,
+      "precision": 0.8841,
+      "recall": 0.9385,
+      "f1": 0.9104,
+      "artifact": "/Users/ravikantupadhyay/Documents/GitHub/AI-Driven Endocrine Risk Analysis/ml/artifacts/thyroid_best_model.pkl"
+    }
+  },
+  "diabetes": {
+    "logistic_regression": {
+      "accuracy": 0.9542,
+      "precision": 0.9704,
+      "recall": 0.9752,
+      "f1": 0.9728
+    },
+    "random_forest": {
+      "accuracy": 0.85,
+      "precision": 0.8487,
+      "recall": 1.0,
+      "f1": 0.9182
+    },
+    "gradient_boosting": {
+      "accuracy": 0.9125,
+      "precision": 0.9171,
+      "recall": 0.9851,
+      "f1": 0.9499
+    },
+    "svm": {
+      "accuracy": 0.9208,
+      "precision": 0.914,
+      "recall": 1.0,
+      "f1": 0.9551
+    },
+    "best": {
+      "model": "logistic_regression",
+      "accuracy": 0.9542,
+      "precision": 0.9704,
+      "recall": 0.9752,
+      "f1": 0.9728,
+      "artifact": "/Users/ravikantupadhyay/Documents/GitHub/AI-Driven Endocrine Risk Analysis/ml/artifacts/diabetes_best_model.pkl"
+    }
+  },
+  "pcos": {
+    "logistic_regression": {
+      "accuracy": 0.9292,
+      "precision": 0.75,
+      "recall": 0.3913,
+      "f1": 0.5143
+    },
+    "random_forest": {
+      "accuracy": 0.9042,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "gradient_boosting": {
+      "accuracy": 0.925,
+      "precision": 0.8571,
+      "recall": 0.2609,
+      "f1": 0.4
+    },
+    "svm": {
+      "accuracy": 0.9042,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "best": {
+      "model": "logistic_regression",
+      "accuracy": 0.9292,
+      "precision": 0.75,
+      "recall": 0.3913,
+      "f1": 0.5143,
+      "artifact": "/Users/ravikantupadhyay/Documents/GitHub/AI-Driven Endocrine Risk Analysis/ml/artifacts/pcos_best_model.pkl"
+    }
+  },
+  "adrenal": {
+    "logistic_regression": {
+      "accuracy": 0.8625,
+      "precision": 0.7826,
+      "recall": 0.6102,
+      "f1": 0.6857
+    },
+    "random_forest": {
+      "accuracy": 0.8917,
+      "precision": 1.0,
+      "recall": 0.5593,
+      "f1": 0.7174
+    },
+    "gradient_boosting": {
+      "accuracy": 0.9333,
+      "precision": 0.8413,
+      "recall": 0.8983,
+      "f1": 0.8689
+    },
+    "svm": {
+      "accuracy": 0.8625,
+      "precision": 0.8421,
+      "recall": 0.5424,
+      "f1": 0.6598
+    },
+    "best": {
+      "model": "gradient_boosting",
+      "accuracy": 0.9333,
+      "precision": 0.8413,
+      "recall": 0.8983,
+      "f1": 0.8689,
+      "artifact": "/Users/ravikantupadhyay/Documents/GitHub/AI-Driven Endocrine Risk Analysis/ml/artifacts/adrenal_best_model.pkl"
+    }
+  },
+  "metabolic": {
+    "logistic_regression": {
+      "accuracy": 0.8917,
+      "precision": 0.9295,
+      "recall": 0.9062,
+      "f1": 0.9177
+    },
+    "random_forest": {
+      "accuracy": 0.8917,
+      "precision": 0.8641,
+      "recall": 0.9938,
+      "f1": 0.9244
+    },
+    "gradient_boosting": {
+      "accuracy": 0.925,
+      "precision": 0.9329,
+      "recall": 0.9562,
+      "f1": 0.9444
+    },
+    "svm": {
+      "accuracy": 0.875,
+      "precision": 0.9062,
+      "recall": 0.9062,
+      "f1": 0.9062
+    },
+    "best": {
+      "model": "gradient_boosting",
+      "accuracy": 0.925,
+      "precision": 0.9329,
+      "recall": 0.9562,
+      "f1": 0.9444,
+      "artifact": "/Users/ravikantupadhyay/Documents/GitHub/AI-Driven Endocrine Risk Analysis/ml/artifacts/metabolic_best_model.pkl"
+    }
+  }
+}
