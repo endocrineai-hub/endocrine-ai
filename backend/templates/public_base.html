@@ -15,6 +15,13 @@
         <a href="{{ url_for('public.about') }}">About</a>
         <a href="{{ url_for('public.methodology') }}">Methodology</a>
         <a href="{{ url_for('public.contact') }}">Contact</a>
+        {% if is_user_logged_in %}
+          <a href="/dashboard">My Dashboard</a>
+          <a href="/logout">Logout ({{ user_name }})</a>
+        {% else %}
+          <a href="/login">Login</a>
+          <a href="/signup">Signup</a>
+        {% endif %}
         <a class="btn btn-small btn-secondary" href="/admin/login">Admin</a>
       </nav>
     </div>

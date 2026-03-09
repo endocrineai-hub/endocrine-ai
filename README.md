@@ -123,6 +123,9 @@ Request:
 }
 ```
 
+### `GET /api/model-status`
+Returns `model_available` and `openai_available`.
+
 ## Tests
 
 ```bash
@@ -168,6 +171,21 @@ This saves:
 
 When artifacts exist, `/api/assess` automatically uses ML prediction (`prediction_source: "ml_model"`).  
 If artifacts are missing, it falls back to rule engine (`prediction_source: "rule_engine"`).
+
+## OpenAI Integration (AI Summary + AI Chat)
+
+Set your key before running:
+
+```bash
+export OPENAI_API_KEY="your_api_key_here"
+export OPENAI_MODEL="gpt-4o-mini"
+python3 run.py
+```
+
+When enabled:
+- `/api/assess` includes `ai_summary`
+- `/api/chat` responds with OpenAI-powered answer
+- `/api/model-status` shows `openai_available: true`
 
 ## CLI Steps (Existing)
 

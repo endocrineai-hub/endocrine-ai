@@ -65,6 +65,19 @@ form.addEventListener("submit", async (e) => {
 
   const data = await res.json();
   const out = data.assessment;
+  document.getElementById("prediction-source").textContent =
+    `Prediction source: ${out.prediction_source || "rule_engine"}`;
+
+  const aiWrap = document.getElementById("ai-summary-wrap");
+  const aiSummary = document.getElementById("ai-summary");
+  if (out.ai_summary) {
+    aiSummary.textContent = out.ai_summary;
+    aiWrap.classList.remove("hidden");
+  } else {
+    aiSummary.textContent = "";
+    aiWrap.classList.add("hidden");
+  }
+
   renderRiskCards(out.risk_scores, out.risk_level);
   toListItems("key-triggers", out.key_triggers);
   toListItems("actions", out.recommended_actions);

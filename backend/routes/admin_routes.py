@@ -1,12 +1,14 @@
 from functools import wraps
 import json
 
-from flask import Blueprint, Response, current_app, jsonify, redirect, render_template, request, session, url_for
+from flask import Blueprint, Response, jsonify, redirect, render_template, request, session, url_for
 
+from ..models.admin_model import verify_admin_credentials
 from ..models.assessment_model import get_all_assessment_rows, get_all_assessments_json, get_dashboard_assessments
+from ..models.user_model import get_all_users
 from ..services.analytics_service import build_dashboard_stats
 from ..services.model_inference import model_available
-from ..services.report_service import assessments_to_csv
+from ..services.report_service import assessments_to_csv, assessments_to_pdf_bytes
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -26,11 +28,8 @@ def admin_login():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "").strip()
-        cfg_user = str(current_app.config["ADMIN_USERNAME"]).strip()
-        cfg_pass = str(current_app.config["ADMIN_PASSWORD"]).strip()
 
-        # Be user-friendly for demo usage.
-        if username.lower() == cfg_user.lower() and password == cfg_pass:
+        if verify_admin_credentials(username, password):
             session["is_admin"] = True
             return redirect(url_for("admin.admin_dashboard"))
         return render_template("admin_login.html", error="Invalid credentials")
@@ -83,3 +82,22 @@ def export_assessments_csv():
         mimetype="text/csv",
         headers={"Content-Disposition": "attachment; filename=assessments_export.csv"},
     )
+
+
+@admin_bp.route("/admin/export.pdf")
+@admin_required
+def export_assessments_pdf():
+    rows = get_all_assessment_rows()
+    pdf_data = assessments_to_pdf_bytes(rows)
+    return Response(
+        pdf_data,
+        mimetype="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=assessments_export.pdf"},
+    )
+
+
+@admin_bp.route("/admin/users")
+@admin_required
+def admin_users():
+    users = get_all_users()
+    return render_template("admin_users.html", users=users)

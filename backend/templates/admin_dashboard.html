@@ -15,6 +15,8 @@
       </div>
       <div class="admin-actions">
         <a class="btn btn-secondary" href="/admin/export.csv">Export CSV</a>
+        <a class="btn btn-secondary" href="/admin/export.pdf">Export PDF</a>
+        <a class="btn btn-secondary" href="/admin/users">Users</a>
         <a class="btn" href="/admin/logout">Logout</a>
       </div>
     </header>
@@ -98,7 +100,7 @@
           <thead>
             <tr>
               <th>ID</th><th>Timestamp</th><th>Patient</th><th>Age</th><th>Gender</th><th>BMI</th>
-              <th>Source</th><th>Thyroid</th><th>Diabetes</th><th>PCOS</th><th>Adrenal</th><th>Metabolic</th>
+              <th>Source</th><th>Risk Score</th><th>Thyroid</th><th>Diabetes</th><th>PCOS</th><th>Adrenal</th><th>Metabolic</th><th>Symptoms</th>
             </tr>
           </thead>
           <tbody>
@@ -107,11 +109,13 @@
               <td>{{ a.id }}</td><td>{{ a.created_at }}</td><td>{{ a.patient_name }}</td><td>{{ a.age }}</td>
               <td>{{ a.gender }}</td><td>{{ a.bmi }}</td>
               <td><span class="source-pill {{ 'source-ml' if a.prediction_source == 'ml_model' else 'source-rule' }}">{{ a.prediction_source }}</span></td>
+              <td><span class="risk-pill">{{ a.risk_score if a.risk_score is not none else '-' }}</span></td>
               <td><span class="risk-pill">{{ a.thyroid_risk }}</span></td>
               <td><span class="risk-pill">{{ a.diabetes_risk }}</span></td>
               <td><span class="risk-pill">{{ a.pcos_risk }}</span></td>
               <td><span class="risk-pill">{{ a.adrenal_risk }}</span></td>
               <td><span class="risk-pill">{{ a.metabolic_risk }}</span></td>
+              <td>{{ a.symptoms or '-' }}</td>
             </tr>
             {% endfor %}
           </tbody>

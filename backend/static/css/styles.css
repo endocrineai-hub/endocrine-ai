@@ -370,6 +370,14 @@ th {
 td { border: 1px solid var(--line); padding: 8px; text-align: left; font-size: 0.9rem; }
 pre { background: #f5f8fb; border: 1px solid var(--line); padding: 10px; border-radius: 10px; overflow: auto; }
 .small-note { color: #4b5a68; margin-top: -6px; }
+.ai-box {
+  margin-bottom: 12px;
+  background: #f2f9ff;
+  border-color: #cde5fb;
+}
+.ai-box h3 {
+  margin-top: 0;
+}
 .site-footer {
   margin-top: 36px;
   border-top: 1px solid var(--line);

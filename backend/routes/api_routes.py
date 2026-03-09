@@ -1,8 +1,10 @@
-from flask import Blueprint, jsonify, request
+import json
+from flask import Blueprint, jsonify, request, session
 
 from ..models.assessment_model import save_assessment
 from ..services.chat_service import generate_chat_reply
 from ..services.model_inference import model_available, predict_with_models
+from ..services.openai_service import chat_completion, openai_available
 from ..services.risk_engine import calculate_risk, extract_markers
 
 api_bp = Blueprint("api", __name__)
@@ -73,7 +75,37 @@ def assess_profile():
     else:
         result["prediction_source"] = "rule_engine"
 
-    save_assessment(profile, result, payload.get("patient_name", "Anonymous"))
+    # Optional AI enhancement layer using OpenAI if key is configured.
+    if openai_available():
+        try:
+            system_prompt = (
+                "You are an endocrine risk analysis assistant. "
+                "Summarize risk in concise clinical language and suggest practical next steps."
+            )
+            user_prompt = (
+                "Profile: "
+                + json.dumps(profile)
+                + "\\nMarkers: "
+                + json.dumps(merged_markers)
+                + "\\nCurrent assessment: "
+                + json.dumps(result)
+                + "\\nProvide a 5-7 line summary."
+            )
+            ai_summary = chat_completion(system_prompt, user_prompt, temperature=0.2)
+            result["ai_summary"] = ai_summary
+            result["ai_enabled"] = True
+        except Exception as exc:
+            result["ai_enabled"] = False
+            result["ai_error"] = str(exc)
+    else:
+        result["ai_enabled"] = False
+
+    save_assessment(
+        profile,
+        result,
+        payload.get("patient_name", "Anonymous"),
+        user_id=session.get("user_id"),
+    )
 
     return jsonify(
         {
@@ -112,7 +144,24 @@ def api_chat():
     if not isinstance(assessment, dict):
         return jsonify({"status": "error", "message": "assessment must be an object"}), 400
 
-    reply = generate_chat_reply(message, assessment)
+    if openai_available():
+        try:
+            system_prompt = (
+                "You are a helpful endocrine risk assistant. "
+                "Give clear, safe, non-diagnostic guidance."
+            )
+            user_prompt = (
+                "User question: "
+                + message
+                + "\\nAssessment context: "
+                + json.dumps(assessment)
+                + "\\nAnswer in 4-8 concise lines."
+            )
+            reply = chat_completion(system_prompt, user_prompt, temperature=0.3)
+        except Exception:
+            reply = generate_chat_reply(message, assessment)
+    else:
+        reply = generate_chat_reply(message, assessment)
     return jsonify(
         {
             "status": "success",
@@ -124,4 +173,10 @@ def api_chat():
 
 @api_bp.route("/api/model-status", methods=["GET"])
 def api_model_status():
-    return jsonify({"status": "success", "model_available": model_available()})
+    return jsonify(
+        {
+            "status": "success",
+            "model_available": model_available(),
+            "openai_available": openai_available(),
+        }
+    )

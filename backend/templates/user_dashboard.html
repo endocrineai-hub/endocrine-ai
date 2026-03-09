@@ -1,0 +1,32 @@
+{% extends "public_base.html" %}
+{% set title = "My Dashboard" %}
+{% block content %}
+<main class="container page-space">
+  <section class="card">
+    <h1>Welcome, {{ user_name }}</h1>
+    <p class="muted">Your previous endocrine assessments are listed below.</p>
+  </section>
+
+  <section class="card">
+    <h2>My Assessments</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Date</th><th>Patient</th><th>Thyroid</th><th>Diabetes</th><th>PCOS</th><th>Adrenal</th><th>Metabolic</th><th>Overall</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in assessments %}
+          <tr>
+            <td>{{ a.id }}</td><td>{{ a.created_at }}</td><td>{{ a.patient_name }}</td>
+            <td>{{ a.thyroid_risk }}</td><td>{{ a.diabetes_risk }}</td><td>{{ a.pcos_risk }}</td>
+            <td>{{ a.adrenal_risk }}</td><td>{{ a.metabolic_risk }}</td><td>{{ a.risk_score }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+{% endblock %}
