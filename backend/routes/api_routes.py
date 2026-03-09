@@ -180,3 +180,8 @@ def api_model_status():
             "openai_available": openai_available(),
         }
     )
+
+
+@api_bp.route("/api/health", methods=["GET"])
+def api_health():
+    return jsonify({"status": "success", "service": "endocrine-risk-platform"})

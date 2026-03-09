@@ -8,6 +8,7 @@ from ..models.assessment_model import get_all_assessment_rows, get_all_assessmen
 from ..models.user_model import get_all_users
 from ..services.analytics_service import build_dashboard_stats
 from ..services.model_inference import model_available
+from ..services.openai_service import openai_available
 from ..services.report_service import assessments_to_csv, assessments_to_pdf_bytes
 
 admin_bp = Blueprint("admin", __name__)
@@ -63,6 +64,7 @@ def admin_dashboard():
         assessments=rows,
         stats=stats,
         model_ready=model_available(),
+        openai_ready=openai_available(),
     )
 
 

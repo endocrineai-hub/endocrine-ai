@@ -44,6 +44,10 @@
             <p><span class="status-dot {{ 'on' if model_ready else 'off' }}"></span>{{ 'ML Model Active' if model_ready else 'Rule Engine Active' }}</p>
           </article>
           <article class="insight-item">
+            <h3>OpenAI Status</h3>
+            <p><span class="status-dot {{ 'on' if openai_ready else 'off' }}"></span>{{ 'Connected' if openai_ready else 'Not Configured' }}</p>
+          </article>
+          <article class="insight-item">
             <h3>Top Risk Domain</h3>
             <p>{{ (stats.top_risk_domain or 'n/a').replace('_risk', '').title() }} ({{ stats.top_risk_avg }}%)</p>
           </article>
