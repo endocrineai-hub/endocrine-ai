@@ -1,16 +1,21 @@
 {% extends "public_base.html" %}
 {% set title = "Contact | Endocrine AI" %}
 {% block content %}
-<main class="container page-space">
-  <section class="card">
+<section class="hero compact-hero">
+  <div class="container">
     <h1>Contact</h1>
-    <p>For project demo, academic review, or technical support:</p>
-    <ul>
-      <li>Email: support@endocrine-ai.local</li>
-      <li>Location: Pune, India</li>
-      <li>Project Type: Academic + Clinical Decision Support Prototype</li>
-    </ul>
-    <p class="muted">If you are experiencing urgent health symptoms, contact a licensed medical professional immediately.</p>
+    <p class="hero-lead">For project demos, feedback, or clinical collaboration.</p>
+  </div>
+</section>
+
+<main class="container section">
+  <section class="card">
+    <div class="feature-grid">
+      <article><h3>Email</h3><p>support@endocrine-ai.local</p></article>
+      <article><h3>Location</h3><p>Pune, India</p></article>
+      <article><h3>Type</h3><p>Academic + Decision Support</p></article>
+    </div>
+    <p class="muted">If you have urgent health concerns, contact a licensed medical professional.</p>
   </section>
 </main>
 {% endblock %}

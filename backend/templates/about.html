@@ -1,16 +1,26 @@
 {% extends "public_base.html" %}
 {% set title = "About | Endocrine AI" %}
 {% block content %}
-<main class="container page-space">
+<section class="hero compact-hero">
+  <div class="container">
+    <h1>About the Platform</h1>
+    <p class="hero-lead">This system is built to forecast endocrine risks early by combining clinical markers with AI-driven interpretation.</p>
+  </div>
+</section>
+
+<main class="container section">
   <section class="card">
-    <h1>About This Project</h1>
-    <p>This platform predicts early endocrine disorder risk using profile data, symptoms, lifestyle factors, family history, and optional lab report text.</p>
-    <ul>
-      <li>Thyroid dysfunction risk</li>
-      <li>Type 2 diabetes and insulin resistance risk</li>
-      <li>PCOS risk (female profiles)</li>
-      <li>Adrenal and metabolic syndrome risk</li>
-    </ul>
+    <h2>What We Measure</h2>
+    <div class="feature-grid">
+      <article><h3>Hormones</h3><p>TSH, T3, T4, cortisol, insulin, HbA1c.</p></article>
+      <article><h3>Metabolic</h3><p>Fasting glucose, cholesterol, BMI.</p></article>
+      <article><h3>Lifestyle</h3><p>Sleep, stress, diet, exercise and symptoms.</p></article>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Why It Matters</h2>
+    <p>Endocrine disorders progress silently. Early warning enables preventative interventions and reduces long‑term complications.</p>
   </section>
 </main>
 {% endblock %}

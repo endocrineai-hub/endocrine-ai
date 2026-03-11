@@ -1,17 +1,31 @@
 {% extends "public_base.html" %}
 {% set title = "Methodology | Endocrine AI" %}
 {% block content %}
-<main class="container page-space">
-  <section class="card">
+<section class="hero compact-hero">
+  <div class="container">
     <h1>Methodology</h1>
-    <ol>
-      <li>Input profile and optional lab text.</li>
-      <li>Extract hormone markers (TSH, T3, T4, HbA1c, insulin, cortisol, cholesterol, fasting glucose).</li>
-      <li>Apply weighted risk scoring and correlation logic.</li>
-      <li>Return risk percentages, risk levels, key triggers, recommended actions, and suggested tests.</li>
-      <li>Store assessment in secure admin records.</li>
+    <p class="hero-lead">A structured pipeline blending rule‑based logic, machine learning, and AI‑driven explanation.</p>
+  </div>
+</section>
+
+<main class="container section">
+  <section class="card">
+    <ol class="timeline">
+      <li><strong>Data Intake:</strong> profile + symptoms + lab text.</li>
+      <li><strong>Extraction:</strong> structured markers from lab text.</li>
+      <li><strong>Prediction:</strong> ML models or rule engine fallback.</li>
+      <li><strong>Explanation:</strong> key triggers + AI summary.</li>
+      <li><strong>Reporting:</strong> actions and suggested tests.</li>
     </ol>
-    <p class="muted">Correlation examples: poor sleep + high stress, high BMI + diabetes family history, and irregular cycles + insulin issues.</p>
+  </section>
+
+  <section class="card">
+    <h2>Correlation Logic</h2>
+    <ul>
+      <li>Poor sleep + high stress = adrenal risk</li>
+      <li>High BMI + diabetes family history = diabetes risk</li>
+      <li>Irregular cycles + insulin issues = PCOS risk</li>
+    </ul>
   </section>
 </main>
 {% endblock %}

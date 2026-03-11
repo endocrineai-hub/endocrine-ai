@@ -4,9 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ title or 'AI Endocrine Risk Analysis' }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
 <body>
+  <div class="bg-decor">
+    <span class="orb orb-a"></span>
+    <span class="orb orb-b"></span>
+    <span class="grid"></span>
+  </div>
+
   <header class="site-header">
     <div class="container nav-wrap">
       <a class="brand" href="{{ url_for('public.index') }}">Endocrine AI</a>
