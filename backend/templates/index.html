@@ -1,36 +1,32 @@
 {% extends "public_base.html" %}
-{% set title = "Home | Endocrine AI" %}
+{% set title = "Home | EndocrineAI" %}
 {% block content %}
 <section class="hero">
   <div class="container hero-grid">
-    <div class="hero-copy">
-      <p class="eyebrow">Precision Preventive Endocrinology</p>
-      <h1>AI‑Driven Endocrine Risk Analysis Platform</h1>
-      <p class="hero-lead">A modern clinical decision-support system that evaluates lifestyle, symptoms, lab markers, and family history to forecast endocrine risks early.</p>
-      <div class="hero-cta">
+    <div class="hero-copy reveal">
+      <p class="pill">Precision Endocrine Intelligence</p>
+      <h1>Predict endocrine risks early with AI‑powered clinical insights.</h1>
+      <p class="lead">A modern healthcare platform that combines structured health data, lab markers, and AI explanation for proactive endocrine care.</p>
+      <div class="cta-row">
         <a class="btn" href="#assessment">Start Assessment</a>
         <a class="btn btn-ghost" href="/methodology">View Methodology</a>
       </div>
-      <div class="hero-tags">
+      <div class="tag-row">
         <span>Thyroid</span><span>Diabetes</span><span>PCOS</span><span>Adrenal</span><span>Metabolic</span>
       </div>
     </div>
-    <div class="hero-panel">
-      <div class="metric-card">
-        <h3>8+</h3>
-        <p>Input Signals</p>
+    <div class="hero-stack">
+      <div class="glass-card reveal" style="animation-delay:0.1s">
+        <h3>8+</h3><p>Input signals</p>
       </div>
-      <div class="metric-card">
-        <h3>5</h3>
-        <p>Risk Domains</p>
+      <div class="glass-card reveal" style="animation-delay:0.2s">
+        <h3>5</h3><p>Risk domains</p>
       </div>
-      <div class="metric-card">
-        <h3>AI</h3>
-        <p>Clinical Summary</p>
+      <div class="glass-card reveal" style="animation-delay:0.3s">
+        <h3>AI</h3><p>Clinical summary</p>
       </div>
-      <div class="metric-card">
-        <h3>Admin</h3>
-        <p>Analytics & Export</p>
+      <div class="glass-card reveal" style="animation-delay:0.4s">
+        <h3>Admin</h3><p>Analytics + export</p>
       </div>
     </div>
   </div>
@@ -38,46 +34,46 @@
 
 <section class="container section">
   <div class="feature-grid">
-    <article>
+    <article class="feature-card reveal">
       <h3>Actionable Risk Scores</h3>
       <p>Instant percentages, risk levels, triggers, and recommended actions.</p>
     </article>
-    <article>
+    <article class="feature-card reveal" style="animation-delay:0.1s">
       <h3>Lab Text Parsing</h3>
-      <p>Paste reports, extract TSH, T3/T4, HbA1c, insulin, cortisol and more.</p>
+      <p>Paste reports, auto‑extract TSH, T3/T4, HbA1c, insulin, cortisol.</p>
     </article>
-    <article>
-      <h3>Audit‑Ready Admin</h3>
-      <p>Analytics, CSV/PDF export, user list, and model status visibility.</p>
+    <article class="feature-card reveal" style="animation-delay:0.2s">
+      <h3>Clinical Workflow</h3>
+      <p>Admin dashboard with analytics, user list, CSV/PDF exports.</p>
     </article>
   </div>
 </section>
 
-<section class="container section flow-strip">
-  <div>
+<section class="container section split">
+  <div class="reveal">
     <h2>How It Works</h2>
     <ol class="timeline">
       <li><strong>Collect</strong> profile, lifestyle, symptoms, labs.</li>
-      <li><strong>Analyze</strong> via risk engine + ML model.</li>
-      <li><strong>Explain</strong> with AI summary and triggers.</li>
-      <li><strong>Act</strong> with next steps and suggested tests.</li>
+      <li><strong>Analyze</strong> via ML model + risk engine.</li>
+      <li><strong>Explain</strong> with AI summary + triggers.</li>
+      <li><strong>Act</strong> using suggested tests and actions.</li>
     </ol>
   </div>
-  <div class="trust-card">
+  <div class="glass-panel reveal" style="animation-delay:0.1s">
     <h3>Why It’s Reliable</h3>
     <ul>
-      <li>Validation + rule/ML fallback</li>
-      <li>Structured JSON output</li>
-      <li>Transparent risk levels</li>
+      <li>Validated inputs and rule/ML fallback</li>
+      <li>Structured JSON output for audit</li>
+      <li>Transparent risk levels and triggers</li>
     </ul>
   </div>
 </section>
 
 <main id="assessment" class="container section">
   <div class="form-layout">
-    <section class="card form-card">
+    <section class="card form-card reveal">
       <h2>Endocrine Risk Check Form</h2>
-      <p class="small-note">Complete the profile for accurate scoring.</p>
+      <p class="muted">Complete the profile for accurate scoring.</p>
       <form id="assessment-form">
         <div class="grid">
           <label>Patient Name <input name="patient_name" placeholder="Optional" /></label>
@@ -122,7 +118,7 @@
       </form>
     </section>
 
-    <aside class="card brief-card">
+    <aside class="card side-card reveal" style="animation-delay:0.15s">
       <h3>Outputs</h3>
       <ul>
         <li>Risk percentages and levels</li>
@@ -132,13 +128,13 @@
       </ul>
       <h3>Compliance</h3>
       <p class="muted">For clinical decision support only. Not a diagnosis.</p>
-      <a class="btn btn-secondary" href="/about">About Project</a>
+      <a class="btn btn-ghost" href="/about">About Project</a>
     </aside>
   </div>
 
   <section id="result-section" class="card hidden">
     <h2>Assessment Result</h2>
-    <p id="prediction-source" class="small-note"></p>
+    <p id="prediction-source" class="muted"></p>
     <div id="ai-summary-wrap" class="card ai-box hidden">
       <h3>AI Clinical Summary</h3>
       <p id="ai-summary"></p>
