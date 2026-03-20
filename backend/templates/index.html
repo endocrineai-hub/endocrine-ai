@@ -112,6 +112,11 @@
           <textarea name="lab_report_text" rows="6" placeholder="Paste complete lab report text here"></textarea>
         </label>
 
+        <label class="toggle">
+          <input type="checkbox" name="use_ml" />
+          <span>Use ML model (beta)</span>
+        </label>
+
         <div class="actions">
           <button class="btn" type="submit">Analyze Risk</button>
         </div>
@@ -139,7 +144,12 @@
       <h3>AI Clinical Summary</h3>
       <p id="ai-summary"></p>
     </div>
-    <div id="risk-cards" class="risk-cards"></div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <canvas id="risk-chart" height="180"></canvas>
+      </div>
+      <div id="risk-cards" class="risk-cards"></div>
+    </div>
     <h3>Key Triggers</h3>
     <ul id="key-triggers"></ul>
     <h3>Explanation</h3>
@@ -153,5 +163,6 @@
   </section>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 {% endblock %}
