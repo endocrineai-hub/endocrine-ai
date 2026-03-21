@@ -76,6 +76,7 @@ body {
 .section { padding: 32px 0; }
 
 .hero { padding: 80px 0 36px; }
+.hero.compact { padding: 54px 0 24px; }
 .hero-grid {
   display: grid;
   grid-template-columns: 1.55fr 1fr;

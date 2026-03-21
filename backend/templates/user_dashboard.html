@@ -1,10 +1,24 @@
 {% extends "public_base.html" %}
 {% set title = "My Dashboard" %}
 {% block content %}
-<main class="container page-space">
-  <section class="card">
+<section class="hero compact">
+  <div class="container">
+    <p class="pill">Personal Health Overview</p>
     <h1>Welcome, {{ user_name }}</h1>
-    <p class="muted">Your previous endocrine assessments are listed below.</p>
+    <p class="lead">Track your endocrine risk scores over time and download your history.</p>
+    <div class="cta-row">
+      <a class="btn" href="/">New Assessment</a>
+      <a class="btn btn-ghost" href="/dashboard/export.csv">Download CSV</a>
+    </div>
+  </div>
+</section>
+
+<main class="container section">
+  <section class="card">
+    <h2>Risk Trend</h2>
+    <div class="chart-card">
+      <canvas id="user-risk-chart" height="180"></canvas>
+    </div>
   </section>
 
   <section class="card">
@@ -29,4 +43,30 @@
     </div>
   </section>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const rawAssessments = {{ assessments | tojson }};
+  const labels = rawAssessments.map(r => r.created_at).reverse();
+  const values = rawAssessments.map(r => Number(r.risk_score || 0)).reverse();
+
+  const ctx = document.getElementById('user-risk-chart');
+  if (ctx && window.Chart) {
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Overall Risk %',
+          data: values,
+          borderColor: 'rgba(11, 107, 113, 1)',
+          backgroundColor: 'rgba(11, 107, 113, 0.15)',
+          tension: 0.3,
+          fill: true,
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { display: true } }, scales: { y: { beginAtZero: true, max: 100 } } }
+    });
+  }
+</script>
 {% endblock %}

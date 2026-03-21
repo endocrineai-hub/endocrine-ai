@@ -108,3 +108,19 @@ def get_user_assessments(user_id: int, limit: int = 50) -> list[dict]:
     ).fetchall()
     conn.close()
     return [dict(r) for r in rows]
+
+
+def get_user_assessment_rows(user_id: int) -> list[dict]:
+    conn = get_connection()
+    rows = conn.execute(
+        """
+        SELECT id, created_at, user_id, patient_name, age, gender, bmi, symptoms,
+               thyroid_risk, diabetes_risk, pcos_risk, adrenal_risk, metabolic_risk, risk_score
+        FROM assessments
+        WHERE user_id = ?
+        ORDER BY id DESC
+        """,
+        (user_id,),
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]

@@ -1,9 +1,10 @@
 from functools import wraps
 
-from flask import Blueprint, redirect, render_template, request, session, url_for
+from flask import Blueprint, Response, redirect, render_template, request, session, url_for
 
-from ..models.assessment_model import get_user_assessments
+from ..models.assessment_model import get_user_assessments, get_user_assessment_rows
 from ..models.user_model import create_user, verify_user
+from ..services.report_service import assessments_to_csv
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -59,3 +60,15 @@ def user_logout():
 def user_dashboard():
     assessments = get_user_assessments(session["user_id"])
     return render_template("user_dashboard.html", assessments=assessments)
+
+
+@auth_bp.route("/dashboard/export.csv")
+@user_required
+def user_export_csv():
+    rows = get_user_assessment_rows(session["user_id"])
+    csv_data = assessments_to_csv(rows)
+    return Response(
+        csv_data,
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=my_assessments.csv"},
+    )
