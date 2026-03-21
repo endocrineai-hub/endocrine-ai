@@ -6,6 +6,7 @@ from ..services.chat_service import generate_chat_reply
 from ..services.model_inference import model_available, predict_with_models
 from ..services.openai_service import chat_completion, openai_available
 from ..services.risk_engine import calculate_risk, extract_markers
+from ..services.summary_service import build_fallback_summary
 
 api_bp = Blueprint("api", __name__)
 
@@ -63,15 +64,19 @@ def assess_profile():
     merged_markers = {**extracted_markers, **explicit_labs}
     result = calculate_risk(profile, merged_markers)
 
-    # Use trained ML models when available, with safe fallback to rule engine.
-    ml_result = predict_with_models(profile, merged_markers)
-    if ml_result:
-        result["risk_scores"] = ml_result["risk_scores"]
-        result["risk_level"] = ml_result["risk_level"]
-        result["prediction_source"] = ml_result["prediction_source"]
-        result["explanation"] = (
-            result.get("explanation", "") + " " + ml_result.get("explanation", "")
-        ).strip()
+    # Use ML only when explicitly requested to avoid unstable demo outputs.
+    use_ml = bool(payload.get("use_ml"))
+    if use_ml:
+        ml_result = predict_with_models(profile, merged_markers)
+        if ml_result:
+            result["risk_scores"] = ml_result["risk_scores"]
+            result["risk_level"] = ml_result["risk_level"]
+            result["prediction_source"] = ml_result["prediction_source"]
+            result["explanation"] = (
+                result.get("explanation", "") + " " + ml_result.get("explanation", "")
+            ).strip()
+        else:
+            result["prediction_source"] = "rule_engine"
     else:
         result["prediction_source"] = "rule_engine"
 
@@ -91,14 +96,16 @@ def assess_profile():
                 + json.dumps(result)
                 + "\\nProvide a 5-7 line summary."
             )
-            ai_summary = chat_completion(system_prompt, user_prompt, temperature=0.2)
+            ai_summary = chat_completion(system_prompt, user_prompt, temperature=0.0)
             result["ai_summary"] = ai_summary
             result["ai_enabled"] = True
         except Exception as exc:
             result["ai_enabled"] = False
             result["ai_error"] = str(exc)
+            result["ai_summary"] = build_fallback_summary(result, result.get("key_triggers", []))
     else:
         result["ai_enabled"] = False
+        result["ai_summary"] = build_fallback_summary(result, result.get("key_triggers", []))
 
     save_assessment(
         profile,
@@ -157,7 +164,7 @@ def api_chat():
                 + json.dumps(assessment)
                 + "\\nAnswer in 4-8 concise lines."
             )
-            reply = chat_completion(system_prompt, user_prompt, temperature=0.3)
+            reply = chat_completion(system_prompt, user_prompt, temperature=0.0)
         except Exception:
             reply = generate_chat_reply(message, assessment)
     else:

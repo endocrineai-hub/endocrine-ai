@@ -1,6 +1,7 @@
 {% extends "public_base.html" %}
 {% set title = "My Dashboard" %}
 {% block content %}
+{% set latest = assessments[0] if assessments else None %}
 <section class="hero compact">
   <div class="container">
     <p class="pill">Personal Health Overview</p>
@@ -14,6 +15,25 @@
 </section>
 
 <main class="container section">
+  <section class="stats-grid">
+    <article class="stat-card">
+      <h3>Total Assessments</h3>
+      <p>{{ assessments | length }}</p>
+    </article>
+    <article class="stat-card">
+      <h3>Latest Overall</h3>
+      <p>{{ latest.risk_score if latest else '-' }}%</p>
+    </article>
+    <article class="stat-card">
+      <h3>Latest Diabetes</h3>
+      <p>{{ latest.diabetes_risk if latest else '-' }}</p>
+    </article>
+    <article class="stat-card">
+      <h3>Latest Metabolic</h3>
+      <p>{{ latest.metabolic_risk if latest else '-' }}</p>
+    </article>
+  </section>
+
   <section class="card">
     <h2>Risk Trend</h2>
     <div class="chart-card">
@@ -23,6 +43,9 @@
 
   <section class="card">
     <h2>My Assessments</h2>
+    {% if not assessments %}
+      <p class="muted">No assessments yet. Run your first assessment to see results here.</p>
+    {% endif %}
     <div class="table-wrap">
       <table>
         <thead>

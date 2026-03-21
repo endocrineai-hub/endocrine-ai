@@ -33,18 +33,22 @@
 </section>
 
 <section class="container section">
-  <div class="feature-grid">
-    <article class="feature-card">
-      <h3>Actionable Risk Scores</h3>
-      <p>Instant percentages, levels, and explainable triggers.</p>
+  <div class="metrics-grid">
+    <article class="metric-card">
+      <h3>24/7</h3>
+      <p>Always-on endocrine risk screening.</p>
     </article>
-    <article class="feature-card">
-      <h3>Lab Text Parsing</h3>
-      <p>Extract TSH, T3/T4, HbA1c, insulin, cortisol, glucose.</p>
+    <article class="metric-card">
+      <h3>JSON</h3>
+      <p>Structured outputs for integrations.</p>
     </article>
-    <article class="feature-card">
-      <h3>Clinical Workflow</h3>
-      <p>Admin dashboards, user tracking, CSV/PDF export.</p>
+    <article class="metric-card">
+      <h3>ML + Rules</h3>
+      <p>Model inference with explainable fallback.</p>
+    </article>
+    <article class="metric-card">
+      <h3>HIPAA-ready</h3>
+      <p>Built for clinical decision support flows.</p>
     </article>
   </div>
 </section>
@@ -65,6 +69,59 @@
       <li>Validated inputs and rule/ML fallback</li>
       <li>Structured JSON output for audit</li>
       <li>Transparent risk levels and triggers</li>
+    </ul>
+  </div>
+</section>
+
+<section class="container section">
+  <div class="feature-grid">
+    <article class="feature-card">
+      <h3>Actionable Risk Scores</h3>
+      <p>Instant percentages, levels, and explainable triggers.</p>
+    </article>
+    <article class="feature-card">
+      <h3>Lab Text Parsing</h3>
+      <p>Extract TSH, T3/T4, HbA1c, insulin, cortisol, glucose.</p>
+    </article>
+    <article class="feature-card">
+      <h3>Clinical Workflow</h3>
+      <p>Admin dashboards, user tracking, CSV/PDF export.</p>
+    </article>
+  </div>
+</section>
+
+<section class="container section">
+  <div class="service-grid">
+    <article class="service-card">
+      <h3>Individual Screening</h3>
+      <p>Complete endocrine risk assessment with AI explanation.</p>
+    </article>
+    <article class="service-card">
+      <h3>Model Training</h3>
+      <p>Train on your dataset with metrics and evaluation.</p>
+    </article>
+    <article class="service-card">
+      <h3>Care Team Insights</h3>
+      <p>Admin analytics, reports, and compliance exports.</p>
+    </article>
+  </div>
+</section>
+
+<section class="container section split">
+  <div>
+    <h2>Built for real-world deployment</h2>
+    <p class="lead">From patient onboarding to AI summaries and audit trails, the platform is structured for clinics, wellness providers, and public health teams.</p>
+    <div class="cta-row">
+      <a class="btn" href="/signup">Create account</a>
+      <a class="btn btn-ghost" href="/services">Explore services</a>
+    </div>
+  </div>
+  <div class="glass-panel">
+    <h3>Deployment Highlights</h3>
+    <ul>
+      <li>OpenAI summary layer for clinicians</li>
+      <li>API endpoints for EHR integration</li>
+      <li>User and admin dashboards included</li>
     </ul>
   </div>
 </section>
@@ -160,6 +217,18 @@
     <ul id="tests"></ul>
     <h3>Extracted Markers</h3>
     <pre id="markers-json"></pre>
+
+    <section class="chat-shell">
+      <h3>Ask EndocrineAI</h3>
+      <div id="chat-log" class="chat-log"></div>
+      <form id="chat-form" class="grid">
+        <label>Ask a question about your report
+          <textarea id="chat-input" rows="3" placeholder="Ask about your risks, next steps, or clarifications"></textarea>
+        </label>
+        <button class="btn" type="submit">Send Question</button>
+      </form>
+      <p class="muted">For guidance only. Not a medical diagnosis.</p>
+    </section>
   </section>
 </main>
 

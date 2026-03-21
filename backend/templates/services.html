@@ -1,0 +1,61 @@
+{% extends "public_base.html" %}
+{% set title = "Services | EndocrineAI" %}
+{% block content %}
+<section class="hero compact">
+  <div class="container">
+    <p class="pill">Our Services</p>
+    <h1>Clinical-grade endocrine risk services for individuals and organizations.</h1>
+    <p class="lead">We provide AI-driven screening, model training, and analytics dashboards designed for real-world deployment.</p>
+  </div>
+</section>
+
+<main class="container section">
+  <section class="card">
+    <div class="service-grid">
+      <article class="service-card">
+        <h3>Risk Screening</h3>
+        <p>Personalized endocrine risk scoring with triggers, actions, and suggested tests.</p>
+      </article>
+      <article class="service-card">
+        <h3>ML Model Training</h3>
+        <p>Custom model training using your dataset with validation and evaluation metrics.</p>
+      </article>
+      <article class="service-card">
+        <h3>AI Summary</h3>
+        <p>OpenAI-powered clinical summaries for clear interpretation.</p>
+      </article>
+      <article class="service-card">
+        <h3>Admin Analytics</h3>
+        <p>Dashboards for risk distribution, trend tracking, and exports.</p>
+      </article>
+      <article class="service-card">
+        <h3>User Portal</h3>
+        <p>Secure login, personal dashboard, and history view.</p>
+      </article>
+      <article class="service-card">
+        <h3>API Integration</h3>
+        <p>Structured JSON APIs for easy EHR or app integration.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Engagement Flow</h2>
+    <ol class="timeline">
+      <li><strong>Discovery:</strong> understand your clinical workflow and dataset.</li>
+      <li><strong>Model training:</strong> preprocess, train, validate, evaluate.</li>
+      <li><strong>Deployment:</strong> integrate with dashboards and API endpoints.</li>
+      <li><strong>Enablement:</strong> onboarding, analytics, and reporting.</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>Deliverables</h2>
+    <div class="feature-grid">
+      <article class="feature-card"><h3>Risk Engine</h3><p>Explainable rule + ML pipeline.</p></article>
+      <article class="feature-card"><h3>Clinical Reports</h3><p>AI summaries, triggers, and next steps.</p></article>
+      <article class="feature-card"><h3>Admin Analytics</h3><p>High-risk distribution and export.</p></article>
+    </div>
+  </section>
+</main>
+{% endblock %}

@@ -1,23 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Signup</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-</head>
-<body class="centered-bg">
-  <section class="card login-card">
-    <h1>Create Account</h1>
-    {% if error %}<p class="error">{{ error }}</p>{% endif %}
-    <form method="post">
-      <label>Name <input name="name" required /></label>
-      <label>Email <input name="email" type="email" required /></label>
-      <label>Password <input name="password" type="password" required /></label>
-      <button class="btn" type="submit">Create Account</button>
-      <a class="link" href="/login">Already have account? Login</a>
-      <a class="link" href="/">Back to Website</a>
-    </form>
-  </section>
-</body>
-</html>
+{% extends "public_base.html" %}
+{% set title = "User Registration" %}
+{% block content %}
+<section class="auth-hero">
+  <div class="container auth-grid">
+    <div class="auth-copy">
+      <p class="pill">Create Account</p>
+      <h1>Start your personalized endocrine tracking.</h1>
+      <p class="lead">Secure login, private dashboards, and AI-enhanced summaries.</p>
+      <ul>
+        <li><strong>Fast onboarding</strong> in under 1 minute.</li>
+        <li><strong>Export-ready</strong> data for your care team.</li>
+        <li><strong>Continuous monitoring</strong> of risk signals.</li>
+      </ul>
+    </div>
+    <div class="auth-card">
+      <h2>Register</h2>
+      {% if error %}<p class="error">{{ error }}</p>{% endif %}
+      <form method="post">
+        <label>Name <input name="name" required /></label>
+        <label>Email <input name="email" type="email" required /></label>
+        <label>Password <input name="password" type="password" required /></label>
+        <button class="btn" type="submit">Create Account</button>
+        <a class="link" href="/login">Already have an account? Login</a>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
