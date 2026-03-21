@@ -4,7 +4,7 @@ from flask import Blueprint, Response, redirect, render_template, request, sessi
 
 from ..models.assessment_model import get_user_assessments, get_user_assessment_rows
 from ..models.user_model import create_user, verify_user
-from ..services.report_service import assessments_to_csv
+from ..services.report_service import assessments_to_csv, assessments_to_pdf_bytes
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -71,4 +71,16 @@ def user_export_csv():
         csv_data,
         mimetype="text/csv",
         headers={"Content-Disposition": "attachment; filename=my_assessments.csv"},
+    )
+
+
+@auth_bp.route("/dashboard/export.pdf")
+@user_required
+def user_export_pdf():
+    rows = get_user_assessment_rows(session["user_id"])
+    pdf_data = assessments_to_pdf_bytes(rows)
+    return Response(
+        pdf_data,
+        mimetype="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=my_assessments.pdf"},
     )

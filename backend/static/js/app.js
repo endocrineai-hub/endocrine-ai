@@ -8,6 +8,7 @@ let latestAssessment = null;
 
 function toListItems(targetId, items) {
   const el = document.getElementById(targetId);
+  if (!el) return;
   el.innerHTML = "";
   (items || []).forEach((item) => {
     const li = document.createElement("li");
@@ -18,6 +19,7 @@ function toListItems(targetId, items) {
 
 function renderRiskCards(scores, levels) {
   const container = document.getElementById("risk-cards");
+  if (!container) return;
   container.innerHTML = "";
   Object.keys(scores).forEach((key) => {
     const card = document.createElement("div");
@@ -40,72 +42,78 @@ function appendChatMessage(text, role) {
   chatLog.scrollTop = chatLog.scrollHeight;
 }
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const fd = new FormData(form);
-  const profile = {
-    "Age": Number(fd.get("age")),
-    "Gender": fd.get("gender"),
-    "BMI": Number(fd.get("bmi")),
-    "Sleep quality": fd.get("sleep_quality"),
-    "Stress level": fd.get("stress_level"),
-    "Exercise frequency": fd.get("exercise_frequency"),
-    "Diet type": fd.get("diet_type"),
-    "Family history": fd.get("family_history"),
-    "Symptoms": String(fd.get("symptoms") || "")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean),
-  };
+if (form) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const profile = {
+      "Age": Number(fd.get("age")),
+      "Gender": fd.get("gender"),
+      "BMI": Number(fd.get("bmi")),
+      "Sleep quality": fd.get("sleep_quality"),
+      "Stress level": fd.get("stress_level"),
+      "Exercise frequency": fd.get("exercise_frequency"),
+      "Diet type": fd.get("diet_type"),
+      "Family history": fd.get("family_history"),
+      "Symptoms": String(fd.get("symptoms") || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+    };
 
-  const payload = {
-    patient_name: fd.get("patient_name") || "Anonymous",
-    profile,
-    lab_report_text: fd.get("lab_report_text") || "",
-    use_ml: Boolean(fd.get("use_ml")),
-  };
+    const payload = {
+      patient_name: fd.get("patient_name") || "Anonymous",
+      profile,
+      lab_report_text: fd.get("lab_report_text") || "",
+      use_ml: Boolean(fd.get("use_ml")),
+    };
 
-  const res = await fetch("/api/assess", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    const res = await fetch("/api/assess", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const errorPayload = await res.json().catch(() => ({}));
+      const validationErrors = (errorPayload.errors || []).join("\n");
+      alert(validationErrors || errorPayload.message || "Failed to run analysis");
+      return;
+    }
+
+    const data = await res.json();
+    const out = data.assessment;
+    latestAssessment = out;
+    if (chatLog) {
+      chatLog.innerHTML = "";
+    }
+    const sourceEl = document.getElementById("prediction-source");
+    if (sourceEl) {
+      sourceEl.textContent = `Prediction source: ${out.prediction_source || "rule_engine"}`;
+    }
+
+    const aiWrap = document.getElementById("ai-summary-wrap");
+    const aiSummary = document.getElementById("ai-summary");
+    if (out.ai_summary && aiWrap && aiSummary) {
+      aiSummary.textContent = out.ai_summary;
+      aiWrap.classList.remove("hidden");
+    } else if (aiWrap && aiSummary) {
+      aiSummary.textContent = "";
+      aiWrap.classList.add("hidden");
+    }
+
+    renderRiskCards(out.risk_scores, out.risk_level);
+    renderRiskChart(out.risk_scores);
+    toListItems("key-triggers", out.key_triggers);
+    toListItems("actions", out.recommended_actions);
+    toListItems("tests", out.suggested_tests);
+    const expl = document.getElementById("explanation");
+    if (expl) expl.textContent = out.explanation;
+    const markersEl = document.getElementById("markers-json");
+    if (markersEl) markersEl.textContent = JSON.stringify(data.extracted_markers, null, 2);
+    if (resultSection) resultSection.classList.remove("hidden");
   });
-
-  if (!res.ok) {
-    const errorPayload = await res.json().catch(() => ({}));
-    const validationErrors = (errorPayload.errors || []).join("\n");
-    alert(validationErrors || errorPayload.message || "Failed to run analysis");
-    return;
-  }
-
-  const data = await res.json();
-  const out = data.assessment;
-  latestAssessment = out;
-  if (chatLog) {
-    chatLog.innerHTML = "";
-  }
-  document.getElementById("prediction-source").textContent =
-    `Prediction source: ${out.prediction_source || "rule_engine"}`;
-
-  const aiWrap = document.getElementById("ai-summary-wrap");
-  const aiSummary = document.getElementById("ai-summary");
-  if (out.ai_summary) {
-    aiSummary.textContent = out.ai_summary;
-    aiWrap.classList.remove("hidden");
-  } else {
-    aiSummary.textContent = "";
-    aiWrap.classList.add("hidden");
-  }
-
-  renderRiskCards(out.risk_scores, out.risk_level);
-  renderRiskChart(out.risk_scores);
-  toListItems("key-triggers", out.key_triggers);
-  toListItems("actions", out.recommended_actions);
-  toListItems("tests", out.suggested_tests);
-  document.getElementById("explanation").textContent = out.explanation;
-  document.getElementById("markers-json").textContent = JSON.stringify(data.extracted_markers, null, 2);
-  resultSection.classList.remove("hidden");
-});
+}
 
 if (chatForm) {
   chatForm.addEventListener("submit", async (e) => {
@@ -156,8 +164,8 @@ function renderRiskChart(scores) {
         {
           label: "Risk %",
           data: values,
-          backgroundColor: "rgba(11, 107, 113, 0.55)",
-          borderColor: "rgba(11, 107, 113, 1)",
+          backgroundColor: "rgba(31, 111, 255, 0.55)",
+          borderColor: "rgba(31, 111, 255, 1)",
           borderWidth: 1,
           borderRadius: 8,
         },

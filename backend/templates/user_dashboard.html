@@ -8,8 +8,9 @@
     <h1>Welcome, {{ user_name }}</h1>
     <p class="lead">Track your endocrine risk scores over time and download your history.</p>
     <div class="cta-row">
-      <a class="btn" href="/">New Assessment</a>
+      <a class="btn" href="#assessment">New Assessment</a>
       <a class="btn btn-ghost" href="/dashboard/export.csv">Download CSV</a>
+      <a class="btn btn-ghost" href="/dashboard/export.pdf">Download PDF</a>
     </div>
   </div>
 </section>
@@ -32,6 +33,112 @@
       <h3>Latest Metabolic</h3>
       <p>{{ latest.metabolic_risk if latest else '-' }}</p>
     </article>
+  </section>
+
+  <section id="assessment" class="card">
+    <h2>New Assessment</h2>
+    <p class="muted">Complete the profile for accurate scoring.</p>
+    <div class="form-layout">
+      <section class="card form-card">
+        <form id="assessment-form">
+          <div class="grid">
+            <label>Patient Name <input name="patient_name" placeholder="Optional" /></label>
+            <label>Age <input type="number" name="age" required /></label>
+            <label>Gender
+              <select name="gender" required>
+                <option value="">Select</option>
+                <option>Female</option>
+                <option>Male</option>
+              </select>
+            </label>
+            <label>BMI <input type="number" step="0.1" name="bmi" required /></label>
+            <label>Sleep quality
+              <select name="sleep_quality" required>
+                <option>Poor</option><option>Average</option><option>Good</option>
+              </select>
+            </label>
+            <label>Stress level
+              <select name="stress_level" required>
+                <option>High</option><option>Moderate</option><option>Low</option>
+              </select>
+            </label>
+            <label>Exercise frequency <input name="exercise_frequency" placeholder="Low / 3 days/week / Daily" required /></label>
+            <label>Diet type <input name="diet_type" placeholder="High sugar, Balanced, etc." required /></label>
+          </div>
+
+          <label>Family history
+            <textarea name="family_history" rows="2" placeholder="Diabetes, thyroid, PCOS, etc."></textarea>
+          </label>
+
+          <label>Symptoms (comma separated)
+            <textarea name="symptoms" rows="2" placeholder="Fatigue, irregular cycles, sugar cravings"></textarea>
+          </label>
+
+          <label>Lab report text (optional)
+            <textarea name="lab_report_text" rows="6" placeholder="Paste complete lab report text here"></textarea>
+          </label>
+
+          <label class="toggle">
+            <input type="checkbox" name="use_ml" />
+            <span>Use ML model (beta)</span>
+          </label>
+
+          <div class="actions">
+            <button class="btn" type="submit">Analyze Risk</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="card side-card">
+        <h3>Outputs</h3>
+        <ul>
+          <li>Risk percentages and levels</li>
+          <li>Key trigger signals</li>
+          <li>AI-generated summary</li>
+          <li>Suggested tests + actions</li>
+        </ul>
+        <h3>Compliance</h3>
+        <p class="muted">For clinical decision support only. Not a diagnosis.</p>
+        <a class="btn btn-ghost" href="/about">About Project</a>
+      </aside>
+    </div>
+  </section>
+
+  <section id="result-section" class="card hidden">
+    <h2>Assessment Result</h2>
+    <p id="prediction-source" class="muted"></p>
+    <div id="ai-summary-wrap" class="card ai-box hidden">
+      <h3>AI Clinical Summary</h3>
+      <p id="ai-summary"></p>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <canvas id="risk-chart" height="180"></canvas>
+      </div>
+      <div id="risk-cards" class="risk-cards"></div>
+    </div>
+    <h3>Key Triggers</h3>
+    <ul id="key-triggers"></ul>
+    <h3>Explanation</h3>
+    <p id="explanation"></p>
+    <h3>Recommended Actions</h3>
+    <ul id="actions"></ul>
+    <h3>Suggested Tests</h3>
+    <ul id="tests"></ul>
+    <h3>Extracted Markers</h3>
+    <pre id="markers-json"></pre>
+
+    <section class="chat-shell">
+      <h3>Ask EndocrineAI</h3>
+      <div id="chat-log" class="chat-log"></div>
+      <form id="chat-form" class="grid">
+        <label>Ask a question about your report
+          <textarea id="chat-input" rows="3" placeholder="Ask about your risks, next steps, or clarifications"></textarea>
+        </label>
+        <button class="btn" type="submit">Send Question</button>
+      </form>
+      <p class="muted">For guidance only. Not a medical diagnosis.</p>
+    </section>
   </section>
 
   <section class="card">
@@ -68,6 +175,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
 <script>
   const rawAssessments = {{ assessments | tojson }};
   const labels = rawAssessments.map(r => r.created_at).reverse();
@@ -82,8 +190,8 @@
         datasets: [{
           label: 'Overall Risk %',
           data: values,
-          borderColor: 'rgba(11, 107, 113, 1)',
-          backgroundColor: 'rgba(11, 107, 113, 0.15)',
+          borderColor: 'rgba(31, 111, 255, 1)',
+          backgroundColor: 'rgba(31, 111, 255, 0.15)',
           tension: 0.3,
           fill: true,
         }]
