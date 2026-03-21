@@ -1,26 +1,26 @@
 {% extends "public_base.html" %}
-{% set title = "About | Endocrine AI" %}
+{% set title = "About | EndocrineAI" %}
 {% block content %}
-<section class="hero compact-hero">
+<section class="hero compact">
   <div class="container">
-    <h1>About the Platform</h1>
-    <p class="hero-lead">This system is built to forecast endocrine risks early by combining clinical markers with AI-driven interpretation.</p>
+    <p class="pill">About the Platform</p>
+    <h1>Designed for proactive endocrine care.</h1>
+    <p class="lead">We combine structured health data, lab markers, and AI explanation to forecast endocrine risk early.</p>
   </div>
 </section>
 
 <main class="container section">
   <section class="card">
-    <h2>What We Measure</h2>
     <div class="feature-grid">
-      <article><h3>Hormones</h3><p>TSH, T3, T4, cortisol, insulin, HbA1c.</p></article>
-      <article><h3>Metabolic</h3><p>Fasting glucose, cholesterol, BMI.</p></article>
-      <article><h3>Lifestyle</h3><p>Sleep, stress, diet, exercise and symptoms.</p></article>
+      <article class="feature-card"><h3>Hormone Markers</h3><p>TSH, T3, T4, cortisol, insulin, HbA1c.</p></article>
+      <article class="feature-card"><h3>Metabolic Signals</h3><p>BMI, fasting glucose, cholesterol.</p></article>
+      <article class="feature-card"><h3>Lifestyle Factors</h3><p>Sleep, stress, diet, exercise, symptoms.</p></article>
     </div>
   </section>
 
   <section class="card">
     <h2>Why It Matters</h2>
-    <p>Endocrine disorders progress silently. Early warning enables preventative interventions and reduces long‑term complications.</p>
+    <p>Endocrine disorders progress silently. Early warning helps prevention and reduces long-term complications.</p>
   </section>
 </main>
 {% endblock %}
