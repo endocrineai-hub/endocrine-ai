@@ -84,6 +84,13 @@ h1, h2, h3, h4, .logo {
   border-bottom: 1px solid var(--line);
 }
 .section-alt .container { padding: 32px 18px; }
+.section-head {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.section-head h2 { margin: 0; }
+.section-head p { margin: 0; color: #4f5f78; max-width: 70ch; }
 
 .hero { padding: 80px 0 36px; }
 .hero.compact { padding: 54px 0 24px; }
