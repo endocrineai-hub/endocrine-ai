@@ -20,7 +20,7 @@ body {
   margin: 0;
   font-family: "DM Sans", system-ui, sans-serif;
   color: var(--ink);
-  background: radial-gradient(circle at top, rgba(31, 111, 255, 0.12), transparent 50%), var(--bg);
+  background: linear-gradient(180deg, #f7f9fc 0%, #edf2f9 40%, #f4f7fb 100%);
 }
 
 h1, h2, h3, h4, .logo {
@@ -45,7 +45,7 @@ h1, h2, h3, h4, .logo {
 .bg-mesh .mesh {
   position: absolute;
   border-radius: 40% 60% 60% 40%;
-  opacity: 0.18;
+  opacity: 0.08;
 }
 .bg-mesh .mesh-a { background: #7aa8ff; width: 520px; height: 520px; top: -160px; right: -140px; }
 .bg-mesh .mesh-b { background: #53d6c3; width: 520px; height: 520px; bottom: -220px; left: -160px; }
@@ -101,7 +101,7 @@ h1, h2, h3, h4, .logo {
   position: absolute;
   inset: 12px 24px auto;
   height: 320px;
-  background: linear-gradient(120deg, rgba(31, 111, 255, 0.2), rgba(17, 191, 174, 0.12));
+  background: linear-gradient(120deg, rgba(31, 111, 255, 0.12), rgba(17, 191, 174, 0.08));
   border-radius: 32px;
   z-index: -1;
 }
