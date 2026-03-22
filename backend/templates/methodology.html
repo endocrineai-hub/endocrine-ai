@@ -6,17 +6,61 @@
     <p class="pill">Methodology</p>
     <h1>A structured AI + ML pipeline.</h1>
     <p class="lead">Validation, extraction, prediction, and explanation in one end-to-end flow.</p>
+    <div class="method-stats">
+      <div class="stat-pill"><strong>8+</strong><span>signals</span></div>
+      <div class="stat-pill"><strong>5</strong><span>risk domains</span></div>
+      <div class="stat-pill"><strong>2</strong><span>engines (Rules + ML)</span></div>
+      <div class="stat-pill"><strong>AI</strong><span>clinical summary</span></div>
+    </div>
   </div>
 </section>
 
 <main>
+  <section class="container section">
+    <div class="section-head">
+      <h2>Process Overview</h2>
+      <p>A modern clinical workflow designed to be explainable, auditable, and safe.</p>
+    </div>
+    <div class="stepper">
+      <div class="step">
+        <span class="step-num">1</span>
+        <h3>Intake</h3>
+        <p>Profile, lifestyle, symptoms, and labs.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <h3>Extract</h3>
+        <p>Parse TSH, T3/T4, HbA1c, insulin, cortisol, glucose.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <h3>Score</h3>
+        <p>Rule engine baseline, ML refinement if enabled.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">4</span>
+        <h3>Explain</h3>
+        <p>Triggers, AI summary, and risk levels.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">5</span>
+        <h3>Report</h3>
+        <p>Suggested tests, actions, exports.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="section section-alt">
     <div class="container">
       <div class="section-head">
         <h2>System Flow</h2>
         <p>A clean, auditable pipeline from patient inputs to clinical action.</p>
       </div>
-      <div class="flow-card">
+      <div class="flow-card flow-card-accent">
+        <div class="flow-head">
+          <h3>End-to-End Pipeline</h3>
+          <p class="muted">Rules + ML + AI summary all connected.</p>
+        </div>
         <pre class="mermaid">
 flowchart LR
   A["User Inputs"] --> B["Validation & Normalization"]
@@ -70,10 +114,45 @@ flowchart LR
   <section class="section section-alt">
     <div class="container">
       <div class="section-head">
+        <h2>Architecture Layers</h2>
+        <p>Separated layers keep the system resilient and easy to scale.</p>
+      </div>
+      <div class="layer-grid">
+        <article class="layer-card">
+          <h3>Data Layer</h3>
+          <p>Profile, symptoms, lab text, structured markers.</p>
+        </article>
+        <article class="layer-card">
+          <h3>Rules Engine</h3>
+          <p>Deterministic baseline scoring for reliability.</p>
+        </article>
+        <article class="layer-card">
+          <h3>ML Inference</h3>
+          <p>Model predictions when available and enabled.</p>
+        </article>
+        <article class="layer-card">
+          <h3>AI Summary</h3>
+          <p>OpenAI-powered clinical narrative layer.</p>
+        </article>
+        <article class="layer-card">
+          <h3>Delivery</h3>
+          <p>Dashboards, exports, API JSON.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
         <h2>Risk Logic Map</h2>
         <p>Core correlations used to highlight endocrine risk patterns.</p>
       </div>
-      <div class="flow-card">
+      <div class="flow-card flow-card-accent">
+        <div class="flow-head">
+          <h3>Correlation Flow</h3>
+          <p class="muted">Lifestyle + labs drive domain risk.</p>
+        </div>
         <pre class="mermaid">
 flowchart TB
   S1["Poor Sleep"] --> A1["Adrenal Risk"]
@@ -106,6 +185,29 @@ flowchart TB
         <li>AI-generated explanation</li>
         <li>Suggested tests and actions</li>
       </ul>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <h2>Quality & Governance</h2>
+        <p>Safety checks that keep the system reliable for clinical decision support.</p>
+      </div>
+      <div class="service-columns">
+        <article class="icon-card">
+          <h3>Validation</h3>
+          <p>Input validation + guardrails to prevent unstable outputs.</p>
+        </article>
+        <article class="icon-card">
+          <h3>Explainability</h3>
+          <p>Triggers and transparent scores for auditing.</p>
+        </article>
+        <article class="icon-card">
+          <h3>Traceability</h3>
+          <p>Stored assessments, exports, and user history.</p>
+        </article>
+      </div>
     </div>
   </section>
 </main>
