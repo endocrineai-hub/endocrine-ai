@@ -307,6 +307,25 @@ h1, h2, h3, h4, .logo {
   box-shadow: var(--shadow);
 }
 
+.service-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.icon-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: var(--shadow-soft);
+}
+.check-list {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: #4f5f78;
+  line-height: 1.7;
+}
+
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -642,6 +661,7 @@ pre { background: #f5f8fb; border: 1px solid var(--line); padding: 10px; border-
   .bento-card.large { grid-column: span 1; }
   .split { grid-template-columns: 1fr; }
   .service-grid { grid-template-columns: 1fr; }
+  .service-columns { grid-template-columns: 1fr; }
   .form-layout { grid-template-columns: 1fr; }
   .chart-grid { grid-template-columns: 1fr; }
   .stats-grid-hero { grid-template-columns: 1fr 1fr; }
