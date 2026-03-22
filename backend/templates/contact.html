@@ -5,18 +5,72 @@
   <div class="container">
     <p class="pill">Contact</p>
     <h1>Let's collaborate on endocrine analytics.</h1>
-    <p class="lead">For project demos, feedback, or clinical collaboration.</p>
+    <p class="lead">Partner with us for demos, clinical pilots, and integration support.</p>
   </div>
 </section>
 
-<main class="container section">
-  <section class="card">
-    <div class="feature-grid">
-      <article class="feature-card"><h3>Email</h3><p>support@endocrine-ai.local</p></article>
-      <article class="feature-card"><h3>Location</h3><p>Pune, India</p></article>
-      <article class="feature-card"><h3>Type</h3><p>Academic + Decision Support</p></article>
+<main>
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <h2>Contact Channels</h2>
+        <p>Choose the right path and we will respond within 24-48 hours.</p>
+      </div>
+      <div class="contact-grid">
+        <article class="contact-card">
+          <h3>General Support</h3>
+          <p>support@endocrine-ai.local</p>
+          <span class="muted">Product questions, access help.</span>
+        </article>
+        <article class="contact-card">
+          <h3>Clinical Partnerships</h3>
+          <p>clinical@endocrine-ai.local</p>
+          <span class="muted">Hospitals, clinics, research pilots.</span>
+        </article>
+        <article class="contact-card">
+          <h3>Headquarters</h3>
+          <p>Pune, India</p>
+          <span class="muted">Remote-first, worldwide deployment.</span>
+        </article>
+      </div>
     </div>
-    <p class="muted">If you have urgent health concerns, contact a licensed medical professional.</p>
+  </section>
+
+  <section class="container section split">
+    <div>
+      <div class="section-head">
+        <h2>Send a Message</h2>
+        <p>Share your use case and we will align the right solution for you.</p>
+      </div>
+      <form class="contact-form">
+        <div class="grid">
+          <label>Name <input name="name" placeholder="Your name" /></label>
+          <label>Email <input name="email" type="email" placeholder="Your email" /></label>
+        </div>
+        <label>Topic
+          <select name="topic">
+            <option>Product demo</option>
+            <option>Clinical partnership</option>
+            <option>Integration support</option>
+          </select>
+        </label>
+        <label>Message
+          <textarea name="message" rows="5" placeholder="Tell us about your goals"></textarea>
+        </label>
+        <button class="btn" type="button">Submit</button>
+        <p class="muted">This demo form is not connected to a live inbox.</p>
+      </form>
+    </div>
+    <div class="glass-panel">
+      <h3>What to include</h3>
+      <ul class="check-list">
+        <li>Organization type and location</li>
+        <li>Target population or cohort size</li>
+        <li>Preferred integration timeline</li>
+        <li>Required datasets or lab markers</li>
+      </ul>
+      <p class="muted">If you have urgent health concerns, contact a licensed medical professional.</p>
+    </div>
   </section>
 </main>
 {% endblock %}
