@@ -5,28 +5,113 @@
   <div class="container">
     <p class="pill">Methodology</p>
     <h1>A structured AI + ML pipeline.</h1>
-    <p class="lead">Validation, extraction, prediction, and explanation in one flow.</p>
+    <p class="lead">Validation, extraction, prediction, and explanation in one end-to-end flow.</p>
   </div>
 </section>
 
-<main class="container section">
-  <section class="card">
-    <ol class="timeline">
-      <li><strong>Data intake:</strong> profile + lifestyle + labs.</li>
-      <li><strong>Extraction:</strong> structured markers from lab text.</li>
-      <li><strong>Prediction:</strong> ML models or rule engine fallback.</li>
-      <li><strong>Explanation:</strong> key triggers and AI summary.</li>
-      <li><strong>Reporting:</strong> actions and suggested tests.</li>
-    </ol>
+<main>
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <h2>System Flow</h2>
+        <p>A clean, auditable pipeline from patient inputs to clinical action.</p>
+      </div>
+      <div class="flow-card">
+        <pre class="mermaid">
+flowchart LR
+  A["User Inputs"] --> B["Validation & Normalization"]
+  B --> C["Lab Marker Extraction"]
+  C --> D["Risk Engine (Rules)"]
+  C --> E["ML Model Inference"]
+  D --> F["Risk Scores + Levels"]
+  E --> F
+  F --> G["AI Clinical Summary"]
+  F --> H["Suggested Tests & Actions"]
+  G --> I["User + Admin Dashboards"]
+  H --> I
+        </pre>
+      </div>
+    </div>
   </section>
 
-  <section class="card">
-    <h2>Correlation Logic</h2>
-    <ul>
-      <li>Poor sleep + high stress = adrenal risk</li>
-      <li>High BMI + diabetes family history = diabetes risk</li>
-      <li>Irregular cycles + insulin issues = PCOS risk</li>
-    </ul>
+  <section class="container section">
+    <div class="section-head">
+      <h2>Step-by-Step Flow</h2>
+      <p>Each phase is designed to be explainable and safe for decision support.</p>
+    </div>
+    <div class="step-grid">
+      <article class="step-card">
+        <h3>1. Data Intake</h3>
+        <p>Profile, lifestyle, symptoms, family history, and lab text.</p>
+      </article>
+      <article class="step-card">
+        <h3>2. Marker Extraction</h3>
+        <p>TSH, T3, T4, HbA1c, insulin, cortisol, cholesterol, glucose.</p>
+      </article>
+      <article class="step-card">
+        <h3>3. Risk Scoring</h3>
+        <p>Rule engine runs first, ML inference runs if enabled and available.</p>
+      </article>
+      <article class="step-card">
+        <h3>4. Explanation</h3>
+        <p>Trigger signals and AI summary for clinical interpretation.</p>
+      </article>
+      <article class="step-card">
+        <h3>5. Reporting</h3>
+        <p>Suggested tests, recommended actions, and structured JSON output.</p>
+      </article>
+      <article class="step-card">
+        <h3>6. Dashboard</h3>
+        <p>User history, admin analytics, exports, and audit trail.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <h2>Risk Logic Map</h2>
+        <p>Core correlations used to highlight endocrine risk patterns.</p>
+      </div>
+      <div class="flow-card">
+        <pre class="mermaid">
+flowchart TB
+  S1["Poor Sleep"] --> A1["Adrenal Risk"]
+  S2["High Stress"] --> A1
+  B1["High BMI"] --> D1["Diabetes Risk"]
+  F1["Family History"] --> D1
+  P1["Irregular Cycles"] --> P2["PCOS Risk"]
+  I1["Insulin Elevation"] --> P2
+  L1["Lab Abnormalities"] --> T1["Thyroid Risk"]
+        </pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section split">
+    <div>
+      <h2>Model Strategy</h2>
+      <p class="muted">Rule engine guarantees deterministic outputs, while ML models refine scores when enabled.</p>
+      <ol class="timeline">
+        <li><strong>Rules first:</strong> consistent baseline scoring.</li>
+        <li><strong>ML optional:</strong> used only when models are available.</li>
+        <li><strong>AI summary:</strong> optional, powered by your OpenAI key.</li>
+      </ol>
+    </div>
+    <div class="glass-panel">
+      <h3>Outputs</h3>
+      <ul class="check-list">
+        <li>Risk percentages and levels</li>
+        <li>Key trigger signals</li>
+        <li>AI-generated explanation</li>
+        <li>Suggested tests and actions</li>
+      </ul>
+    </div>
   </section>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: "neutral" });
+</script>
 {% endblock %}

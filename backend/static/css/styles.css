@@ -326,6 +326,33 @@ h1, h2, h3, h4, .logo {
   line-height: 1.7;
 }
 
+.flow-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: var(--shadow-soft);
+  overflow: auto;
+}
+.flow-card pre {
+  margin: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.step-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.step-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: var(--shadow-soft);
+}
+
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -662,6 +689,7 @@ pre { background: #f5f8fb; border: 1px solid var(--line); padding: 10px; border-
   .split { grid-template-columns: 1fr; }
   .service-grid { grid-template-columns: 1fr; }
   .service-columns { grid-template-columns: 1fr; }
+  .step-grid { grid-template-columns: 1fr; }
   .form-layout { grid-template-columns: 1fr; }
   .chart-grid { grid-template-columns: 1fr; }
   .stats-grid-hero { grid-template-columns: 1fr 1fr; }
