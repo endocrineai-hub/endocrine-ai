@@ -21,9 +21,9 @@ body {
   font-family: "DM Sans", system-ui, sans-serif;
   color: var(--ink);
   background:
-    radial-gradient(1200px at 85% -10%, rgba(31, 111, 255, 0.12), transparent 60%),
-    radial-gradient(900px at -10% 10%, rgba(17, 191, 174, 0.12), transparent 55%),
-    #f5f8fd;
+    radial-gradient(1200px at 85% -10%, rgba(31, 111, 255, 0.18), transparent 60%),
+    radial-gradient(900px at -10% 10%, rgba(17, 191, 174, 0.16), transparent 55%),
+    #f3f6fb;
 }
 
 h1, h2, h3, h4, .logo {
@@ -81,6 +81,12 @@ h1, h2, h3, h4, .logo {
 
 .container { max-width: 1160px; margin: 0 auto; padding: 0 18px; }
 .section { padding: 32px 0; }
+.section-alt {
+  background: #ffffff;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.section-alt .container { padding: 32px 18px; }
 
 .hero { padding: 80px 0 36px; }
 .hero.compact { padding: 54px 0 24px; }
@@ -93,8 +99,9 @@ h1, h2, h3, h4, .logo {
   position: absolute;
   inset: 12px 24px auto;
   height: 320px;
-  background: linear-gradient(120deg, rgba(31, 111, 255, 0.12), rgba(17, 191, 174, 0.08));
-  border-radius: 32px;
+  background: linear-gradient(120deg, rgba(31, 111, 255, 0.22), rgba(17, 191, 174, 0.16));
+  border-radius: 36px;
+  box-shadow: 0 28px 70px rgba(31, 111, 255, 0.18);
   z-index: -1;
 }
 .hero-grid {
@@ -175,7 +182,7 @@ h1, h2, h3, h4, .logo {
   gap: 10px;
 }
 .visual-metric {
-  background: #f4f7ff;
+  background: #eef4ff;
   border-radius: 16px;
   padding: 12px;
 }
@@ -189,7 +196,7 @@ h1, h2, h3, h4, .logo {
 .visual-bar {
   height: 10px;
   border-radius: 999px;
-  background: #e6edf8;
+  background: #dde7f7;
   overflow: hidden;
 }
 .visual-bar span {
@@ -260,7 +267,7 @@ h1, h2, h3, h4, .logo {
   gap: 14px;
 }
 .metric-card {
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #f4f7ff 100%);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 18px;
@@ -309,7 +316,7 @@ h1, h2, h3, h4, .logo {
   gap: 14px;
 }
 .bento-card {
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
   border: 1px solid var(--line);
   border-radius: 20px;
   padding: 22px;
@@ -444,8 +451,8 @@ input:focus, select:focus, textarea:focus {
 }
 
 .cta-panel {
-  background: linear-gradient(135deg, rgba(31, 111, 255, 0.12), rgba(17, 191, 174, 0.1));
-  border: 1px solid rgba(31, 111, 255, 0.2);
+  background: linear-gradient(135deg, rgba(31, 111, 255, 0.16), rgba(17, 191, 174, 0.14));
+  border: 1px solid rgba(31, 111, 255, 0.22);
   border-radius: 22px;
   padding: 28px;
   display: grid;
