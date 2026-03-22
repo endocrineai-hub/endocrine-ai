@@ -334,6 +334,10 @@ h1, h2, h3, h4, .logo {
   box-shadow: var(--shadow-soft);
   overflow: auto;
 }
+.flow-card svg {
+  max-width: 100%;
+  height: auto;
+}
 .flow-card pre {
   margin: 0;
   background: transparent;

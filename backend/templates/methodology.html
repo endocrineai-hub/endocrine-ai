@@ -112,6 +112,20 @@ flowchart TB
 
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
 <script>
-  mermaid.initialize({ startOnLoad: true, theme: "neutral" });
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "base",
+    themeVariables: {
+      primaryColor: "#ffffff",
+      primaryBorderColor: "#1f6fff",
+      primaryTextColor: "#0b1020",
+      lineColor: "#9db8ff",
+      secondaryColor: "#eef4ff",
+      tertiaryColor: "#f6fbff",
+      fontFamily: "DM Sans, sans-serif",
+      fontSize: "14px",
+      borderRadius: "12",
+    },
+  });
 </script>
 {% endblock %}
