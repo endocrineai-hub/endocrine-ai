@@ -92,15 +92,7 @@ h1, h2, h3, h4, .logo {
   overflow: hidden;
 }
 .hero::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -40px;
-  height: 260px;
-  background: linear-gradient(120deg, rgba(31, 111, 255, 0.12), rgba(17, 191, 174, 0.1));
-  border-radius: 28px;
-  z-index: -1;
+  display: none;
 }
 .hero-grid {
   display: grid;
