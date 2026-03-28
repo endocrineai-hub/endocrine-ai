@@ -6,38 +6,47 @@
   <div class="container">
     <p class="pill">Personal Health Overview</p>
     <h1>Welcome, {{ user_name }}</h1>
-    <p class="lead">Track your endocrine risk scores over time and download your history.</p>
+    <p class="lead">Track endocrine risk scores, run new assessments, and export reports.</p>
     <div class="cta-row">
-      <a class="btn" href="#assessment">New Assessment</a>
-      <a class="btn btn-ghost" href="/dashboard/export.csv">Download CSV</a>
-      <a class="btn btn-ghost" href="/dashboard/export.pdf">Download PDF</a>
+      <a class="btn" href="#assessment">Run New Assessment</a>
+      <a class="btn btn-ghost" href="/dashboard/export.csv">Export CSV</a>
+      <a class="btn btn-ghost" href="/dashboard/export.pdf">Export PDF</a>
     </div>
   </div>
 </section>
 
 <main class="container section">
-  <section class="stats-grid">
-    <article class="stat-card">
+  <section class="dashboard-summary">
+    <article class="summary-card">
       <h3>Total Assessments</h3>
       <p>{{ assessments | length }}</p>
+      <span class="muted">All time</span>
     </article>
-    <article class="stat-card">
+    <article class="summary-card">
       <h3>Latest Overall</h3>
       <p>{{ latest.risk_score if latest else '-' }}%</p>
+      <span class="muted">Most recent score</span>
     </article>
-    <article class="stat-card">
-      <h3>Latest Diabetes</h3>
+    <article class="summary-card">
+      <h3>Diabetes Risk</h3>
       <p>{{ latest.diabetes_risk if latest else '-' }}</p>
+      <span class="muted">Latest assessment</span>
     </article>
-    <article class="stat-card">
-      <h3>Latest Metabolic</h3>
+    <article class="summary-card">
+      <h3>Metabolic Risk</h3>
       <p>{{ latest.metabolic_risk if latest else '-' }}</p>
+      <span class="muted">Latest assessment</span>
     </article>
   </section>
 
-  <section id="assessment" class="card">
-    <h2>New Assessment</h2>
-    <p class="muted">Complete the profile for accurate scoring.</p>
+  <section id="assessment" class="dashboard-panel">
+    <div class="panel-head">
+      <div>
+        <h2>New Assessment</h2>
+        <p class="muted">Complete the profile for accurate scoring.</p>
+      </div>
+      <span class="chip">Assessment Form</span>
+    </div>
     <div class="form-layout">
       <section class="card form-card">
         <form id="assessment-form">
@@ -104,9 +113,14 @@
     </div>
   </section>
 
-  <section id="result-section" class="card hidden">
-    <h2>Assessment Result</h2>
-    <p id="prediction-source" class="muted"></p>
+  <section id="result-section" class="dashboard-panel hidden">
+    <div class="panel-head">
+      <div>
+        <h2>Assessment Result</h2>
+        <p id="prediction-source" class="muted"></p>
+      </div>
+      <span class="chip">Latest Output</span>
+    </div>
     <div id="ai-summary-wrap" class="card ai-box hidden">
       <h3>AI Clinical Summary</h3>
       <p id="ai-summary"></p>
@@ -141,15 +155,27 @@
     </section>
   </section>
 
-  <section class="card">
-    <h2>Risk Trend</h2>
+  <section class="dashboard-panel">
+    <div class="panel-head">
+      <div>
+        <h2>Risk Trend</h2>
+        <p class="muted">Overall risk percentage over time.</p>
+      </div>
+      <span class="chip">Trendline</span>
+    </div>
     <div class="chart-card">
       <canvas id="user-risk-chart" height="180"></canvas>
     </div>
   </section>
 
-  <section class="card">
-    <h2>My Assessments</h2>
+  <section class="dashboard-panel">
+    <div class="panel-head">
+      <div>
+        <h2>My Assessments</h2>
+        <p class="muted">Complete assessment history for your account.</p>
+      </div>
+      <span class="chip">History</span>
+    </div>
     {% if not assessments %}
       <p class="muted">No assessments yet. Run your first assessment to see results here.</p>
     {% endif %}
