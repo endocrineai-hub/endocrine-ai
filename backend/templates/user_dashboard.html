@@ -2,22 +2,52 @@
 {% set title = "My Dashboard" %}
 {% block content %}
 {% set latest = assessments[0] if assessments else None %}
-<section class="hero compact">
-  <div class="container">
-    <p class="pill">Personal Health Overview</p>
-    <h1>Welcome, {{ user_name }}</h1>
-    <p class="lead">Track endocrine risk scores, run new assessments, and export reports.</p>
-    <div class="cta-row">
-      <a class="btn" href="#assessment">Run New Assessment</a>
-      <a class="btn btn-ghost" href="/dashboard/export.csv">Export CSV</a>
-      <a class="btn btn-ghost" href="/dashboard/export.pdf">Export PDF</a>
+<section class="dashboard-hero">
+  <div class="container dashboard-hero-grid">
+    <div class="dashboard-hero-copy">
+      <p class="pill">Personal Health Overview</p>
+      <h1>Welcome, {{ user_name }}</h1>
+      <p class="lead">Track endocrine risk scores, run new assessments, and export reports.</p>
+      <div class="cta-row">
+        <a class="btn" href="#assessment">Run New Assessment</a>
+        <a class="btn btn-ghost" href="/dashboard/export.csv">Export CSV</a>
+        <a class="btn btn-ghost" href="/dashboard/export.pdf">Export PDF</a>
+      </div>
     </div>
+    <aside class="dashboard-hero-card">
+      <div class="panel-head">
+        <div>
+          <h2>Latest Snapshot</h2>
+          <p class="muted">Most recent assessment summary.</p>
+        </div>
+        <span class="chip">Live</span>
+      </div>
+      <div class="snapshot-grid">
+        <div class="snapshot-item">
+          <span>Overall</span>
+          <strong>{{ latest.risk_score if latest else '-' }}%</strong>
+        </div>
+        <div class="snapshot-item">
+          <span>Thyroid</span>
+          <strong>{{ latest.thyroid_risk if latest else '-' }}</strong>
+        </div>
+        <div class="snapshot-item">
+          <span>Diabetes</span>
+          <strong>{{ latest.diabetes_risk if latest else '-' }}</strong>
+        </div>
+        <div class="snapshot-item">
+          <span>Metabolic</span>
+          <strong>{{ latest.metabolic_risk if latest else '-' }}</strong>
+        </div>
+      </div>
+      <p class="muted">Exports and history are available below.</p>
+    </aside>
   </div>
 </section>
 
 <main class="container section">
   <section class="dashboard-summary">
-    <article class="summary-card">
+    <article class="summary-card highlight">
       <h3>Total Assessments</h3>
       <p>{{ assessments | length }}</p>
       <span class="muted">All time</span>
