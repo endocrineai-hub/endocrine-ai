@@ -24,6 +24,23 @@ def admin_required(view_fn):
     return wrapped
 
 
+def _load_admin_dashboard_data():
+    rows_raw = get_dashboard_assessments(limit=200)
+    rows = []
+    for r in rows_raw:
+        item = dict(r)
+        source = "rule_engine"
+        if item.get("result_json"):
+            try:
+                source = json.loads(item["result_json"]).get("prediction_source", "rule_engine")
+            except Exception:
+                source = "rule_engine"
+        item["prediction_source"] = source
+        rows.append(item)
+    stats = build_dashboard_stats(rows)
+    return rows, stats
+
+
 @admin_bp.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
@@ -46,21 +63,33 @@ def admin_logout():
 @admin_bp.route("/admin")
 @admin_required
 def admin_dashboard():
-    rows_raw = get_dashboard_assessments(limit=200)
-    rows = []
-    for r in rows_raw:
-        item = dict(r)
-        source = "rule_engine"
-        if item.get("result_json"):
-            try:
-                source = json.loads(item["result_json"]).get("prediction_source", "rule_engine")
-            except Exception:
-                source = "rule_engine"
-        item["prediction_source"] = source
-        rows.append(item)
-    stats = build_dashboard_stats(rows)
+    _, stats = _load_admin_dashboard_data()
     return render_template(
         "admin_dashboard.html",
+        stats=stats,
+        model_ready=model_available(),
+        openai_ready=openai_available(),
+    )
+
+
+@admin_bp.route("/admin/insights")
+@admin_required
+def admin_insights():
+    _, stats = _load_admin_dashboard_data()
+    return render_template(
+        "admin_insights.html",
+        stats=stats,
+        model_ready=model_available(),
+        openai_ready=openai_available(),
+    )
+
+
+@admin_bp.route("/admin/assessments")
+@admin_required
+def admin_assessments():
+    rows, stats = _load_admin_dashboard_data()
+    return render_template(
+        "admin_assessments.html",
         assessments=rows,
         stats=stats,
         model_ready=model_available(),
@@ -102,4 +131,9 @@ def export_assessments_pdf():
 @admin_required
 def admin_users():
     users = get_all_users()
-    return render_template("admin_users.html", users=users)
+    return render_template(
+        "admin_users.html",
+        users=users,
+        model_ready=model_available(),
+        openai_ready=openai_available(),
+    )

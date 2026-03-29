@@ -1,212 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard | EndocrineAI</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-</head>
-<body class="portal-body">
-  <div class="portal-shell portal-shell-admin">
-    <aside class="portal-sidebar admin-sidebar">
-      <a class="portal-logo" href="/admin">Endocrine<span>AI</span></a>
-      <p class="portal-subtitle">Admin Control</p>
+{% extends "admin_portal_base.html" %}
+{% set title = "Admin Overview | EndocrineAI" %}
+{% set active_tab = "overview" %}
+{% set top_title = "Assessment Admin Dashboard" %}
+{% set top_subtitle = "High-level portal overview with quick actions." %}
 
-      <nav class="portal-nav">
-        <a href="#admin-overview">Overview</a>
-        <a href="#admin-insights">Insights</a>
-        <a href="#admin-table">Assessments</a>
-        <a href="#detail-card">Record Detail</a>
-        <a href="/admin/users">User Directory</a>
-      </nav>
+{% block top_actions %}
+<a class="btn" href="/admin/assessments">Open Assessments</a>
+<a class="btn btn-ghost" href="/admin/users">Manage Users</a>
+{% endblock %}
 
-      <div class="portal-actions">
-        <a class="btn btn-ghost" href="/admin/export.csv">Export CSV</a>
-        <a class="btn btn-ghost" href="/admin/export.pdf">Export PDF</a>
-      </div>
+{% block portal_content %}
+<section class="portal-kpi-grid admin-kpis">
+  <article class="portal-kpi primary">
+    <h3>Total Assessments</h3>
+    <p>{{ stats.total_assessments }}</p>
+    <span>Across all users</span>
+  </article>
+  <article class="portal-kpi"><div class="portal-kpi-head"><h3>Avg Thyroid</h3><strong>{{ stats.avg_scores.thyroid_risk }}%</strong></div></article>
+  <article class="portal-kpi"><div class="portal-kpi-head"><h3>Avg Diabetes</h3><strong>{{ stats.avg_scores.diabetes_risk }}%</strong></div></article>
+  <article class="portal-kpi"><div class="portal-kpi-head"><h3>Avg PCOS</h3><strong>{{ stats.avg_scores.pcos_risk }}%</strong></div></article>
+  <article class="portal-kpi"><div class="portal-kpi-head"><h3>Avg Adrenal</h3><strong>{{ stats.avg_scores.adrenal_risk }}%</strong></div></article>
+  <article class="portal-kpi"><div class="portal-kpi-head"><h3>Avg Metabolic</h3><strong>{{ stats.avg_scores.metabolic_risk }}%</strong></div></article>
+</section>
 
-      <div class="portal-meta">
-        <p class="muted">System Health</p>
-        <p><span class="status-dot {{ 'on' if model_ready else 'off' }}"></span>{{ 'ML Ready' if model_ready else 'Rules Only' }}</p>
-        <p><span class="status-dot {{ 'on' if openai_ready else 'off' }}"></span>{{ 'OpenAI Connected' if openai_ready else 'OpenAI Offline' }}</p>
-      </div>
-
-      <div class="portal-links">
-        <a href="/">Public Site</a>
-        <a href="/admin/logout">Logout</a>
-      </div>
-    </aside>
-
-    <main class="portal-content">
-      <header id="admin-overview" class="portal-topbar">
-        <div>
-          <p class="eyebrow">Clinical Command Center</p>
-          <h1>Assessment Admin Dashboard</h1>
-          <p class="muted">Monitor risk patterns, review complete records, and export reports.</p>
-        </div>
-        <div class="portal-topbar-actions">
-          <a class="btn" href="/admin/users">Manage Users</a>
-          <a class="btn btn-ghost" href="/admin/export.pdf">Download PDF</a>
-        </div>
-      </header>
-
-      <section class="portal-kpi-grid admin-kpis">
-        <article class="portal-kpi primary">
-          <h3>Total Assessments</h3>
-          <p>{{ stats.total_assessments }}</p>
-          <span>Across all users</span>
-        </article>
-        <article class="portal-kpi"><div class="portal-kpi-head"><h3>Avg Thyroid</h3><strong>{{ stats.avg_scores.thyroid_risk }}%</strong></div></article>
-        <article class="portal-kpi"><div class="portal-kpi-head"><h3>Avg Diabetes</h3><strong>{{ stats.avg_scores.diabetes_risk }}%</strong></div></article>
-        <article class="portal-kpi"><div class="portal-kpi-head"><h3>Avg PCOS</h3><strong>{{ stats.avg_scores.pcos_risk }}%</strong></div></article>
-        <article class="portal-kpi"><div class="portal-kpi-head"><h3>Avg Adrenal</h3><strong>{{ stats.avg_scores.adrenal_risk }}%</strong></div></article>
-        <article class="portal-kpi"><div class="portal-kpi-head"><h3>Avg Metabolic</h3><strong>{{ stats.avg_scores.metabolic_risk }}%</strong></div></article>
-      </section>
-
-      <section id="admin-insights" class="portal-panel">
-        <div class="portal-panel-head">
-          <div>
-            <h2>System Insights</h2>
-            <p class="muted">Operational and clinical performance indicators.</p>
-          </div>
-          <span class="chip">Live Monitoring</span>
-        </div>
-
-        <div class="admin-panels">
-          <section class="card">
-            <div class="insight-grid">
-              <article class="insight-item">
-                <h3>Model Status</h3>
-                <p><span class="status-dot {{ 'on' if model_ready else 'off' }}"></span>{{ 'ML Model Active' if model_ready else 'Rule Engine Active' }}</p>
-              </article>
-              <article class="insight-item">
-                <h3>OpenAI Status</h3>
-                <p><span class="status-dot {{ 'on' if openai_ready else 'off' }}"></span>{{ 'Connected' if openai_ready else 'Not Configured' }}</p>
-              </article>
-              <article class="insight-item">
-                <h3>Top Risk Domain</h3>
-                <p>{{ (stats.top_risk_domain or 'n/a').replace('_risk', '').title() }} ({{ stats.top_risk_avg }}%)</p>
-              </article>
-              <article class="insight-item">
-                <h3>Recent 10 Avg (Diabetes)</h3>
-                <p>{{ stats.recent_10_avg.diabetes_risk }}%</p>
-              </article>
-              <article class="insight-item">
-                <h3>Recent 10 Avg (Thyroid)</h3>
-                <p>{{ stats.recent_10_avg.thyroid_risk }}%</p>
-              </article>
-            </div>
-          </section>
-
-          <section class="card">
-            <h3>High-Risk Distribution (>=65%)</h3>
-            <div class="risk-bars">
-              <div class="risk-bar-row">
-                <span>Thyroid</span>
-                <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.thyroid_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
-                <strong>{{ stats.high_risk_counts.thyroid_risk }}</strong>
-              </div>
-              <div class="risk-bar-row">
-                <span>Diabetes</span>
-                <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.diabetes_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
-                <strong>{{ stats.high_risk_counts.diabetes_risk }}</strong>
-              </div>
-              <div class="risk-bar-row">
-                <span>PCOS</span>
-                <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.pcos_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
-                <strong>{{ stats.high_risk_counts.pcos_risk }}</strong>
-              </div>
-              <div class="risk-bar-row">
-                <span>Adrenal</span>
-                <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.adrenal_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
-                <strong>{{ stats.high_risk_counts.adrenal_risk }}</strong>
-              </div>
-              <div class="risk-bar-row">
-                <span>Metabolic</span>
-                <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.metabolic_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
-                <strong>{{ stats.high_risk_counts.metabolic_risk }}</strong>
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <section id="admin-table" class="portal-panel">
-        <div class="portal-panel-head">
-          <div>
-            <h2>Recent Assessments</h2>
-            <p class="muted">Search and inspect complete risk records.</p>
-          </div>
-          <input id="table-search" class="table-search" type="text" placeholder="Search patient, gender, source, risk..." />
-        </div>
-
-        <div class="table-wrap">
-          <table id="assessments-table">
-            <thead>
-              <tr>
-                <th>ID</th><th>Timestamp</th><th>Patient</th><th>Age</th><th>Gender</th><th>BMI</th>
-                <th>Source</th><th>Risk Score</th><th>Thyroid</th><th>Diabetes</th><th>PCOS</th><th>Adrenal</th><th>Metabolic</th><th>Symptoms</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for a in assessments %}
-              <tr class="row-click" data-row='{{ a | tojson | safe }}'>
-                <td>{{ a.id }}</td><td>{{ a.created_at }}</td><td>{{ a.patient_name }}</td><td>{{ a.age }}</td>
-                <td>{{ a.gender }}</td><td>{{ a.bmi }}</td>
-                <td><span class="source-pill {{ 'source-ml' if a.prediction_source == 'ml_model' else 'source-rule' }}">{{ a.prediction_source }}</span></td>
-                <td><span class="risk-pill">{{ a.risk_score if a.risk_score is not none else '-' }}</span></td>
-                <td><span class="risk-pill">{{ a.thyroid_risk }}</span></td>
-                <td><span class="risk-pill">{{ a.diabetes_risk }}</span></td>
-                <td><span class="risk-pill">{{ a.pcos_risk }}</span></td>
-                <td><span class="risk-pill">{{ a.adrenal_risk }}</span></td>
-                <td><span class="risk-pill">{{ a.metabolic_risk }}</span></td>
-                <td>{{ a.symptoms or '-' }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="portal-panel" id="detail-card">
-        <div class="portal-panel-head">
-          <div>
-            <h2>Selected Assessment Detail</h2>
-            <p class="muted">Click a row above to inspect complete JSON payload.</p>
-          </div>
-          <span class="chip">Record View</span>
-        </div>
-        <pre id="detail-json">Click a table row to inspect complete record JSON.</pre>
-      </section>
-    </main>
+<section class="portal-panel">
+  <div class="portal-panel-head">
+    <div>
+      <h2>System Status</h2>
+      <p class="muted">Current platform and model readiness snapshot.</p>
+    </div>
+    <span class="chip">Live Monitoring</span>
   </div>
-
-  <script>
-    const searchInput = document.getElementById("table-search");
-    const table = document.getElementById("assessments-table");
-    const detailBox = document.getElementById("detail-json");
-
-    if (searchInput && table) {
-      searchInput.addEventListener("input", () => {
-        const q = searchInput.value.toLowerCase().trim();
-        table.querySelectorAll("tbody tr").forEach((row) => {
-          row.style.display = row.textContent.toLowerCase().includes(q) ? "" : "none";
-        });
-      });
-    }
-
-    if (table && detailBox) {
-      table.querySelectorAll("tbody tr.row-click").forEach((row) => {
-        row.addEventListener("click", () => {
-          const payload = row.getAttribute("data-row");
-          try {
-            detailBox.textContent = JSON.stringify(JSON.parse(payload), null, 2);
-          } catch {
-            detailBox.textContent = payload || "No data";
-          }
-        });
-      });
-    }
-  </script>
-</body>
-</html>
+  <div class="quick-actions-grid">
+    <article class="quick-action-card">
+      <h3>Model Status</h3>
+      <p>{{ 'ML Model Active' if model_ready else 'Rule Engine Active' }}</p>
+    </article>
+    <article class="quick-action-card">
+      <h3>OpenAI Status</h3>
+      <p>{{ 'Connected' if openai_ready else 'Not Configured' }}</p>
+    </article>
+    <article class="quick-action-card">
+      <h3>Top Risk Domain</h3>
+      <p>{{ (stats.top_risk_domain or 'n/a').replace('_risk', '').title() }} ({{ stats.top_risk_avg }}%)</p>
+    </article>
+  </div>
+</section>
+{% endblock %}

@@ -1,61 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Users | EndocrineAI</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-</head>
-<body class="portal-body">
-  <div class="portal-shell portal-shell-admin">
-    <aside class="portal-sidebar admin-sidebar">
-      <a class="portal-logo" href="/admin">Endocrine<span>AI</span></a>
-      <p class="portal-subtitle">Admin Control</p>
+{% extends "admin_portal_base.html" %}
+{% set title = "Admin Users | EndocrineAI" %}
+{% set active_tab = "users" %}
+{% set top_title = "Registered Users" %}
+{% set top_subtitle = "Manage and review user accounts across the platform." %}
 
-      <nav class="portal-nav">
-        <a href="/admin">Dashboard</a>
-        <a href="/admin/users">User Directory</a>
-      </nav>
+{% block top_actions %}
+<span class="chip">Total Users: {{ users | length }}</span>
+<a class="btn btn-ghost" href="/admin">Back to Overview</a>
+{% endblock %}
 
-      <div class="portal-actions">
-        <a class="btn btn-ghost" href="/admin/export.csv">Export CSV</a>
-        <a class="btn btn-ghost" href="/admin/export.pdf">Export PDF</a>
-      </div>
-
-      <div class="portal-links">
-        <a href="/">Public Site</a>
-        <a href="/admin/logout">Logout</a>
-      </div>
-    </aside>
-
-    <main class="portal-content">
-      <header class="portal-topbar">
-        <div>
-          <p class="eyebrow">User Directory</p>
-          <h1>Registered Users</h1>
-          <p class="muted">View account records in one place.</p>
-        </div>
-        <div class="portal-topbar-actions">
-          <span class="chip">Total Users: {{ users | length }}</span>
-          <a class="btn btn-ghost" href="/admin">Back Dashboard</a>
-        </div>
-      </header>
-
-      <section class="portal-panel">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>ID</th><th>Name</th><th>Email</th><th>Created</th></tr>
-            </thead>
-            <tbody>
-              {% for u in users %}
-              <tr><td>{{ u.id }}</td><td>{{ u.name }}</td><td>{{ u.email }}</td><td>{{ u.created_at }}</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </main>
+{% block portal_content %}
+<section class="portal-panel">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Name</th><th>Email</th><th>Created</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr><td>{{ u.id }}</td><td>{{ u.name }}</td><td>{{ u.email }}</td><td>{{ u.created_at }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
-</body>
-</html>
+</section>
+{% endblock %}

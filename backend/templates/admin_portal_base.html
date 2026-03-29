@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title or 'Admin Portal | EndocrineAI' }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body class="portal-body">
+  <div class="portal-shell portal-shell-admin">
+    <aside class="portal-sidebar admin-sidebar">
+      <a class="portal-logo" href="/admin">Endocrine<span>AI</span></a>
+      <p class="portal-subtitle">Admin Control</p>
+
+      <nav class="portal-nav">
+        <a class="{{ 'active' if active_tab == 'overview' else '' }}" href="/admin">Overview</a>
+        <a class="{{ 'active' if active_tab == 'insights' else '' }}" href="/admin/insights">Insights</a>
+        <a class="{{ 'active' if active_tab == 'assessments' else '' }}" href="/admin/assessments">Assessments</a>
+        <a class="{{ 'active' if active_tab == 'users' else '' }}" href="/admin/users">Users</a>
+      </nav>
+
+      <div class="portal-actions">
+        <a class="btn btn-ghost" href="/admin/export.csv">Export CSV</a>
+        <a class="btn btn-ghost" href="/admin/export.pdf">Export PDF</a>
+      </div>
+
+      <div class="portal-meta">
+        <p class="muted">System Health</p>
+        <p><span class="status-dot {{ 'on' if model_ready else 'off' }}"></span>{{ 'ML Ready' if model_ready else 'Rules Only' }}</p>
+        <p><span class="status-dot {{ 'on' if openai_ready else 'off' }}"></span>{{ 'OpenAI Connected' if openai_ready else 'OpenAI Offline' }}</p>
+      </div>
+
+      <div class="portal-links">
+        <a href="/">Public Site</a>
+        <a href="/admin/logout">Logout</a>
+      </div>
+    </aside>
+
+    <main class="portal-content">
+      <header class="portal-topbar">
+        <div>
+          <p class="eyebrow">{{ top_eyebrow or 'Clinical Command Center' }}</p>
+          <h1>{{ top_title or 'Assessment Admin Dashboard' }}</h1>
+          <p class="muted">{{ top_subtitle or 'Monitor risk patterns, records, and operational status.' }}</p>
+        </div>
+        <div class="portal-topbar-actions">
+          {% block top_actions %}{% endblock %}
+        </div>
+      </header>
+
+      {% block portal_content %}{% endblock %}
+    </main>
+  </div>
+  {% block page_scripts %}{% endblock %}
+</body>
+</html>

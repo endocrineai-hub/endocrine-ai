@@ -1,0 +1,80 @@
+{% extends "admin_portal_base.html" %}
+{% set title = "Admin Insights | EndocrineAI" %}
+{% set active_tab = "insights" %}
+{% set top_title = "Clinical Insights" %}
+{% set top_subtitle = "System indicators and high-risk distribution across domains." %}
+
+{% block top_actions %}
+<a class="btn btn-ghost" href="/admin/assessments">View Assessments</a>
+{% endblock %}
+
+{% block portal_content %}
+<section class="portal-panel">
+  <div class="portal-panel-head">
+    <div>
+      <h2>System Insights</h2>
+      <p class="muted">Operational insights based on latest assessments.</p>
+    </div>
+    <span class="chip">Insights</span>
+  </div>
+  <div class="insight-grid">
+    <article class="insight-item">
+      <h3>Model Status</h3>
+      <p><span class="status-dot {{ 'on' if model_ready else 'off' }}"></span>{{ 'ML Model Active' if model_ready else 'Rule Engine Active' }}</p>
+    </article>
+    <article class="insight-item">
+      <h3>OpenAI Status</h3>
+      <p><span class="status-dot {{ 'on' if openai_ready else 'off' }}"></span>{{ 'Connected' if openai_ready else 'Not Configured' }}</p>
+    </article>
+    <article class="insight-item">
+      <h3>Top Risk Domain</h3>
+      <p>{{ (stats.top_risk_domain or 'n/a').replace('_risk', '').title() }} ({{ stats.top_risk_avg }}%)</p>
+    </article>
+    <article class="insight-item">
+      <h3>Recent 10 Avg (Diabetes)</h3>
+      <p>{{ stats.recent_10_avg.diabetes_risk }}%</p>
+    </article>
+    <article class="insight-item">
+      <h3>Recent 10 Avg (Thyroid)</h3>
+      <p>{{ stats.recent_10_avg.thyroid_risk }}%</p>
+    </article>
+  </div>
+</section>
+
+<section class="portal-panel">
+  <div class="portal-panel-head">
+    <div>
+      <h2>High-Risk Distribution (>=65%)</h2>
+      <p class="muted">Count and ratio of high-risk records per domain.</p>
+    </div>
+    <span class="chip">Risk Map</span>
+  </div>
+  <div class="risk-bars">
+    <div class="risk-bar-row">
+      <span>Thyroid</span>
+      <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.thyroid_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
+      <strong>{{ stats.high_risk_counts.thyroid_risk }}</strong>
+    </div>
+    <div class="risk-bar-row">
+      <span>Diabetes</span>
+      <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.diabetes_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
+      <strong>{{ stats.high_risk_counts.diabetes_risk }}</strong>
+    </div>
+    <div class="risk-bar-row">
+      <span>PCOS</span>
+      <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.pcos_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
+      <strong>{{ stats.high_risk_counts.pcos_risk }}</strong>
+    </div>
+    <div class="risk-bar-row">
+      <span>Adrenal</span>
+      <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.adrenal_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
+      <strong>{{ stats.high_risk_counts.adrenal_risk }}</strong>
+    </div>
+    <div class="risk-bar-row">
+      <span>Metabolic</span>
+      <div class="risk-bar"><em style="width: {{ (stats.high_risk_counts.metabolic_risk / (stats.total_assessments if stats.total_assessments else 1) * 100) | round(1) }}%;"></em></div>
+      <strong>{{ stats.high_risk_counts.metabolic_risk }}</strong>
+    </div>
+  </div>
+</section>
+{% endblock %}
