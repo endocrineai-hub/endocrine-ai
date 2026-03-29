@@ -1,251 +1,417 @@
 # AI-Driven Endocrine Risk Analysis
 
-A complete healthcare web project with:
+EndocrineAI is a full-stack preventive healthcare platform for early endocrine and metabolic risk screening.
+It combines clinical lifestyle logic, optional ML inference, lab-marker extraction, AI summaries, user portal workflows, and an admin command center.
 
-- Public website for endocrine risk screening
-- AI-based endocrine risk engine
-- Lab marker extraction from raw report text
-- Admin login and dashboard
-- Persistent assessment storage (SQLite locally, Neon Postgres in production)
-- JSON APIs for integration
+## 1) What This Product Does
 
-## Features
+- Predicts early risk trends for:
+  - Thyroid dysfunction
+  - Insulin resistance / Type 2 diabetes risk
+  - PCOS risk (for female profiles)
+  - Adrenal stress risk
+  - Metabolic syndrome risk
+- Extracts marker values from lab report text (`TSH`, `T3`, `T4`, `HbA1c`, `Insulin`, `Cortisol`, `Cholesterol`, `Fasting glucose`)
+- Produces structured JSON output for integration
+- Supports user login, assessment history, trends, and exports
+- Supports admin analytics, user management, user edit, and exports
+- Supports AI summary/chat with OpenAI when key is configured
 
-### Public Website
-- Collects patient profile (age, gender, BMI, stress, sleep, diet, exercise, family history, symptoms)
-- Accepts optional lab report text
-- Returns structured endocrine risk assessment with:
-  - Risk scores (%): thyroid, diabetes, pcos, adrenal, metabolic
-  - Risk level: Low/Moderate/High
-  - Key triggers
-  - Explanation
-  - Recommended actions
-  - Suggested tests
+Important: This is clinical decision support, not a diagnosis system.
 
-### Step-3 Lab Marker Extraction
-Extracts markers from report text:
-- TSH
-- T3
-- T4
-- HbA1c
-- Insulin
-- Cortisol
-- Cholesterol
-- Fasting glucose
+## 2) Product Batches (Implementation Phases)
 
-### Step-4 Correlation Logic
-- Poor sleep + high stress -> adrenal risk increase
-- High BMI + diabetes family history -> diabetes risk increase
-- Irregular cycles + insulin issues -> PCOS risk increase (female)
+### Batch 1: Core Intake + Auth
+- Public website and forms
+- User registration/login
+- Session handling
+- Admin login
 
-### Admin Panel
-- Login page
-- Dashboard with saved assessments and risk outcomes
-- Session-based authentication
+### Batch 2: Risk Engine + Marker Parsing
+- Rule-based endocrine risk engine
+- Lab text parser
+- JSON risk schema output
 
-Default admin credentials (change in production):
-- Username: `admin`
-- Password: `admin123`
+### Batch 3: User & Admin Portals
+- User dashboard with dedicated pages:
+  - Overview
+  - New assessment
+  - Risk trends
+  - History
+- Admin dashboard with dedicated pages:
+  - Overview
+  - Insights
+  - Assessments
+  - Users (preview/edit/import)
 
-## Project Structure
+### Batch 4: AI Layer
+- OpenAI-generated assessment summary
+- OpenAI-based user Q&A (`/api/chat`)
+- Safe fallback summary and fallback chat logic
 
-- `backend/app.py` app factory and blueprint registration
-- `backend/config.py` environment-based configuration
-- `backend/routes/` modular route groups (`public`, `admin`, `api`)
-- `backend/services/` risk and chat services
-- `backend/models/` DB initialization and assessment persistence
-- `backend/risk_engine.py` core risk logic (shared by service wrapper)
-- `backend/templates/` website and admin templates
-- `backend/static/` CSS and JS assets
-- `backend/data/app.db` SQLite database (auto-created)
-- `ml/` model training and evaluation scaffold
-- `docs/` architecture/flow/API/report notes
-- `tests/` baseline tests for API and risk logic
-- `scripts/` utility scripts
-- `endocrine_risk_analyzer.py` original CLI analyzer
-- `run.py` app entrypoint
+### Batch 5: ML Training + Inference
+- Data preparation pipeline
+- Model training scripts
+- Model artifacts auto-loaded for risk prediction fallback chain
 
-## Run Locally
+## 3) End-to-End Flow
+
+1. User submits profile and optional lab text.
+2. Backend validates profile fields.
+3. Lab parser extracts endocrine markers.
+4. Rule engine calculates risk scores + levels + triggers.
+5. Optional ML model can override risk score block (`use_ml=true`).
+6. Optional OpenAI summary generates concise explanation.
+7. Assessment is saved to DB with user linkage (if logged in).
+8. User dashboard shows trends/history; admin sees platform analytics.
+
+## 4) Tech Stack
+
+- Backend: Flask
+- Frontend: Jinja templates + CSS + JS
+- DB:
+  - Local: SQLite (`backend/data/app.db`)
+  - Production: PostgreSQL (Neon or any managed Postgres)
+- AI: OpenAI API (optional)
+- ML: scikit-learn + pandas + numpy + joblib
+- Server: gunicorn (for deployment)
+
+## 5) Project Structure
+
+```text
+backend/
+  app.py
+  config.py
+  routes/
+    public_routes.py
+    auth_routes.py
+    admin_routes.py
+    api_routes.py
+  models/
+    db.py
+    user_model.py
+    assessment_model.py
+    admin_model.py
+  services/
+    risk_engine.py
+    model_inference.py
+    openai_service.py
+    summary_service.py
+    chat_service.py
+  templates/
+  static/
+ml/
+  data/
+  training/
+  artifacts/
+scripts/
+tests/
+run.py
+api/index.py
+render.yaml
+vercel.json
+```
+
+## 6) API Reference
+
+Base URL (local): `http://127.0.0.1:5000`
+
+### 6.1 POST `/api/assess`
+Creates endocrine risk analysis from profile + optional labs.
+
+Request body:
+```json
+{
+  "patient_name": "Ravikant",
+  "profile": {
+    "Age": 26,
+    "Gender": "Male",
+    "BMI": 29.6,
+    "Sleep quality": "Average",
+    "Stress level": "Moderate",
+    "Exercise frequency": "Low",
+    "Diet type": "High sugar",
+    "Family history": "Diabetes",
+    "Symptoms": ["Migraine", "Skin itching"]
+  },
+  "lab_report_text": "TSH: 3.1, HbA1c: 5.9, Fasting Glucose: 108",
+  "use_ml": true
+}
+```
+
+Success response (shape):
+```json
+{
+  "status": "success",
+  "extracted_markers": {
+    "tsh": 3.1,
+    "hba1c": 5.9,
+    "fasting_glucose": 108
+  },
+  "assessment": {
+    "risk_scores": {
+      "thyroid": "20%",
+      "diabetes": "64%",
+      "pcos": "0%",
+      "adrenal": "35%",
+      "metabolic": "58%"
+    },
+    "risk_level": {
+      "thyroid": "Low",
+      "diabetes": "Moderate",
+      "pcos": "Low",
+      "adrenal": "Moderate",
+      "metabolic": "Moderate"
+    },
+    "key_triggers": [],
+    "explanation": "...",
+    "recommended_actions": [],
+    "suggested_tests": [],
+    "prediction_source": "ml_model",
+    "ai_summary": "...",
+    "ai_enabled": true
+  }
+}
+```
+
+### 6.2 POST `/api/extract-markers`
+Extracts medical markers from raw lab text.
+
+Request:
+```json
+{
+  "lab_report_text": "TSH: 4.8, T3: 1.2, T4: 8.6, HbA1c: 6.1"
+}
+```
+
+Response:
+```json
+{
+  "status": "success",
+  "extracted_markers": {
+    "tsh": 4.8,
+    "t3": 1.2,
+    "t4": 8.6,
+    "hba1c": 6.1
+  }
+}
+```
+
+### 6.3 POST `/api/chat`
+Chat-based clarification using assessment context.
+
+Request:
+```json
+{
+  "message": "What should I do first?",
+  "assessment": {
+    "risk_scores": {
+      "diabetes": "72%",
+      "metabolic": "69%"
+    }
+  }
+}
+```
+
+Response:
+```json
+{
+  "status": "success",
+  "reply": "...",
+  "disclaimer": "This is preventive risk guidance, not a medical diagnosis."
+}
+```
+
+### 6.4 GET `/api/model-status`
+Returns model and OpenAI availability.
+
+### 6.5 GET `/api/health`
+Service health check.
+
+### 6.6 GET `/api/admin/assessments`
+Admin-session protected assessments listing.
+
+## 7) Local Setup (macOS)
+
+Prerequisites:
+- Python 3.11+
+- pip
 
 ```bash
 cd "/Users/ravikantupadhyay/Documents/GitHub/AI-Driven Endocrine Risk Analysis"
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r backend/requirements.txt
+```
+
+Set environment variables:
+```bash
+export SECRET_KEY="change-me"
+export ADMIN_USERNAME="admin"
+export ADMIN_PASSWORD="admin123"
+# Optional
+export OPENAI_API_KEY="your_openai_key"
+export OPENAI_MODEL="gpt-4o-mini"
+# Optional (production-like local DB)
+# export DATABASE_URL="postgresql://..."
+```
+
+Run:
+```bash
 python run.py
 ```
 
 Open:
-- Website: [http://127.0.0.1:5000](http://127.0.0.1:5000)
-- Admin login: [http://127.0.0.1:5000/admin/login](http://127.0.0.1:5000/admin/login)
+- Public site: `http://127.0.0.1:5000`
+- User login: `http://127.0.0.1:5000/login`
+- Admin login: `http://127.0.0.1:5000/admin/login`
 
-## API Endpoints
+## 8) Local Setup (Windows PowerShell)
 
-### `POST /api/assess`
-Request:
-```json
-{
-  "patient_name": "Anita",
-  "profile": {
-    "Age": 31,
-    "Gender": "Female",
-    "BMI": 29.2,
-    "Sleep quality": "Poor",
-    "Stress level": "High",
-    "Exercise frequency": "Low",
-    "Diet type": "High sugar processed diet",
-    "Family history": "Mother: Type 2 Diabetes",
-    "Symptoms": ["Irregular cycles", "Fatigue"]
-  },
-  "lab_report_text": "TSH: 5.2 ..."
-}
+Prerequisites:
+- Python 3.11+ (installed and in PATH)
+
+```powershell
+cd "C:\path\to\AI-Driven Endocrine Risk Analysis"
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r backend/requirements.txt
 ```
 
-### `POST /api/extract-markers`
-Request:
-```json
-{
-  "lab_report_text": "TSH: 5.2, HbA1c: 6.0, Fasting Glucose: 112"
-}
+Set env vars:
+```powershell
+$env:SECRET_KEY="change-me"
+$env:ADMIN_USERNAME="admin"
+$env:ADMIN_PASSWORD="admin123"
+# Optional
+$env:OPENAI_API_KEY="your_openai_key"
+$env:OPENAI_MODEL="gpt-4o-mini"
+# Optional
+# $env:DATABASE_URL="postgresql://..."
 ```
 
-### `POST /api/chat`
-Request:
-```json
-{
-  "message": "What is my highest risk?",
-  "assessment": {
-    "risk_scores": {
-      "thyroid": "60%",
-      "diabetes": "72%"
-    }
-  }
-}
+Run:
+```powershell
+py run.py
 ```
 
-### `GET /api/model-status`
-Returns `model_available` and `openai_available`.
+## 9) Dataset + Model Training
 
-## Tests
-
-```bash
-python3 -m pytest tests -q
-```
-
-## Dataset Preparation (Your Database + Public Sources)
-
-Use your own database export or table to create a unified training dataset:
-
+### 9.1 Prepare unified dataset
+From CSV:
 ```bash
 python3 scripts/prepare_dataset.py --csv ml/data/raw/local_db_export.csv --source local_db
 ```
 
-Or from SQLite directly:
-
+From SQLite table:
 ```bash
 python3 scripts/prepare_dataset.py --sqlite /absolute/path/to/your.db --table your_table_name --source local_db
 ```
 
-Output file:
+Output:
 - `ml/data/processed/unified_endocrine_dataset.csv`
 
-Source links are documented in:
-- `ml/data/data_sources.md`
-
-### Quick Demo Dataset (for immediate college demo)
-
+### 9.2 Generate demo dataset quickly
 ```bash
 python3 scripts/generate_demo_training_data.py
 ```
 
-## Train Models (Classical ML)
-
+### 9.3 Train and evaluate
 ```bash
 python3 ml/training/train_classical_models.py
 python3 ml/training/evaluate_models.py
 ```
 
-This saves:
+Artifacts:
 - `ml/artifacts/*_best_model.pkl`
 - `ml/artifacts/metrics.json`
 
-When artifacts exist, `/api/assess` automatically uses ML prediction (`prediction_source: "ml_model"`).  
-If artifacts are missing, it falls back to rule engine (`prediction_source: "rule_engine"`).
+## 10) Deployment Guide
 
-## OpenAI Integration (AI Summary + AI Chat)
+## 10.1 Render (Recommended Full Deployment)
 
-Set your key before running:
+This repository includes a ready `render.yaml`.
 
-```bash
-export OPENAI_API_KEY="your_api_key_here"
-export OPENAI_MODEL="gpt-4o-mini"
-python3 run.py
-```
-
-When enabled:
-- `/api/assess` includes `ai_summary`
-- `/api/chat` responds with OpenAI-powered answer
-- `/api/model-status` shows `openai_available: true`
-
-## Deploy (Neon + Render + Vercel)
-
-### Important: Current App Architecture
-
-This repository is currently a **Flask monolith**:
-- Frontend (Jinja templates + static assets)
-- Backend APIs
-- Auth/admin routes
-
-So if you deploy this repo on both Render and Vercel, each platform is trying to run app code independently.
-
-### Why Vercel asks for env vars again?
-
-Render and Vercel do **not** share secrets.  
-Each platform has its own environment-variable store.
-
-Also, because this repo includes `vercel.json` + `api/index.py`, Vercel treats it as a Python backend deployment and asks for backend env vars (`DATABASE_URL`, `SECRET_KEY`, etc.).
-
-### Recommended Option A (Use Render + Neon)
-
-1. Create a Neon project/database.
-2. Copy the connection string:
-   - `postgresql://USER:PASSWORD@HOST/DBNAME?sslmode=require`
-3. In Render, deploy this repo using [`render.yaml`](render.yaml).
-4. Set env vars in Render:
-   - `DATABASE_URL`
-   - `ADMIN_PASSWORD`
+Steps:
+1. Push repo to GitHub.
+2. In Render, create new Web Service from this repo.
+3. Render will read `render.yaml`:
+   - Build: `pip install -r backend/requirements.txt`
+   - Start: `gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120`
+4. Set environment values in Render dashboard:
    - `SECRET_KEY`
+   - `ADMIN_USERNAME`
+   - `ADMIN_PASSWORD`
+   - `DATABASE_URL` (recommended for persistent production data)
    - `OPENAI_API_KEY` (optional)
-5. Keep Vercel unused for this repo (or remove `vercel.json` if not needed).
+   - `OPENAI_MODEL` (optional)
+5. Deploy.
 
-### Option B (Vercel Frontend + Render Backend)
+Note: if `DATABASE_URL` is missing, app uses local SQLite. For production use Postgres.
 
-Use this only after splitting the frontend and backend into separate deployable apps.
+## 10.2 Vercel Deployment
 
-For split deployment:
-1. Deploy backend API on Render (with Neon `DATABASE_URL`).
-2. Deploy frontend-only app on Vercel.
-3. In Vercel, set only frontend env vars (example: `API_BASE_URL=https://your-render-service.onrender.com`).
-4. Do not deploy Flask backend code on Vercel in that setup.
+Current `vercel.json` deploys Python entrypoint `api/index.py`.
 
-### Notes
+Important:
+- Vercel serverless filesystem is ephemeral for local DB writes.
+- For stable production data on Vercel, set `DATABASE_URL` to hosted Postgres.
 
-- If `DATABASE_URL` is not set, the app uses local SQLite (`backend/data/app.db`).
-- With `DATABASE_URL` set to Neon, tables are auto-created at startup.
-- For production, always change default admin credentials.
+Steps:
+1. Import repo in Vercel.
+2. Keep framework as "Other" (Vercel Python runtime from `vercel.json`).
+3. Add Environment Variables:
+   - `SECRET_KEY`
+   - `ADMIN_USERNAME`
+   - `ADMIN_PASSWORD`
+   - `DATABASE_URL` (strongly recommended)
+   - `OPENAI_API_KEY` (optional)
+   - `OPENAI_MODEL` (optional)
+4. Deploy.
 
-## CLI Steps (Existing)
+## 10.3 Render + Vercel Split (Optional Advanced)
+
+Recommended only if you split frontend and backend repos/apps:
+- Render: backend API + DB
+- Vercel: frontend-only app
+
+## 11) Admin Notes
+
+Default admin is auto-created from env values on startup.
+
+User management page supports:
+- User preview
+- Edit name/email/password
+- Import users from patient records (for orphan assessments)
+
+## 12) Testing
 
 ```bash
-python3 endocrine_risk_analyzer.py step-2 --profile sample_profile.json
-python3 endocrine_risk_analyzer.py step-3 --lab-text sample_lab_report.txt
-python3 endocrine_risk_analyzer.py step-4 --profile sample_profile.json --markers-json markers.json
+python3 -m pytest -q
 ```
 
-## Push to GitHub
+## 13) Troubleshooting
 
-```bash
-git add .
-git commit -m "Build full endocrine risk web app with admin and APIs"
-git push
-```
+### Admin users show `0`
+- Ensure you registered users from `/signup`, or
+- In Admin -> Users, click `Import Users From Patient Records`.
+- If on Vercel without `DATABASE_URL`, data may reset between invocations.
+
+### AI summary/chat not working
+- Ensure `OPENAI_API_KEY` is set.
+- Check `/api/model-status` for `openai_available`.
+
+### Model not used
+- Ensure model artifacts exist in `ml/artifacts/`.
+- Send `"use_ml": true` in `/api/assess` payload.
+
+## 14) Security Checklist
+
+- Change default admin password in production.
+- Keep `SECRET_KEY` private and strong.
+- Never commit API keys.
+- Prefer managed Postgres over SQLite for production.
+
+## 15) License / Academic Usage
+
+This repository is suitable for college project demonstrations and can be extended into a production architecture with stronger auth, RBAC, audit logging, and compliance controls.
