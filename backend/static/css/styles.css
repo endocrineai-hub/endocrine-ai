@@ -957,15 +957,15 @@ pre { background: #f5f8fb; border: 1px solid var(--line); padding: 10px; border-
 }
 .workspace-grid {
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
   gap: 14px;
 }
-.workspace-main {
+.workspace-col {
   min-width: 0;
-}
-.workspace-side {
   display: grid;
   gap: 14px;
+}
+.workspace-col-side {
   align-content: start;
 }
 .side-note h3 {
