@@ -19,12 +19,17 @@
       </div>
       <span class="chip">Directory</span>
     </div>
+    <form method="post" class="inline-action-form">
+      <input type="hidden" name="action" value="import_from_assessments" />
+      <button class="btn btn-ghost btn-small" type="submit">Import Users From Patient Records</button>
+    </form>
     <div class="table-wrap">
       <table>
         <thead>
           <tr><th>ID</th><th>Name</th><th>Email</th><th>Assessments</th><th>Created</th><th>Action</th></tr>
         </thead>
         <tbody>
+          {% if users %}
           {% for u in users %}
           <tr>
             <td>{{ u.id }}</td>
@@ -35,6 +40,14 @@
             <td><a class="btn btn-ghost btn-small" href="/admin/users?user_id={{ u.id }}">Preview</a></td>
           </tr>
           {% endfor %}
+          {% else %}
+          <tr>
+            <td colspan="6" class="muted">
+              No users found in current database. Create users from Register page or click
+              "Import Users From Patient Records".
+            </td>
+          </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>
@@ -77,6 +90,7 @@
 
       {% if selected_user %}
       <form method="post" class="portal-form">
+        <input type="hidden" name="action" value="update_user" />
         <input type="hidden" name="user_id" value="{{ selected_user.id }}" />
         <label>Name
           <input name="name" value="{{ selected_user.name }}" required />

@@ -1,3 +1,6 @@
+import re
+from uuid import uuid4
+
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_connection
@@ -148,3 +151,45 @@ def update_user_profile(user_id: int, name: str, email: str, password: str | Non
     conn.commit()
     conn.close()
     return True, "User updated successfully"
+
+
+def _slugify_name(name: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", ".", (name or "").strip().lower()).strip(".")
+    return slug or "user"
+
+
+def import_users_from_patient_names(names: list[str]) -> int:
+    if not names:
+        return 0
+
+    conn = get_connection()
+    created = 0
+
+    for raw_name in names:
+        cleaned_name = (raw_name or "").strip()
+        if not cleaned_name:
+            continue
+
+        by_name = conn.execute(
+            "SELECT id FROM users WHERE lower(name)=lower(?)",
+            (cleaned_name,),
+        ).fetchone()
+        if by_name:
+            continue
+
+        base_slug = _slugify_name(cleaned_name)
+        email = f"{base_slug}@import.local"
+        suffix = 1
+        while conn.execute("SELECT id FROM users WHERE lower(email)=lower(?)", (email,)).fetchone():
+            suffix += 1
+            email = f"{base_slug}.{suffix}@import.local"
+
+        conn.execute(
+            "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
+            (cleaned_name, email, generate_password_hash(uuid4().hex)),
+        )
+        created += 1
+
+    conn.commit()
+    conn.close()
+    return created

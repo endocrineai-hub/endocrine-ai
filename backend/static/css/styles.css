@@ -980,6 +980,9 @@ pre { background: #f5f8fb; border: 1px solid var(--line); padding: 10px; border-
   display: grid;
   gap: 8px;
 }
+.inline-action-form {
+  margin: 0 0 10px;
+}
 .portal-shell-admin .portal-sidebar {
   background: #131b2c;
 }

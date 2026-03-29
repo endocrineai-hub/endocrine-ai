@@ -141,3 +141,23 @@ def get_user_recent_assessments_for_admin(user_id: int, limit: int = 8) -> list[
     ).fetchall()
     conn.close()
     return [dict(r) for r in rows]
+
+
+def get_distinct_orphan_patient_names(limit: int = 300) -> list[str]:
+    conn = get_connection()
+    rows = conn.execute(
+        """
+        SELECT patient_name
+        FROM assessments
+        WHERE user_id IS NULL
+          AND patient_name IS NOT NULL
+          AND trim(patient_name) != ''
+          AND lower(trim(patient_name)) != 'anonymous'
+        GROUP BY lower(trim(patient_name)), patient_name
+        ORDER BY MAX(id) DESC
+        LIMIT ?
+        """,
+        (int(limit),),
+    ).fetchall()
+    conn.close()
+    return [str(r["patient_name"]).strip() for r in rows if str(r["patient_name"]).strip()]

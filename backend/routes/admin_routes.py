@@ -8,9 +8,15 @@ from ..models.assessment_model import (
     get_all_assessment_rows,
     get_all_assessments_json,
     get_dashboard_assessments,
+    get_distinct_orphan_patient_names,
     get_user_recent_assessments_for_admin,
 )
-from ..models.user_model import get_all_users_with_stats, get_user_with_stats, update_user_profile
+from ..models.user_model import (
+    get_all_users_with_stats,
+    get_user_with_stats,
+    import_users_from_patient_names,
+    update_user_profile,
+)
 from ..services.analytics_service import build_dashboard_stats
 from ..services.model_inference import model_available
 from ..services.openai_service import openai_available
@@ -139,19 +145,29 @@ def admin_users():
     success = None
 
     if request.method == "POST":
-        user_id = request.form.get("user_id", type=int)
-        name = request.form.get("name", "")
-        email = request.form.get("email", "")
-        password = request.form.get("password", "")
+        action = request.form.get("action", "update_user")
 
-        if not user_id:
-            error = "Invalid user selection"
-        else:
-            ok, msg = update_user_profile(user_id, name, email, password)
-            if ok:
-                success = msg
+        if action == "import_from_assessments":
+            names = get_distinct_orphan_patient_names(limit=500)
+            created_count = import_users_from_patient_names(names)
+            if created_count > 0:
+                success = f"Imported {created_count} user profile(s) from assessment records."
             else:
-                error = msg
+                error = "No importable patient records found. Create users from Register page first."
+        else:
+            user_id = request.form.get("user_id", type=int)
+            name = request.form.get("name", "")
+            email = request.form.get("email", "")
+            password = request.form.get("password", "")
+
+            if not user_id:
+                error = "Invalid user selection"
+            else:
+                ok, msg = update_user_profile(user_id, name, email, password)
+                if ok:
+                    success = msg
+                else:
+                    error = msg
 
     users = get_all_users_with_stats()
     selected_id = request.args.get("user_id", type=int)
