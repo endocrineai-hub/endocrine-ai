@@ -4,8 +4,13 @@ import json
 from flask import Blueprint, Response, jsonify, redirect, render_template, request, session, url_for
 
 from ..models.admin_model import verify_admin_credentials
-from ..models.assessment_model import get_all_assessment_rows, get_all_assessments_json, get_dashboard_assessments
-from ..models.user_model import get_all_users
+from ..models.assessment_model import (
+    get_all_assessment_rows,
+    get_all_assessments_json,
+    get_dashboard_assessments,
+    get_user_recent_assessments_for_admin,
+)
+from ..models.user_model import get_all_users_with_stats, get_user_with_stats, update_user_profile
 from ..services.analytics_service import build_dashboard_stats
 from ..services.model_inference import model_available
 from ..services.openai_service import openai_available
@@ -127,13 +132,46 @@ def export_assessments_pdf():
     )
 
 
-@admin_bp.route("/admin/users")
+@admin_bp.route("/admin/users", methods=["GET", "POST"])
 @admin_required
 def admin_users():
-    users = get_all_users()
+    error = None
+    success = None
+
+    if request.method == "POST":
+        user_id = request.form.get("user_id", type=int)
+        name = request.form.get("name", "")
+        email = request.form.get("email", "")
+        password = request.form.get("password", "")
+
+        if not user_id:
+            error = "Invalid user selection"
+        else:
+            ok, msg = update_user_profile(user_id, name, email, password)
+            if ok:
+                success = msg
+            else:
+                error = msg
+
+    users = get_all_users_with_stats()
+    selected_id = request.args.get("user_id", type=int)
+    if request.method == "POST":
+        selected_id = request.form.get("user_id", type=int) or selected_id
+    if not selected_id and users:
+        selected_id = users[0]["id"]
+
+    selected_user = get_user_with_stats(selected_id) if selected_id else None
+    recent_assessments = (
+        get_user_recent_assessments_for_admin(selected_id, limit=8) if selected_id else []
+    )
+
     return render_template(
         "admin_users.html",
         users=users,
+        selected_user=selected_user,
+        recent_assessments=recent_assessments,
+        error=error,
+        success=success,
         model_ready=model_available(),
         openai_ready=openai_available(),
     )

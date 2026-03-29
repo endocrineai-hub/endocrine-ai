@@ -1042,6 +1042,17 @@ pre { background: #f5f8fb; border: 1px solid var(--line); padding: 10px; border-
 .preview-grid strong {
   font-size: 1rem;
 }
+.admin-user-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.success-text {
+  color: #0f7b4f;
+  font-weight: 600;
+  margin: 0 0 10px;
+}
 
 .reveal { opacity: 0; transform: translateY(8px); animation: fadeUp 0.8s ease forwards; }
 @keyframes fadeUp {
@@ -1078,6 +1089,7 @@ pre { background: #f5f8fb; border: 1px solid var(--line); padding: 10px; border-
   .admin-kpis { grid-template-columns: repeat(2, 1fr); }
   .workspace-grid { grid-template-columns: 1fr; }
   .assessment-workbench { grid-template-columns: 1fr; }
+  .admin-user-layout { grid-template-columns: 1fr; }
   .quick-actions-grid { grid-template-columns: 1fr; }
   .portal-topbar { flex-direction: column; }
   .admin-panels { grid-template-columns: 1fr; }

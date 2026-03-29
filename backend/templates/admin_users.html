@@ -1,8 +1,8 @@
 {% extends "admin_portal_base.html" %}
 {% set title = "Admin Users | EndocrineAI" %}
 {% set active_tab = "users" %}
-{% set top_title = "Registered Users" %}
-{% set top_subtitle = "Manage and review user accounts across the platform." %}
+{% set top_title = "User Management Portal" %}
+{% set top_subtitle = "Preview user data, edit account details, and review recent activity." %}
 
 {% block top_actions %}
 <span class="chip">Total Users: {{ users | length }}</span>
@@ -10,18 +10,119 @@
 {% endblock %}
 
 {% block portal_content %}
+<section class="admin-user-layout">
+  <section class="portal-panel">
+    <div class="portal-panel-head">
+      <div>
+        <h2>User Directory</h2>
+        <p class="muted">Select a user to preview and modify details.</p>
+      </div>
+      <span class="chip">Directory</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Email</th><th>Assessments</th><th>Created</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.name }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.total_assessments }}</td>
+            <td>{{ u.created_at }}</td>
+            <td><a class="btn btn-ghost btn-small" href="/admin/users?user_id={{ u.id }}">Preview</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <aside class="workspace-col workspace-col-side">
+    <section class="portal-panel">
+      <div class="portal-panel-head">
+        <div>
+          <h2>User Preview</h2>
+          <p class="muted">Selected user profile and key stats.</p>
+        </div>
+        <span class="chip">Preview</span>
+      </div>
+      {% if selected_user %}
+      <div class="preview-grid">
+        <div><span>User ID</span><strong>{{ selected_user.id }}</strong></div>
+        <div><span>Name</span><strong>{{ selected_user.name }}</strong></div>
+        <div><span>Email</span><strong>{{ selected_user.email }}</strong></div>
+        <div><span>Total Assessments</span><strong>{{ selected_user.total_assessments }}</strong></div>
+        <div><span>Avg Risk Score</span><strong>{{ selected_user.avg_risk_score if selected_user.avg_risk_score is not none else '-' }}</strong></div>
+        <div><span>Latest Assessment</span><strong>{{ selected_user.latest_assessment_at or '-' }}</strong></div>
+      </div>
+      {% else %}
+      <p class="muted">No user selected.</p>
+      {% endif %}
+    </section>
+
+    <section class="portal-panel">
+      <div class="portal-panel-head">
+        <div>
+          <h2>Edit User</h2>
+          <p class="muted">Update user name/email and optionally reset password.</p>
+        </div>
+        <span class="chip">Update</span>
+      </div>
+
+      {% if success %}<p class="success-text">{{ success }}</p>{% endif %}
+      {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+      {% if selected_user %}
+      <form method="post" class="portal-form">
+        <input type="hidden" name="user_id" value="{{ selected_user.id }}" />
+        <label>Name
+          <input name="name" value="{{ selected_user.name }}" required />
+        </label>
+        <label>Email
+          <input name="email" type="email" value="{{ selected_user.email }}" required />
+        </label>
+        <label>New Password (optional)
+          <input name="password" type="password" placeholder="Leave blank to keep unchanged" />
+        </label>
+        <button class="btn" type="submit">Save Changes</button>
+      </form>
+      {% else %}
+      <p class="muted">Select a user first from the directory table.</p>
+      {% endif %}
+    </section>
+  </aside>
+</section>
+
 <section class="portal-panel">
+  <div class="portal-panel-head">
+    <div>
+      <h2>Recent Assessments (Selected User)</h2>
+      <p class="muted">Preview of latest records for the current user.</p>
+    </div>
+    <span class="chip">Recent Records</span>
+  </div>
+  {% if recent_assessments %}
   <div class="table-wrap">
     <table>
       <thead>
-        <tr><th>ID</th><th>Name</th><th>Email</th><th>Created</th></tr>
+        <tr><th>ID</th><th>Date</th><th>Patient</th><th>Thyroid</th><th>Diabetes</th><th>PCOS</th><th>Adrenal</th><th>Metabolic</th><th>Overall</th></tr>
       </thead>
       <tbody>
-        {% for u in users %}
-        <tr><td>{{ u.id }}</td><td>{{ u.name }}</td><td>{{ u.email }}</td><td>{{ u.created_at }}</td></tr>
+        {% for a in recent_assessments %}
+        <tr>
+          <td>{{ a.id }}</td><td>{{ a.created_at }}</td><td>{{ a.patient_name }}</td>
+          <td>{{ a.thyroid_risk }}</td><td>{{ a.diabetes_risk }}</td><td>{{ a.pcos_risk }}</td>
+          <td>{{ a.adrenal_risk }}</td><td>{{ a.metabolic_risk }}</td><td>{{ a.risk_score }}%</td>
+        </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+  {% else %}
+  <p class="muted">No assessments available for selected user.</p>
+  {% endif %}
 </section>
 {% endblock %}
