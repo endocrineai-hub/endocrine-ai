@@ -1,21 +1,64 @@
+import os
 import sqlite3
 from pathlib import Path
-import os
+
+try:
+    import psycopg
+    from psycopg.rows import dict_row
+except ModuleNotFoundError:
+    psycopg = None
+    dict_row = None
 from werkzeug.security import generate_password_hash
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 DB_PATH = BASE_DIR / "data" / "app.db"
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
 
-def get_connection() -> sqlite3.Connection:
+def _is_postgres() -> bool:
+    return DATABASE_URL.startswith("postgres://") or DATABASE_URL.startswith("postgresql://")
+
+
+def _translate_params(query: str) -> str:
+    # Existing codebase uses sqlite-style '?' placeholders; postgres needs '%s'.
+    return query.replace("?", "%s")
+
+
+class DBConnection:
+    def __init__(self, conn, is_postgres: bool):
+        self._conn = conn
+        self._is_postgres = is_postgres
+
+    def execute(self, query: str, params: tuple | list | None = None):
+        final_query = _translate_params(query) if self._is_postgres else query
+        cursor = self._conn.cursor()
+        if params is None:
+            params = ()
+        cursor.execute(final_query, params)
+        return cursor
+
+    def commit(self) -> None:
+        self._conn.commit()
+
+    def close(self) -> None:
+        self._conn.close()
+
+
+def get_connection() -> DBConnection:
+    if _is_postgres():
+        if psycopg is None or dict_row is None:
+            raise RuntimeError("psycopg is required when DATABASE_URL points to PostgreSQL")
+        conn = psycopg.connect(DATABASE_URL, row_factory=dict_row)
+        return DBConnection(conn, is_postgres=True)
+
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
-    return conn
+    return DBConnection(conn, is_postgres=False)
 
 
-def init_db() -> None:
+def _init_sqlite_db(conn: DBConnection) -> None:
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = get_connection()
     conn.execute(
         """
         CREATE TABLE IF NOT EXISTS assessments (
@@ -69,6 +112,61 @@ def init_db() -> None:
         conn.execute("ALTER TABLE assessments ADD COLUMN symptoms TEXT")
     if "risk_score" not in columns:
         conn.execute("ALTER TABLE assessments ADD COLUMN risk_score REAL")
+
+
+def _init_postgres_db(conn: DBConnection) -> None:
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS assessments (
+            id BIGSERIAL PRIMARY KEY,
+            created_at TEXT NOT NULL,
+            user_id BIGINT,
+            patient_name TEXT,
+            age INTEGER,
+            gender TEXT,
+            bmi DOUBLE PRECISION,
+            symptoms TEXT,
+            thyroid_risk TEXT,
+            diabetes_risk TEXT,
+            pcos_risk TEXT,
+            adrenal_risk TEXT,
+            metabolic_risk TEXT,
+            risk_score DOUBLE PRECISION,
+            profile_json TEXT,
+            result_json TEXT
+        )
+        """
+    )
+
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS users (
+            id BIGSERIAL PRIMARY KEY,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+        """
+    )
+
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS admin_users (
+            id BIGSERIAL PRIMARY KEY,
+            username TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL
+        )
+        """
+    )
+
+
+def init_db() -> None:
+    conn = get_connection()
+    if _is_postgres():
+        _init_postgres_db(conn)
+    else:
+        _init_sqlite_db(conn)
 
     default_user = os.getenv("ADMIN_USERNAME", "admin").strip()
     default_pass = os.getenv("ADMIN_PASSWORD", "admin123").strip()
