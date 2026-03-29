@@ -9,7 +9,11 @@ def create_app() -> Flask:
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    init_db()
+    try:
+        init_db()
+    except Exception as exc:
+        app.logger.exception("Database initialization failed: %s", exc)
+
     app.register_blueprint(public_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)

@@ -11,12 +11,27 @@ except ModuleNotFoundError:
 from werkzeug.security import generate_password_hash
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-DB_PATH = BASE_DIR / "data" / "app.db"
-DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+
+
+def _database_url() -> str:
+    return os.getenv("DATABASE_URL", "").strip()
 
 
 def _is_postgres() -> bool:
-    return DATABASE_URL.startswith("postgres://") or DATABASE_URL.startswith("postgresql://")
+    url = _database_url()
+    return url.startswith("postgres://") or url.startswith("postgresql://")
+
+
+def _sqlite_db_path() -> Path:
+    explicit_path = os.getenv("SQLITE_DB_PATH", "").strip()
+    if explicit_path:
+        return Path(explicit_path)
+
+    # Vercel has a read-only source filesystem. Use /tmp when no external DB is configured.
+    if os.getenv("VERCEL") and not _database_url():
+        return Path("/tmp/endocrine_app.db")
+
+    return BASE_DIR / "data" / "app.db"
 
 
 def _translate_params(query: str) -> str:
@@ -48,17 +63,19 @@ def get_connection() -> DBConnection:
     if _is_postgres():
         if psycopg is None or dict_row is None:
             raise RuntimeError("psycopg is required when DATABASE_URL points to PostgreSQL")
-        conn = psycopg.connect(DATABASE_URL, row_factory=dict_row)
+        conn = psycopg.connect(_database_url(), row_factory=dict_row)
         return DBConnection(conn, is_postgres=True)
 
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
+    sqlite_path = _sqlite_db_path()
+    sqlite_path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(sqlite_path)
     conn.row_factory = sqlite3.Row
     return DBConnection(conn, is_postgres=False)
 
 
 def _init_sqlite_db(conn: DBConnection) -> None:
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    sqlite_path = _sqlite_db_path()
+    sqlite_path.parent.mkdir(parents=True, exist_ok=True)
     conn.execute(
         """
         CREATE TABLE IF NOT EXISTS assessments (
