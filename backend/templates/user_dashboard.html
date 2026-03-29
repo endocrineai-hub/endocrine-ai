@@ -2,12 +2,17 @@
 {% set title = "My Dashboard" %}
 {% block content %}
 {% set latest = assessments[0] if assessments else None %}
+{% set overall_pct = (latest.risk_score|string)|replace('%','') if latest and latest.risk_score is not none else '0' %}
+{% set diabetes_pct = (latest.diabetes_risk|string)|replace('%','') if latest and latest.diabetes_risk is not none else '0' %}
+{% set metabolic_pct = (latest.metabolic_risk|string)|replace('%','') if latest and latest.metabolic_risk is not none else '0' %}
+{% set thyroid_pct = (latest.thyroid_risk|string)|replace('%','') if latest and latest.thyroid_risk is not none else '0' %}
 <section class="dashboard-hero">
   <div class="container dashboard-hero-grid">
     <div class="dashboard-hero-copy">
       <p class="pill">Personal Health Overview</p>
       <h1>Welcome, {{ user_name }}</h1>
       <p class="lead">Track endocrine risk scores, run new assessments, and export reports.</p>
+      <p class="dashboard-quote">"Prevention works best when insights are clear and timely."</p>
       <div class="cta-row">
         <a class="btn" href="#assessment">Run New Assessment</a>
         <a class="btn btn-ghost" href="/dashboard/export.csv">Export CSV</a>
@@ -45,26 +50,43 @@
   </div>
 </section>
 
-<main class="container section">
-  <section class="dashboard-summary">
-    <article class="summary-card highlight">
+<main class="container section dashboard-main">
+  <section class="dashboard-kpis">
+    <article class="kpi-card kpi-primary">
       <h3>Total Assessments</h3>
       <p>{{ assessments | length }}</p>
       <span class="muted">All time</span>
     </article>
-    <article class="summary-card">
-      <h3>Latest Overall</h3>
-      <p>{{ latest.risk_score if latest else '-' }}%</p>
+    <article class="kpi-card">
+      <div class="kpi-top">
+        <h3>Latest Overall</h3>
+        <strong>{{ latest.risk_score if latest else '0%' }}</strong>
+      </div>
+      <div class="kpi-meter"><span style="width: {{ overall_pct }}%"></span></div>
       <span class="muted">Most recent score</span>
     </article>
-    <article class="summary-card">
-      <h3>Diabetes Risk</h3>
-      <p>{{ latest.diabetes_risk if latest else '-' }}</p>
+    <article class="kpi-card">
+      <div class="kpi-top">
+        <h3>Diabetes Risk</h3>
+        <strong>{{ latest.diabetes_risk if latest else '0%' }}</strong>
+      </div>
+      <div class="kpi-meter"><span style="width: {{ diabetes_pct }}%"></span></div>
       <span class="muted">Latest assessment</span>
     </article>
-    <article class="summary-card">
-      <h3>Metabolic Risk</h3>
-      <p>{{ latest.metabolic_risk if latest else '-' }}</p>
+    <article class="kpi-card">
+      <div class="kpi-top">
+        <h3>Metabolic Risk</h3>
+        <strong>{{ latest.metabolic_risk if latest else '0%' }}</strong>
+      </div>
+      <div class="kpi-meter"><span style="width: {{ metabolic_pct }}%"></span></div>
+      <span class="muted">Latest assessment</span>
+    </article>
+    <article class="kpi-card">
+      <div class="kpi-top">
+        <h3>Thyroid Risk</h3>
+        <strong>{{ latest.thyroid_risk if latest else '0%' }}</strong>
+      </div>
+      <div class="kpi-meter"><span style="width: {{ thyroid_pct }}%"></span></div>
       <span class="muted">Latest assessment</span>
     </article>
   </section>
