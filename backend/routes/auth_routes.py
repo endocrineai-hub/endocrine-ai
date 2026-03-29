@@ -62,6 +62,38 @@ def user_dashboard():
     return render_template("user_dashboard.html", assessments=assessments)
 
 
+@auth_bp.route("/dashboard/new")
+@user_required
+def user_dashboard_new():
+    assessments = get_user_assessments(session["user_id"])
+    names = []
+    seen = set()
+    for row in assessments:
+        patient_name = (row.get("patient_name") or "").strip()
+        if patient_name and patient_name not in seen:
+            seen.add(patient_name)
+            names.append(patient_name)
+    return render_template(
+        "user_dashboard_assessment.html",
+        assessments=assessments,
+        previous_patient_names=names,
+    )
+
+
+@auth_bp.route("/dashboard/trends")
+@user_required
+def user_dashboard_trends():
+    assessments = get_user_assessments(session["user_id"])
+    return render_template("user_dashboard_trends.html", assessments=assessments)
+
+
+@auth_bp.route("/dashboard/history")
+@user_required
+def user_dashboard_history():
+    assessments = get_user_assessments(session["user_id"])
+    return render_template("user_dashboard_history.html", assessments=assessments)
+
+
 @auth_bp.route("/dashboard/export.csv")
 @user_required
 def user_export_csv():

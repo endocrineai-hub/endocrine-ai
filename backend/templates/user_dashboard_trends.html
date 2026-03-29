@@ -1,0 +1,55 @@
+{% extends "user_portal_base.html" %}
+{% set title = "Risk Trends | User Portal" %}
+{% set active_tab = "trends" %}
+{% set top_eyebrow = "Trend Analytics" %}
+{% set top_title = "Risk Trend Dashboard" %}
+{% set top_subtitle = "Monitor how your endocrine risk changes over time." %}
+
+{% block top_actions %}
+<a class="btn" href="/dashboard/new">New Assessment</a>
+{% endblock %}
+
+{% block portal_content %}
+<section class="portal-panel">
+  <div class="portal-panel-head">
+    <div>
+      <h2>Overall Risk Trend</h2>
+      <p class="muted">Timeline based on your previous assessments.</p>
+    </div>
+    <span class="chip">Trendline</span>
+  </div>
+  <div class="chart-card">
+    <canvas id="user-risk-chart" height="220"></canvas>
+  </div>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const rawAssessments = {{ assessments | tojson }};
+  const labels = rawAssessments.map(r => r.created_at).reverse();
+  const values = rawAssessments.map(r => Number(r.risk_score || 0)).reverse();
+  const ctx = document.getElementById("user-risk-chart");
+  if (ctx && window.Chart) {
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "Overall Risk %",
+          data: values,
+          borderColor: "rgba(15, 111, 255, 1)",
+          backgroundColor: "rgba(15, 111, 255, 0.12)",
+          tension: 0.35,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true, max: 100 } }
+      }
+    });
+  }
+</script>
+{% endblock %}

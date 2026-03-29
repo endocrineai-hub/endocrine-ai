@@ -1,286 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Dashboard | EndocrineAI</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-</head>
-<body class="portal-body">
-  {% set latest = assessments[0] if assessments else None %}
-  {% set overall_pct = (latest.risk_score|string)|replace('%','') if latest and latest.risk_score is not none else '0' %}
-  {% set diabetes_pct = (latest.diabetes_risk|string)|replace('%','') if latest and latest.diabetes_risk is not none else '0' %}
-  {% set metabolic_pct = (latest.metabolic_risk|string)|replace('%','') if latest and latest.metabolic_risk is not none else '0' %}
-  {% set thyroid_pct = (latest.thyroid_risk|string)|replace('%','') if latest and latest.thyroid_risk is not none else '0' %}
+{% extends "user_portal_base.html" %}
+{% set title = "Overview | User Portal" %}
+{% set active_tab = "overview" %}
+{% set latest = assessments[0] if assessments else None %}
+{% set overall_pct = (latest.risk_score|string)|replace('%','') if latest and latest.risk_score is not none else '0' %}
+{% set diabetes_pct = (latest.diabetes_risk|string)|replace('%','') if latest and latest.diabetes_risk is not none else '0' %}
+{% set metabolic_pct = (latest.metabolic_risk|string)|replace('%','') if latest and latest.metabolic_risk is not none else '0' %}
+{% set thyroid_pct = (latest.thyroid_risk|string)|replace('%','') if latest and latest.thyroid_risk is not none else '0' %}
+{% set top_title = "Welcome, " ~ user_name %}
+{% set top_subtitle = "This is your personal dashboard overview with latest endocrine insights." %}
 
-  <div class="portal-shell">
-    <aside class="portal-sidebar">
-      <a class="portal-logo" href="/">Endocrine<span>AI</span></a>
-      <p class="portal-subtitle">User Workspace</p>
+{% block top_actions %}
+<a class="btn" href="/dashboard/new">Run Assessment</a>
+<a class="btn btn-ghost" href="/about">About Project</a>
+{% endblock %}
 
-      <nav class="portal-nav">
-        <a href="#overview">Overview</a>
-        <a href="#assessment">New Assessment</a>
-        <a href="#result-section">Latest Result</a>
-        <a href="#risk-trend">Risk Trend</a>
-        <a href="#history">Assessment History</a>
-      </nav>
+{% block portal_content %}
+<section class="portal-kpi-grid">
+  <article class="portal-kpi primary">
+    <h3>Total Assessments</h3>
+    <p>{{ assessments | length }}</p>
+    <span>All time</span>
+  </article>
+  <article class="portal-kpi">
+    <div class="portal-kpi-head"><h3>Overall</h3><strong>{{ latest.risk_score if latest else '0%' }}</strong></div>
+    <div class="portal-meter"><span style="width: {{ overall_pct }}%"></span></div>
+    <span>Latest score</span>
+  </article>
+  <article class="portal-kpi">
+    <div class="portal-kpi-head"><h3>Diabetes</h3><strong>{{ latest.diabetes_risk if latest else '0%' }}</strong></div>
+    <div class="portal-meter"><span style="width: {{ diabetes_pct }}%"></span></div>
+    <span>Latest score</span>
+  </article>
+  <article class="portal-kpi">
+    <div class="portal-kpi-head"><h3>Metabolic</h3><strong>{{ latest.metabolic_risk if latest else '0%' }}</strong></div>
+    <div class="portal-meter"><span style="width: {{ metabolic_pct }}%"></span></div>
+    <span>Latest score</span>
+  </article>
+  <article class="portal-kpi">
+    <div class="portal-kpi-head"><h3>Thyroid</h3><strong>{{ latest.thyroid_risk if latest else '0%' }}</strong></div>
+    <div class="portal-meter"><span style="width: {{ thyroid_pct }}%"></span></div>
+    <span>Latest score</span>
+  </article>
+</section>
 
-      <div class="portal-actions">
-        <a class="btn btn-ghost" href="/dashboard/export.csv">Export CSV</a>
-        <a class="btn btn-ghost" href="/dashboard/export.pdf">Export PDF</a>
-      </div>
-
-      <div class="portal-meta">
-        <p class="muted">Signed in as</p>
-        <strong>{{ user_name }}</strong>
-      </div>
-
-      <div class="portal-links">
-        <a href="/">Public Site</a>
-        <a href="/logout">Logout</a>
-      </div>
-    </aside>
-
-    <main class="portal-content">
-      <header id="overview" class="portal-topbar">
+<section class="workspace-grid">
+  <div class="workspace-col workspace-col-main">
+    <section class="portal-panel">
+      <div class="portal-panel-head">
         <div>
-          <p class="eyebrow">Personal Health Overview</p>
-          <h1>Welcome, {{ user_name }}</h1>
-          <p class="muted">Track endocrine risk scores, run assessments, and view reports.</p>
+          <h2>Quick Actions</h2>
+          <p class="muted">Jump to the page you need instantly.</p>
         </div>
-        <div class="portal-topbar-actions">
-          <a class="btn" href="#assessment">Run Assessment</a>
-          <a class="btn btn-ghost" href="/about">About Project</a>
-        </div>
-      </header>
-
-      <section class="portal-kpi-grid">
-        <article class="portal-kpi primary">
-          <h3>Total Assessments</h3>
-          <p>{{ assessments | length }}</p>
-          <span>All time</span>
-        </article>
-        <article class="portal-kpi">
-          <div class="portal-kpi-head"><h3>Overall</h3><strong>{{ latest.risk_score if latest else '0%' }}</strong></div>
-          <div class="portal-meter"><span style="width: {{ overall_pct }}%"></span></div>
-          <span>Latest score</span>
-        </article>
-        <article class="portal-kpi">
-          <div class="portal-kpi-head"><h3>Diabetes</h3><strong>{{ latest.diabetes_risk if latest else '0%' }}</strong></div>
-          <div class="portal-meter"><span style="width: {{ diabetes_pct }}%"></span></div>
-          <span>Latest score</span>
-        </article>
-        <article class="portal-kpi">
-          <div class="portal-kpi-head"><h3>Metabolic</h3><strong>{{ latest.metabolic_risk if latest else '0%' }}</strong></div>
-          <div class="portal-meter"><span style="width: {{ metabolic_pct }}%"></span></div>
-          <span>Latest score</span>
-        </article>
-        <article class="portal-kpi">
-          <div class="portal-kpi-head"><h3>Thyroid</h3><strong>{{ latest.thyroid_risk if latest else '0%' }}</strong></div>
-          <div class="portal-meter"><span style="width: {{ thyroid_pct }}%"></span></div>
-          <span>Latest score</span>
-        </article>
-      </section>
-
-      <section class="workspace-grid">
-        <div class="workspace-col workspace-col-main">
-          <section id="assessment" class="portal-panel">
-            <div class="portal-panel-head">
-              <div>
-                <h2>New Assessment</h2>
-                <p class="muted">Complete the profile to generate endocrine risk analysis.</p>
-              </div>
-              <span class="chip">Assessment Form</span>
-            </div>
-            <form id="assessment-form" class="portal-form">
-              <div class="grid">
-                <label>Patient Name <input name="patient_name" placeholder="Optional" /></label>
-                <label>Age <input type="number" name="age" required /></label>
-                <label>Gender
-                  <select name="gender" required>
-                    <option value="">Select</option>
-                    <option>Female</option>
-                    <option>Male</option>
-                  </select>
-                </label>
-                <label>BMI <input type="number" step="0.1" name="bmi" required /></label>
-                <label>Sleep quality
-                  <select name="sleep_quality" required>
-                    <option>Poor</option><option>Average</option><option>Good</option>
-                  </select>
-                </label>
-                <label>Stress level
-                  <select name="stress_level" required>
-                    <option>High</option><option>Moderate</option><option>Low</option>
-                  </select>
-                </label>
-                <label>Exercise frequency <input name="exercise_frequency" placeholder="Low / 3 days/week / Daily" required /></label>
-                <label>Diet type <input name="diet_type" placeholder="High sugar, Balanced, etc." required /></label>
-              </div>
-
-              <label>Family history
-                <textarea name="family_history" rows="2" placeholder="Diabetes, thyroid, PCOS, etc."></textarea>
-              </label>
-
-              <label>Symptoms (comma separated)
-                <textarea name="symptoms" rows="2" placeholder="Fatigue, irregular cycles, sugar cravings"></textarea>
-              </label>
-
-              <label>Lab report text (optional)
-                <textarea name="lab_report_text" rows="6" placeholder="Paste complete lab report text here"></textarea>
-              </label>
-
-              <label class="toggle">
-                <input type="checkbox" name="use_ml" />
-                <span>Use ML model (beta)</span>
-              </label>
-
-              <div class="actions">
-                <button class="btn" type="submit">Analyze Risk</button>
-              </div>
-            </form>
-          </section>
-
-          <section id="result-section" class="portal-panel hidden">
-            <div class="portal-panel-head">
-              <div>
-                <h2>Assessment Result</h2>
-                <p id="prediction-source" class="muted"></p>
-              </div>
-              <span class="chip">Latest Output</span>
-            </div>
-
-            <div id="ai-summary-wrap" class="card ai-box hidden">
-              <h3>AI Clinical Summary</h3>
-              <p id="ai-summary"></p>
-            </div>
-
-            <div class="chart-grid">
-              <div class="chart-card">
-                <canvas id="risk-chart" height="180"></canvas>
-              </div>
-              <div id="risk-cards" class="risk-cards"></div>
-            </div>
-
-            <h3>Key Triggers</h3>
-            <ul id="key-triggers"></ul>
-            <h3>Explanation</h3>
-            <p id="explanation"></p>
-            <h3>Recommended Actions</h3>
-            <ul id="actions"></ul>
-            <h3>Suggested Tests</h3>
-            <ul id="tests"></ul>
-            <h3>Extracted Markers</h3>
-            <pre id="markers-json"></pre>
-
-            <section class="chat-shell">
-              <h3>Ask EndocrineAI</h3>
-              <div id="chat-log" class="chat-log"></div>
-              <form id="chat-form" class="grid">
-                <label>Ask a question about your report
-                  <textarea id="chat-input" rows="3" placeholder="Ask about your risks, next steps, or clarifications"></textarea>
-                </label>
-                <button class="btn" type="submit">Send Question</button>
-              </form>
-              <p class="muted">For guidance only. Not a medical diagnosis.</p>
-            </section>
-          </section>
-        </div>
-
-        <aside class="workspace-col workspace-col-side">
-          <section id="risk-trend" class="portal-panel">
-            <div class="portal-panel-head">
-              <div>
-                <h2>Risk Trend</h2>
-                <p class="muted">Overall risk percentage over time.</p>
-              </div>
-              <span class="chip">Trendline</span>
-            </div>
-            <div class="chart-card">
-              <canvas id="user-risk-chart" height="220"></canvas>
-            </div>
-          </section>
-
-          <section class="portal-panel side-note">
-            <h3>What You Get</h3>
-            <ul>
-              <li>Risk percentages and levels</li>
-              <li>Key trigger signals</li>
-              <li>AI-generated summary</li>
-              <li>Suggested tests and actions</li>
-            </ul>
-          </section>
-          <section class="portal-panel side-note">
-            <h3>Compliance</h3>
-            <p class="muted">For clinical decision support only. Not a diagnosis.</p>
-            <a class="btn btn-ghost" href="/about">View Method</a>
-          </section>
-        </aside>
-      </section>
-
-      <section id="history" class="portal-panel">
-        <div class="portal-panel-head">
-          <div>
-            <h2>My Assessments</h2>
-            <p class="muted">Complete assessment history for your account.</p>
-          </div>
-          <span class="chip">History</span>
-        </div>
-        {% if not assessments %}
-          <p class="muted">No assessments yet. Run your first assessment to see results here.</p>
-        {% endif %}
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th><th>Date</th><th>Patient</th><th>Thyroid</th><th>Diabetes</th><th>PCOS</th><th>Adrenal</th><th>Metabolic</th><th>Overall</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for a in assessments %}
-              <tr>
-                <td>{{ a.id }}</td><td>{{ a.created_at }}</td><td>{{ a.patient_name }}</td>
-                <td>{{ a.thyroid_risk }}</td><td>{{ a.diabetes_risk }}</td><td>{{ a.pcos_risk }}</td>
-                <td>{{ a.adrenal_risk }}</td><td>{{ a.metabolic_risk }}</td><td>{{ a.risk_score }}%</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </main>
+        <span class="chip">Navigation</span>
+      </div>
+      <div class="quick-actions-grid">
+        <a class="quick-action-card" href="/dashboard/new"><h3>New Assessment</h3><p>Create a new report for self or family.</p></a>
+        <a class="quick-action-card" href="/dashboard/trends"><h3>Risk Trends</h3><p>Visualize changes in overall risk over time.</p></a>
+        <a class="quick-action-card" href="/dashboard/history"><h3>Assessment History</h3><p>Review previous records and outcomes.</p></a>
+      </div>
+    </section>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-  <script>
-    const rawAssessments = {{ assessments | tojson }};
-    const labels = rawAssessments.map(r => r.created_at).reverse();
-    const values = rawAssessments.map(r => Number(r.risk_score || 0)).reverse();
-
-    const ctx = document.getElementById('user-risk-chart');
-    if (ctx && window.Chart) {
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Overall Risk %',
-            data: values,
-            borderColor: 'rgba(15, 111, 255, 1)',
-            backgroundColor: 'rgba(15, 111, 255, 0.12)',
-            tension: 0.35,
-            fill: true,
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { display: true } },
-          scales: { y: { beginAtZero: true, max: 100 } }
-        }
-      });
-    }
-  </script>
-</body>
-</html>
+  <aside class="workspace-col workspace-col-side">
+    <section class="portal-panel side-note">
+      <h3>Current Snapshot</h3>
+      <ul>
+        <li>Overall: <strong>{{ latest.risk_score if latest else '0%' }}</strong></li>
+        <li>Diabetes: <strong>{{ latest.diabetes_risk if latest else '0%' }}</strong></li>
+        <li>Metabolic: <strong>{{ latest.metabolic_risk if latest else '0%' }}</strong></li>
+      </ul>
+    </section>
+    <section class="portal-panel side-note">
+      <h3>Compliance</h3>
+      <p class="muted">For clinical decision support only. Not a diagnosis.</p>
+    </section>
+  </aside>
+</section>
+{% endblock %}

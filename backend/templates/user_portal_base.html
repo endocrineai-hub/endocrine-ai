@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title or 'User Portal | EndocrineAI' }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body class="portal-body">
+  <div class="portal-shell">
+    <aside class="portal-sidebar">
+      <a class="portal-logo" href="/">Endocrine<span>AI</span></a>
+      <p class="portal-subtitle">User Workspace</p>
+
+      <nav class="portal-nav">
+        <a class="{{ 'active' if active_tab == 'overview' else '' }}" href="/dashboard">Overview</a>
+        <a class="{{ 'active' if active_tab == 'assessment' else '' }}" href="/dashboard/new">New Assessment</a>
+        <a class="{{ 'active' if active_tab == 'trends' else '' }}" href="/dashboard/trends">Risk Trends</a>
+        <a class="{{ 'active' if active_tab == 'history' else '' }}" href="/dashboard/history">Assessment History</a>
+      </nav>
+
+      <div class="portal-actions">
+        <a class="btn btn-ghost" href="/dashboard/export.csv">Export CSV</a>
+        <a class="btn btn-ghost" href="/dashboard/export.pdf">Export PDF</a>
+      </div>
+
+      <div class="portal-meta">
+        <p class="muted">Signed in as</p>
+        <strong>{{ user_name }}</strong>
+      </div>
+
+      <div class="portal-links">
+        <a href="/">Public Site</a>
+        <a href="/logout">Logout</a>
+      </div>
+    </aside>
+
+    <main class="portal-content">
+      <header class="portal-topbar">
+        <div>
+          <p class="eyebrow">{{ top_eyebrow or 'Personal Health Overview' }}</p>
+          <h1>{{ top_title or ('Welcome, ' ~ user_name) }}</h1>
+          <p class="muted">{{ top_subtitle or 'Track endocrine risk scores and manage your reports.' }}</p>
+        </div>
+        <div class="portal-topbar-actions">
+          {% block top_actions %}{% endblock %}
+        </div>
+      </header>
+
+      {% block portal_content %}{% endblock %}
+    </main>
+  </div>
+  {% block page_scripts %}{% endblock %}
+</body>
+</html>

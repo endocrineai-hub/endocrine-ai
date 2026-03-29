@@ -3,6 +3,14 @@ const resultSection = document.getElementById("result-section");
 const chatForm = document.getElementById("chat-form");
 const chatLog = document.getElementById("chat-log");
 const chatInput = document.getElementById("chat-input");
+const assessmentFor = document.getElementById("assessment-for");
+const patientNameInput = document.getElementById("patient-name");
+const familyRelationWrap = document.getElementById("family-relation-wrap");
+const familyRelationInput = document.getElementById("family-relation");
+const previewName = document.getElementById("preview-name");
+const previewAge = document.getElementById("preview-age-text");
+const previewGender = document.getElementById("preview-gender-text");
+const previewBmi = document.getElementById("preview-bmi-text");
 let riskChart = null;
 let latestAssessment = null;
 
@@ -42,10 +50,57 @@ function appendChatMessage(text, role) {
   chatLog.scrollTop = chatLog.scrollHeight;
 }
 
+function syncAssessmentMode() {
+  if (!assessmentFor || !patientNameInput) return;
+  const selfName = patientNameInput.dataset.selfName || "";
+  const isSelf = assessmentFor.value === "self";
+
+  patientNameInput.readOnly = isSelf;
+  if (isSelf) {
+    patientNameInput.value = selfName;
+    if (familyRelationInput) familyRelationInput.value = "";
+  }
+  if (familyRelationWrap) {
+    familyRelationWrap.classList.toggle("hidden", isSelf);
+  }
+  syncPreviewFields();
+}
+
+function syncPreviewFields() {
+  if (previewName && patientNameInput) {
+    previewName.textContent = patientNameInput.value || "-";
+  }
+  if (previewAge) {
+    const ageInput = form?.querySelector('input[name="age"]');
+    previewAge.textContent = ageInput?.value || "-";
+  }
+  if (previewGender) {
+    const genderInput = form?.querySelector('select[name="gender"]');
+    previewGender.textContent = genderInput?.value || "-";
+  }
+  if (previewBmi) {
+    const bmiInput = form?.querySelector('input[name="bmi"]');
+    previewBmi.textContent = bmiInput?.value || "-";
+  }
+}
+
 if (form) {
+  syncAssessmentMode();
+  syncPreviewFields();
+
+  if (assessmentFor) {
+    assessmentFor.addEventListener("change", syncAssessmentMode);
+  }
+  form.addEventListener("input", syncPreviewFields);
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const fd = new FormData(form);
+
+    if (assessmentFor?.value === "self" && patientNameInput) {
+      patientNameInput.value = patientNameInput.dataset.selfName || patientNameInput.value;
+    }
+
     const profile = {
       "Age": Number(fd.get("age")),
       "Gender": fd.get("gender"),
@@ -55,6 +110,8 @@ if (form) {
       "Exercise frequency": fd.get("exercise_frequency"),
       "Diet type": fd.get("diet_type"),
       "Family history": fd.get("family_history"),
+      "Assessment for": fd.get("assessment_for") || "self",
+      "Family relation": fd.get("family_relation") || "",
       "Symptoms": String(fd.get("symptoms") || "")
         .split(",")
         .map((s) => s.trim())

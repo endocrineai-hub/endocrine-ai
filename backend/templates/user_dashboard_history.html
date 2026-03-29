@@ -1,0 +1,45 @@
+{% extends "user_portal_base.html" %}
+{% set title = "Assessment History | User Portal" %}
+{% set active_tab = "history" %}
+{% set top_eyebrow = "Assessment Records" %}
+{% set top_title = "My Assessment History" %}
+{% set top_subtitle = "Review all previous records and compare outcomes." %}
+
+{% block top_actions %}
+<a class="btn btn-ghost" href="/dashboard/new">Create New</a>
+{% endblock %}
+
+{% block portal_content %}
+<section class="portal-panel">
+  <div class="portal-panel-head">
+    <div>
+      <h2>History Table</h2>
+      <p class="muted">All records linked to your account.</p>
+    </div>
+    <span class="chip">Records</span>
+  </div>
+
+  {% if not assessments %}
+    <p class="muted">No assessments yet. Run your first assessment from the New Assessment page.</p>
+  {% endif %}
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Date</th><th>Patient</th><th>Thyroid</th><th>Diabetes</th><th>PCOS</th><th>Adrenal</th><th>Metabolic</th><th>Overall</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in assessments %}
+        <tr>
+          <td>{{ a.id }}</td><td>{{ a.created_at }}</td><td>{{ a.patient_name }}</td>
+          <td>{{ a.thyroid_risk }}</td><td>{{ a.diabetes_risk }}</td><td>{{ a.pcos_risk }}</td>
+          <td>{{ a.adrenal_risk }}</td><td>{{ a.metabolic_risk }}</td><td>{{ a.risk_score }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

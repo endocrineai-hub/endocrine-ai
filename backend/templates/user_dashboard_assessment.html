@@ -1,0 +1,160 @@
+{% extends "user_portal_base.html" %}
+{% set title = "New Assessment | User Portal" %}
+{% set active_tab = "assessment" %}
+{% set top_eyebrow = "Assessment Workspace" %}
+{% set top_title = "Create Endocrine Risk Assessment" %}
+{% set top_subtitle = "Fill profile data, preview details, and view results on the right panel." %}
+
+{% block top_actions %}
+<a class="btn btn-ghost" href="/dashboard/history">View History</a>
+{% endblock %}
+
+{% block portal_content %}
+<section class="assessment-workbench">
+  <section class="portal-panel">
+    <div class="portal-panel-head">
+      <div>
+        <h2>Assessment Form</h2>
+        <p class="muted">For self, your name is prefilled. Switch to family to assess someone else.</p>
+      </div>
+      <span class="chip">Input</span>
+    </div>
+
+    <form id="assessment-form" class="portal-form">
+      <div class="grid">
+        <label>Assessment For
+          <select name="assessment_for" id="assessment-for">
+            <option value="self">Myself</option>
+            <option value="family">Family Member</option>
+          </select>
+        </label>
+
+        <label>Patient Name
+          <input
+            id="patient-name"
+            name="patient_name"
+            placeholder="Patient name"
+            value="{{ user_name }}"
+            data-self-name="{{ user_name }}"
+            list="previous-patients"
+            required
+          />
+          <datalist id="previous-patients">
+            {% for n in previous_patient_names %}
+            <option value="{{ n }}"></option>
+            {% endfor %}
+          </datalist>
+        </label>
+
+        <label id="family-relation-wrap" class="hidden">Relation (if family)
+          <input name="family_relation" id="family-relation" placeholder="Mother, Father, Sister, etc." />
+        </label>
+      </div>
+
+      <div class="grid">
+        <label>Age <input type="number" name="age" id="preview-age" required /></label>
+        <label>Gender
+          <select name="gender" id="preview-gender" required>
+            <option value="">Select</option>
+            <option>Female</option>
+            <option>Male</option>
+          </select>
+        </label>
+        <label>BMI <input type="number" step="0.1" name="bmi" id="preview-bmi" required /></label>
+        <label>Sleep quality
+          <select name="sleep_quality" required>
+            <option>Poor</option><option>Average</option><option>Good</option>
+          </select>
+        </label>
+        <label>Stress level
+          <select name="stress_level" required>
+            <option>High</option><option>Moderate</option><option>Low</option>
+          </select>
+        </label>
+        <label>Exercise frequency <input name="exercise_frequency" placeholder="Low / 3 days/week / Daily" required /></label>
+        <label>Diet type <input name="diet_type" placeholder="High sugar, Balanced, etc." required /></label>
+      </div>
+
+      <label>Family history
+        <textarea name="family_history" rows="2" placeholder="Diabetes, thyroid, PCOS, etc."></textarea>
+      </label>
+
+      <label>Symptoms (comma separated)
+        <textarea name="symptoms" rows="2" placeholder="Fatigue, irregular cycles, sugar cravings"></textarea>
+      </label>
+
+      <label>Lab report text (optional)
+        <textarea name="lab_report_text" rows="6" placeholder="Paste complete lab report text here"></textarea>
+      </label>
+
+      <label class="toggle">
+        <input type="checkbox" name="use_ml" />
+        <span>Use ML model (beta)</span>
+      </label>
+
+      <div class="actions">
+        <button class="btn" type="submit">Analyze Risk</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="assessment-side">
+    <section class="portal-panel side-note">
+      <h3>Live Preview</h3>
+      <div class="preview-grid">
+        <div><span>Name</span><strong id="preview-name">{{ user_name }}</strong></div>
+        <div><span>Age</span><strong id="preview-age-text">-</strong></div>
+        <div><span>Gender</span><strong id="preview-gender-text">-</strong></div>
+        <div><span>BMI</span><strong id="preview-bmi-text">-</strong></div>
+      </div>
+    </section>
+
+    <section id="result-section" class="portal-panel hidden">
+      <div class="portal-panel-head">
+        <div>
+          <h2>Assessment Result</h2>
+          <p id="prediction-source" class="muted"></p>
+        </div>
+        <span class="chip">Output</span>
+      </div>
+
+      <div id="ai-summary-wrap" class="card ai-box hidden">
+        <h3>AI Clinical Summary</h3>
+        <p id="ai-summary"></p>
+      </div>
+
+      <div class="chart-card">
+        <canvas id="risk-chart" height="180"></canvas>
+      </div>
+      <div id="risk-cards" class="risk-cards"></div>
+
+      <h3>Key Triggers</h3>
+      <ul id="key-triggers"></ul>
+      <h3>Explanation</h3>
+      <p id="explanation"></p>
+      <h3>Recommended Actions</h3>
+      <ul id="actions"></ul>
+      <h3>Suggested Tests</h3>
+      <ul id="tests"></ul>
+      <h3>Extracted Markers</h3>
+      <pre id="markers-json"></pre>
+
+      <section class="chat-shell">
+        <h3>Ask EndocrineAI</h3>
+        <div id="chat-log" class="chat-log"></div>
+        <form id="chat-form" class="grid">
+          <label>Ask a question about your report
+            <textarea id="chat-input" rows="3" placeholder="Ask about your risks, next steps, or clarifications"></textarea>
+          </label>
+          <button class="btn" type="submit">Send Question</button>
+        </form>
+      </section>
+    </section>
+  </section>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}
