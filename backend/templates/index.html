@@ -1,203 +1,427 @@
-{% extends "public_base.html" %}
-{% set title = "Home | EndocrineAI" %}
-{% block content %}
-<section class="hero">
-  <div class="container hero-grid">
-    <div class="hero-copy">
-      <p class="pill">Precision Preventive Endocrinology</p>
-      <h1>Predict endocrine risks early with AI-powered clinical insight.</h1>
-      <p class="lead">A refined clinical platform combining patient history, lifestyle, lab markers, and AI explanations for early endocrine risk forecasting.</p>
-      <div class="cta-row">
-        {% if is_user_logged_in %}
-          <a class="btn" href="/dashboard">Start Assessment</a>
-        {% else %}
-          <a class="btn" href="/login">Start Assessment</a>
-        {% endif %}
-        <a class="btn btn-ghost" href="/methodology">View Methodology</a>
-      </div>
-      <div class="tag-row">
-        <span>Thyroid</span><span>Diabetes</span><span>PCOS</span><span>Adrenal</span><span>Metabolic</span>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="visual-card">
-        <div class="visual-header">
-          <span class="badge">Live Risk Monitor</span>
-          <span class="chip">AI Ready</span>
-        </div>
-        <div class="visual-metrics">
-          <div class="visual-metric">
-            <h3>72%</h3>
-            <p>Metabolic</p>
-          </div>
-          <div class="visual-metric">
-            <h3>58%</h3>
-            <p>Diabetes</p>
-          </div>
-          <div class="visual-metric">
-            <h3>34%</h3>
-            <p>Thyroid</p>
-          </div>
-        </div>
-        <div class="visual-chart">
-          <div class="visual-bar"><span style="width: 72%"></span></div>
-          <div class="visual-bar"><span style="width: 58%"></span></div>
-          <div class="visual-bar"><span style="width: 34%"></span></div>
-        </div>
-        <p class="visual-footer">Updated: lifestyle + lab inputs · 5 risk domains</p>
-      </div>
-      <div class="visual-float float-a">8+ input signals</div>
-      <div class="visual-float float-b">Admin analytics + export</div>
-    </div>
-  </div>
-</section>
+<!DOCTYPE html>
 
-<section class="section section-alt">
-  <div class="container">
-    <div class="section-head">
-      <h2>Platform Snapshot</h2>
-      <p>Quick proof points that show how the system performs at a glance.</p>
-    </div>
-    <div class="metrics-grid">
-      <article class="metric-card">
-        <h3>24/7</h3>
-        <p>Always-on endocrine risk screening.</p>
-      </article>
-      <article class="metric-card">
-        <h3>JSON</h3>
-        <p>Structured outputs for integrations.</p>
-      </article>
-      <article class="metric-card">
-        <h3>ML + Rules</h3>
-        <p>Model inference with explainable fallback.</p>
-      </article>
-      <article class="metric-card">
-        <h3>Clinic-ready</h3>
-        <p>Designed for clinical decision support flows.</p>
-      </article>
-    </div>
-  </div>
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EndocrineAI | Precision Risk Screening</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#eef1f3",
+                    "surface-tint": "#006781",
+                    "on-primary-container": "#d3f1ff",
+                    "secondary": "#565e74",
+                    "primary": "#005a71",
+                    "tertiary-container": "#965e1c",
+                    "secondary-fixed": "#dae2fd",
+                    "on-primary-fixed-variant": "#004d62",
+                    "secondary-fixed-dim": "#bec6e0",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#693c00",
+                    "on-secondary-fixed-variant": "#3f465c",
+                    "on-primary-fixed": "#001f29",
+                    "primary-fixed-dim": "#81d1f0",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#e6e8eb",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb86f",
+                    "primary-fixed": "#b9eaff",
+                    "inverse-surface": "#2d3133",
+                    "surface-bright": "#f7fafc",
+                    "surface-container-low": "#f1f4f6",
+                    "on-background": "#181c1e",
+                    "outline-variant": "#bec8cd",
+                    "surface-variant": "#e0e3e5",
+                    "outline": "#6f787d",
+                    "secondary-container": "#dae2fd",
+                    "on-tertiary-fixed": "#2c1600",
+                    "surface-dim": "#d7dadd",
+                    "background": "#f7fafc",
+                    "on-secondary-container": "#5c647a",
+                    "surface": "#f7fafc",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#131b2e",
+                    "tertiary": "#794602",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#0e7490",
+                    "inverse-primary": "#81d1f0",
+                    "on-surface-variant": "#3f484c",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#ebeef0",
+                    "on-error": "#ffffff",
+                    "on-surface": "#181c1e",
+                    "on-tertiary-container": "#ffe8d6",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed": "#ffdcbd"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "0.25rem",
+                    "gutter": "24px",
+                    "xl": "2rem",
+                    "2xl": "3rem",
+                    "base": "4px",
+                    "sm": "0.5rem",
+                    "md": "1rem",
+                    "lg": "1.5rem",
+                    "margin": "32px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .bg-gradient-mesh {
+            background: radial-gradient(at 0% 0%, rgba(14, 116, 144, 0.05) 0px, transparent 50%),
+                        radial-gradient(at 100% 0%, rgba(14, 116, 144, 0.08) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(14, 116, 144, 0.05) 0px, transparent 50%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .step-connector::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: #bec8cd;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface bg-gradient-mesh">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant/30 shadow-sm">
+<div class="flex justify-between items-center px-margin py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">science</span>
+<span class="font-headline-md text-headline-md font-bold text-primary">EndocrineAI</span>
+</div>
+<div class="hidden md:flex items-center gap-lg">
+<a class="font-body-md text-body-md text-secondary hover:text-primary transition-colors" href="#how-it-works">How it Works</a>
+<a class="font-body-md text-body-md text-secondary hover:text-primary transition-colors" href="#features">Features</a>
+<a class="font-body-md text-body-md text-secondary hover:text-primary transition-colors" href="#">Clinical Data</a>
+<a class="font-body-md text-body-md text-secondary hover:text-primary transition-colors" href="#">Technology</a>
+</div>
+<button class="bg-primary-container text-on-primary-container px-lg py-sm rounded-xl font-bold hover:bg-primary transition-all duration-200 active:scale-95 shadow-sm">
+                Start Assessment
+            </button>
+</div>
+</nav>
+<main class="pt-32">
+<!-- Hero Section -->
+<section class="max-w-7xl mx-auto px-margin grid md:grid-cols-2 gap-2xl items-center reveal">
+<div class="space-y-lg">
+<div class="inline-flex items-center gap-2 px-md py-xs bg-primary/10 text-primary rounded-full">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label-md text-label-md uppercase tracking-wider">Clinical Intelligence Platform</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-primary leading-tight">
+                    AI-Powered <br/>Endocrine Risk Screening
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                    Advanced clinical synthesis for thyroid function, glycemic health, and hormonal balance. We analyze complex biomarkers to provide proactive risk awareness for diabetes, PCOS, and thyroid disorders.
+                </p>
+<div class="flex flex-wrap gap-md pt-md">
+<button class="bg-primary-container text-on-primary-container px-xl py-md rounded-xl font-bold shadow-md hover:shadow-lg transition-all active:scale-95">
+                        Start Assessment
+                    </button>
+<button class="border-2 border-primary text-primary px-xl py-md rounded-xl font-bold hover:bg-primary/5 transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined">play_circle</span>
+                        View Demo
+                    </button>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -top-10 -left-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
+<div class="glass-card p-4 rounded-2xl shadow-xl overflow-hidden">
+<img alt="Dashboard Analysis View" class="w-full h-auto rounded-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzuSqsQawQAL62wk1hRgruk7HcEfzJehu738gnvZc06sXAjyYqZBv0zGiiJAcdlgJK7P_Leq0ydCsL9jrgHoiEQ6rOtCTbq5mm0mQL1I2uhViz91F65gYl8gaTKh2iF4poCXLpNJsTc1jB-nLeCLBTxm8ta15OoQ3xYuQwxZQeapj9LLzloy9A0inML4f6iNP_4nXB5yRBxi3ZIp9zBODrFb1PNrnN_uF79HhFwLh-oGMifSVF7MvPibIzRPkjXUNavLPOIa8KBt0"/>
+</div>
+<div class="absolute -bottom-6 -right-6 glass-card p-md rounded-xl shadow-lg animate-bounce hidden md:block">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div>
+<p class="font-label-md text-label-md">Risk Score</p>
+<p class="font-headline-md text-headline-md text-primary">92% Precision</p>
+</div>
+</div>
+</div>
+</div>
 </section>
-
-<section class="container section split">
-  <div>
-    <h2>How It Works</h2>
-    <p class="muted">Four simple steps from data intake to action-ready recommendations.</p>
-    <ol class="timeline">
-      <li><strong>Collect</strong> profile, lifestyle, symptoms, labs.</li>
-      <li><strong>Analyze</strong> via ML model + risk engine.</li>
-      <li><strong>Explain</strong> with AI summary + triggers.</li>
-      <li><strong>Act</strong> with suggested tests and actions.</li>
-    </ol>
-  </div>
-  <div class="glass-panel">
-    <h3>Why It's Reliable</h3>
-    <ul>
-      <li>Validated inputs and rule/ML fallback</li>
-      <li>Structured JSON output for audit</li>
-      <li>Transparent risk levels and triggers</li>
-    </ul>
-  </div>
+<!-- Trust Strip -->
+<section class="mt-2xl py-xl bg-surface-container-low border-y border-outline-variant/30 reveal">
+<div class="max-w-7xl mx-auto px-margin grid grid-cols-2 md:grid-cols-4 gap-lg">
+<div class="flex flex-col items-center text-center gap-sm">
+<span class="material-symbols-outlined text-primary text-3xl">school</span>
+<span class="font-label-md text-label-md text-on-surface">Educational project</span>
+</div>
+<div class="flex flex-col items-center text-center gap-sm">
+<span class="material-symbols-outlined text-primary text-3xl">clinical_notes</span>
+<span class="font-label-md text-label-md text-on-surface">Clinical decision-support</span>
+</div>
+<div class="flex flex-col items-center text-center gap-sm">
+<span class="material-symbols-outlined text-primary text-3xl">monitoring</span>
+<span class="font-label-md text-label-md text-on-surface">Data-driven scoring</span>
+</div>
+<div class="flex flex-col items-center text-center gap-sm">
+<span class="material-symbols-outlined text-primary text-3xl">psychology</span>
+<span class="font-label-md text-label-md text-on-surface">Explainable outputs</span>
+</div>
+</div>
 </section>
-
-<section class="section section-alt">
-  <div class="container">
-    <div class="section-head">
-      <h2>Core Capabilities</h2>
-      <p>Essential tools that power assessments, summaries, and clinical workflows.</p>
-    </div>
-    <div class="feature-grid">
-      <article class="feature-card">
-        <h3>Actionable Risk Scores</h3>
-        <p>Instant percentages, levels, and explainable triggers.</p>
-      </article>
-      <article class="feature-card">
-        <h3>Lab Text Parsing</h3>
-        <p>Extract TSH, T3/T4, HbA1c, insulin, cortisol, glucose.</p>
-      </article>
-      <article class="feature-card">
-        <h3>Clinical Workflow</h3>
-        <p>Admin dashboards, user tracking, CSV/PDF export.</p>
-      </article>
-    </div>
-  </div>
+<!-- How it Works -->
+<section class="py-2xl max-w-7xl mx-auto px-margin reveal" id="how-it-works">
+<div class="text-center mb-2xl">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-md">How it Works</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Four simple steps to professional endocrine insights.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg relative">
+<!-- Step 1 -->
+<div class="flex flex-col items-center text-center space-y-md group">
+<div class="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xl relative z-10 transition-transform group-hover:scale-110">1</div>
+<div class="space-y-sm">
+<h3 class="font-bold text-lg">Enter profile data</h3>
+<p class="text-body-sm text-on-surface-variant">Provide basic demographic and symptom indicators.</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center text-center space-y-md group">
+<div class="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xl relative z-10 transition-transform group-hover:scale-110">2</div>
+<div class="space-y-sm">
+<h3 class="font-bold text-lg">Paste lab report</h3>
+<p class="text-body-sm text-on-surface-variant">Our OCR engine extracts values from your lab text.</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center text-center space-y-md group">
+<div class="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xl relative z-10 transition-transform group-hover:scale-110">3</div>
+<div class="space-y-sm">
+<h3 class="font-bold text-lg">AI analysis</h3>
+<p class="text-body-sm text-on-surface-variant">Neural models correlate markers with global patterns.</p>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="flex flex-col items-center text-center space-y-md group">
+<div class="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xl relative z-10 transition-transform group-hover:scale-110">4</div>
+<div class="space-y-sm">
+<h3 class="font-bold text-lg">Get results</h3>
+<p class="text-body-sm text-on-surface-variant">Receive a detailed risk report and next steps.</p>
+</div>
+</div>
+</div>
 </section>
-
-<section class="container section">
-  <div class="section-head">
-    <h2>AI + Explainability</h2>
-    <p>Balanced automation with transparent rationale and clinical context.</p>
-  </div>
-  <div class="bento-grid">
-    <article class="bento-card large">
-      <h3>AI clinical summaries</h3>
-      <p>Generate concise, clinician-friendly summaries using your OpenAI key, with safe fallback logic.</p>
-    </article>
-    <article class="bento-card">
-      <h3>Explainable triggers</h3>
-      <p>Transparent rationale for every risk score.</p>
-    </article>
-    <article class="bento-card">
-      <h3>Global-ready UX</h3>
-      <p>Responsive design for patients and admins.</p>
-    </article>
-  </div>
+<!-- Feature Grid (Bento) -->
+<section class="py-2xl bg-surface-container-lowest reveal" id="features">
+<div class="max-w-7xl mx-auto px-margin">
+<div class="mb-2xl">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-md">Precision Capabilities</h2>
+<p class="text-on-surface-variant max-w-2xl">A comprehensive suite of tools designed for clinical-grade hormonal health analysis.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-lg">
+<!-- Feature 1: Multi-condition prediction -->
+<div class="md:col-span-2 glass-card p-xl rounded-2xl hover:shadow-lg transition-shadow border-l-4 border-l-primary">
+<span class="material-symbols-outlined text-primary mb-md">hub</span>
+<h3 class="font-headline-md text-headline-md mb-sm">Multi-condition Prediction</h3>
+<p class="text-on-surface-variant">Simultaneous screening for Thyroid (Hypo/Hyper), Glycemic control (Prediabetes/Type 2), and PCOS using complex marker correlations.</p>
+</div>
+<!-- Feature 2: Lab Marker Extraction -->
+<div class="glass-card p-xl rounded-2xl hover:shadow-lg transition-shadow">
+<span class="material-symbols-outlined text-primary mb-md">biotech</span>
+<h3 class="font-bold text-lg mb-sm">Marker Extraction</h3>
+<p class="text-body-sm text-on-surface-variant">Automated parsing of TSH, T4, HbA1c, and Vitamin D levels from unstructured lab documents.</p>
+</div>
+<!-- Feature 3: AI Summary -->
+<div class="glass-card p-xl rounded-2xl hover:shadow-lg transition-shadow">
+<span class="material-symbols-outlined text-primary mb-md">summarize</span>
+<h3 class="font-bold text-lg mb-sm">AI Clinical Summary</h3>
+<p class="text-body-sm text-on-surface-variant">Generative synthesis that translates complex data into clear, physician-ready summaries.</p>
+</div>
+<!-- Feature 4: Explainable Triggers -->
+<div class="glass-card p-xl rounded-2xl hover:shadow-lg transition-shadow">
+<span class="material-symbols-outlined text-primary mb-md">visibility</span>
+<h3 class="font-bold text-lg mb-sm">Explainable Triggers</h3>
+<p class="text-body-sm text-on-surface-variant">Every risk factor is linked back to specific clinical markers and published medical literature.</p>
+</div>
+<!-- Feature 5: Dashboard trends -->
+<div class="md:col-span-2 glass-card p-xl rounded-2xl hover:shadow-lg transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<span class="material-symbols-outlined text-primary">trending_up</span>
+<div class="flex gap-2">
+<span class="w-12 h-2 rounded-full bg-primary/20"></span>
+<span class="w-12 h-2 rounded-full bg-primary"></span>
+</div>
+</div>
+<h3 class="font-headline-md text-headline-md mb-sm">Longitudinal Dashboard</h3>
+<p class="text-on-surface-variant">Track hormonal fluctuations over time with high-precision visualization and trend forecasting.</p>
+</div>
+<!-- Feature 6: Admin Analytics -->
+<div class="glass-card p-xl rounded-2xl hover:shadow-lg transition-shadow">
+<span class="material-symbols-outlined text-primary mb-md">shield_person</span>
+<h3 class="font-bold text-lg mb-sm">Admin Analytics</h3>
+<p class="text-body-sm text-on-surface-variant">Aggregate data for clinical research with HIPAA-compliant anonymization protocols.</p>
+</div>
+</div>
+</div>
 </section>
-
-<section class="section section-alt">
-  <div class="container">
-    <div class="section-head">
-      <h2>Service Portfolio</h2>
-      <p>Everything you need to deliver endocrine risk care at scale.</p>
-    </div>
-    <div class="service-grid">
-      <article class="service-card">
-        <h3>Individual Screening</h3>
-        <p>Complete endocrine risk assessment with AI explanation.</p>
-      </article>
-      <article class="service-card">
-        <h3>Model Training</h3>
-        <p>Train on your dataset with metrics and evaluation.</p>
-      </article>
-      <article class="service-card">
-        <h3>Care Team Insights</h3>
-        <p>Admin analytics, reports, and compliance exports.</p>
-      </article>
-    </div>
-  </div>
+<!-- Why it Matters -->
+<section class="py-2xl reveal">
+<div class="max-w-7xl mx-auto px-margin">
+<div class="bg-primary rounded-2xl p-2xl text-on-primary overflow-hidden relative">
+<div class="absolute top-0 right-0 w-1/3 h-full bg-white/5 skew-x-12"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-center gap-xl">
+<div class="flex-1 space-y-md">
+<h2 class="font-display-lg text-display-lg leading-tight">Healthcare is reactive; this platform enables proactive risk awareness.</h2>
+<p class="text-primary-fixed text-body-lg">Early detection of endocrine dysfunction can prevent long-term systemic complications and improve quality of life.</p>
+</div>
+<div class="w-full md:w-auto">
+<button class="bg-white text-primary px-2xl py-lg rounded-xl font-bold hover:bg-white/90 transition-all text-nowrap">
+                                Join the Network
+                            </button>
+</div>
+</div>
+</div>
+</div>
 </section>
-
-<section class="container section split">
-  <div>
-    <h2>Built for real-world deployment</h2>
-    <p class="lead">From patient onboarding to AI summaries and audit trails, the platform is structured for clinics, wellness providers, and public health teams.</p>
-    <div class="cta-row">
-      <a class="btn" href="/signup">Create account</a>
-      <a class="btn btn-ghost" href="/services">Explore services</a>
-    </div>
-  </div>
-  <div class="glass-panel">
-    <h3>Deployment Highlights</h3>
-    <ul>
-      <li>OpenAI summary layer for clinicians</li>
-      <li>API endpoints for EHR integration</li>
-      <li>User and admin dashboards included</li>
-    </ul>
-  </div>
+<!-- Tech Stack -->
+<section class="py-2xl max-w-7xl mx-auto px-margin reveal">
+<div class="text-center mb-xl">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Built with precision</span>
+</div>
+<div class="flex flex-wrap justify-center gap-md">
+<span class="px-lg py-sm bg-surface-container-high rounded-lg font-bold text-secondary flex items-center gap-2 border border-outline-variant/30">
+<img alt="Flask" class="w-5 h-5 opacity-70" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIvZ7VxFIO_KxeZVEvgHqvoUoAVyVNKVt6RF4VnUtLPBvQhEGzZZfGOg7JcmN85RLpbRGVwgZ2yW1dBI4Jerz2pazAQruYd2bnHqGWNu4uJoLSGhPu4bwOb3fIzEi2sc6fzB90AyfOsY2uGO9zerVoxJsMz0eAUtrpDu7KQfHALPtXJQxBM7ipWlJD9hZIosYhpV_jqXLP1RTJ_N7uwKKfPPs9r0fFVaYbM7RARo6MTtVzNwu_1sjHfjB7e-yFejlutr9E-7KHljo"/> Flask
+                </span>
+<span class="px-lg py-sm bg-surface-container-high rounded-lg font-bold text-secondary flex items-center gap-2 border border-outline-variant/30">
+<span class="material-symbols-outlined text-primary text-xl">memory</span> ML Inference
+                </span>
+<span class="px-lg py-sm bg-surface-container-high rounded-lg font-bold text-secondary flex items-center gap-2 border border-outline-variant/30">
+<span class="material-symbols-outlined text-primary text-xl">database</span> SQL Engine
+                </span>
+<span class="px-lg py-sm bg-surface-container-high rounded-lg font-bold text-secondary flex items-center gap-2 border border-outline-variant/30">
+<img alt="OpenAI" class="w-5 h-5 opacity-70" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKEnPiNdk_gKuRqp3yX5FMi9D1tR5SfNLAVCrFeiOfZXXowJMszwYnrMjesceeaFBYPrgTZpX_0d7LiWOu4PF3Qk6cJrv1H6N-j_Vo-OfwGoAv4CcuFW6rfyDsV8KlJWT_23_EnwqhFO6CzfE7obLjj75kXLv-Y5eI14KqPs66RL6vYcXqdD3GCtZqaveOXELhCt1W4uLdWKZs7dbrE0IjGaQd_CnW0GDH9BuNDgQbNLwkVp1jYgUdLyvj910c1RV4FiBYP0IRlFE"/> OpenAI LLM
+                </span>
+<span class="px-lg py-sm bg-surface-container-high rounded-lg font-bold text-secondary flex items-center gap-2 border border-outline-variant/30">
+<span class="material-symbols-outlined text-primary text-xl">shield</span> HIPAA Security
+                </span>
+</div>
 </section>
-
-<section class="section section-alt">
-  <div class="container">
-    <div class="cta-panel">
-      <h2>Launch your endocrine risk service</h2>
-      <p class="lead">A complete experience: landing site, assessment engine, AI summaries, user portal, and admin analytics.</p>
-      <p class="muted">Quote: "Preventive endocrine care, delivered with precision."</p>
-      <div class="cta-row">
-        <a class="btn" href="/signup">Get started</a>
-        <a class="btn btn-ghost" href="/contact">Talk to us</a>
-      </div>
-    </div>
-  </div>
+<!-- Disclaimer -->
+<section class="max-w-4xl mx-auto px-margin py-xl reveal">
+<div class="border-2 border-outline-variant rounded-2xl p-lg bg-surface-container-low/50">
+<div class="flex items-start gap-md">
+<span class="material-symbols-outlined text-error mt-1">warning</span>
+<div class="space-y-sm">
+<h4 class="font-bold text-on-surface">Medical Disclaimer</h4>
+<p class="text-body-sm text-on-surface-variant">
+                            This system is designed for educational purposes and risk awareness support. It is <strong>not</strong> a medical diagnosis tool. Users should always consult with a licensed endocrinologist or primary care physician for clinical diagnosis and treatment plans.
+                        </p>
+</div>
+</div>
+</div>
 </section>
+<!-- Final CTA -->
+<section class="py-2xl text-center bg-gradient-to-b from-transparent to-primary/5 reveal">
+<div class="max-w-3xl mx-auto px-margin space-y-lg">
+<h2 class="font-display-lg text-display-lg text-primary">Ready to assess your risk?</h2>
+<p class="text-body-lg text-on-surface-variant">Take your first preventive risk check in less than 5 minutes. Secure, private, and precise.</p>
+<div class="pt-md">
+<button class="bg-primary-container text-on-primary-container px-2xl py-xl rounded-xl font-bold text-xl shadow-lg hover:shadow-xl hover:bg-primary transition-all active:scale-95">
+                        Launch Assessment
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl mt-2xl bg-surface-container-low dark:bg-surface-container-lowest border-t border-outline-variant">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin max-w-7xl mx-auto gap-lg">
+<div class="flex flex-col items-center md:items-start gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl">science</span>
+<span class="font-headline-md text-headline-md font-bold text-primary">EndocrineAI</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">© 2024 EndocrineAI. Clinical precision in hormonal health.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-lg">
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Medical Disclaimer</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Clinical Support</a>
+</div>
+</div>
+</footer>
+<script>
+        // Scroll Reveal Animation
+        const observerOptions = {
+            threshold: 0.1
+        };
 
-{% endblock %}
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Interaction scale effect for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => btn.classList.add('scale-95'));
+            btn.addEventListener('mouseup', () => btn.classList.remove('scale-95'));
+            btn.addEventListener('mouseleave', () => btn.classList.remove('scale-95'));
+        });
+    </script>
+</body></html>
