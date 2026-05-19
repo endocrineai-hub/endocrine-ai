@@ -14,12 +14,28 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 
 
 def _database_url() -> str:
-    return os.getenv("DATABASE_URL", "").strip()
+    # Support common provider variable names used on Vercel/Neon setups.
+    candidates = [
+        "DATABASE_URL",
+        "POSTGRES_URL",
+        "POSTGRES_PRISMA_URL",
+        "POSTGRES_URL_NON_POOLING",
+        "NEON_DATABASE_URL",
+    ]
+    for key in candidates:
+        value = os.getenv(key, "").strip()
+        if value:
+            return value
+    return ""
 
 
 def _is_postgres() -> bool:
     url = _database_url()
     return url.startswith("postgres://") or url.startswith("postgresql://")
+
+
+def current_db_backend() -> str:
+    return "postgres" if _is_postgres() else "sqlite"
 
 
 def _sqlite_db_path() -> Path:

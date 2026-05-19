@@ -2,6 +2,7 @@ import json
 from flask import Blueprint, jsonify, request, session
 
 from ..models.assessment_model import save_assessment
+from ..models.db import current_db_backend
 from ..services.chat_service import generate_chat_reply
 from ..services.model_inference import model_available, predict_with_models
 from ..services.openai_service import chat_completion, openai_available
@@ -187,10 +188,17 @@ def api_model_status():
             "status": "success",
             "model_available": model_available(),
             "openai_available": openai_available(),
+            "db_backend": current_db_backend(),
         }
     )
 
 
 @api_bp.route("/api/health", methods=["GET"])
 def api_health():
-    return jsonify({"status": "success", "service": "endocrine-risk-platform"})
+    return jsonify(
+        {
+            "status": "success",
+            "service": "endocrine-risk-platform",
+            "db_backend": current_db_backend(),
+        }
+    )
