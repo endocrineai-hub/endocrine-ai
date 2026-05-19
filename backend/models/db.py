@@ -1,6 +1,7 @@
 import os
 import sqlite3
 from pathlib import Path
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 try:
     import psycopg
@@ -23,10 +24,28 @@ def _database_url() -> str:
         "NEON_DATABASE_URL",
     ]
     for key in candidates:
-        value = os.getenv(key, "").strip()
+        raw = os.getenv(key, "").strip()
+        if not raw:
+            continue
+        # Handle accidental quoted env values from dashboard copy/paste.
+        value = raw.strip("'\"")
         if value:
-            return value
+            return _sanitize_database_url(value)
     return ""
+
+
+def _sanitize_database_url(url: str) -> str:
+    """
+    Normalize provider URLs for runtime compatibility.
+    - Removes problematic `channel_binding` query param often present in copied Neon URLs.
+    """
+    try:
+        parsed = urlsplit(url)
+        params = [(k, v) for k, v in parse_qsl(parsed.query, keep_blank_values=True) if k.lower() != "channel_binding"]
+        query = urlencode(params, doseq=True)
+        return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, query, parsed.fragment))
+    except Exception:
+        return url
 
 
 def _is_postgres() -> bool:
