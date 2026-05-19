@@ -83,6 +83,8 @@ def _init_sqlite_db(conn: DBConnection) -> None:
             created_at TEXT NOT NULL,
             user_id INTEGER,
             patient_name TEXT,
+            patient_email TEXT,
+            patient_mobile TEXT,
             age INTEGER,
             gender TEXT,
             bmi REAL,
@@ -129,6 +131,10 @@ def _init_sqlite_db(conn: DBConnection) -> None:
         conn.execute("ALTER TABLE assessments ADD COLUMN symptoms TEXT")
     if "risk_score" not in columns:
         conn.execute("ALTER TABLE assessments ADD COLUMN risk_score REAL")
+    if "patient_email" not in columns:
+        conn.execute("ALTER TABLE assessments ADD COLUMN patient_email TEXT")
+    if "patient_mobile" not in columns:
+        conn.execute("ALTER TABLE assessments ADD COLUMN patient_mobile TEXT")
 
 
 def _init_postgres_db(conn: DBConnection) -> None:
@@ -139,6 +145,8 @@ def _init_postgres_db(conn: DBConnection) -> None:
             created_at TEXT NOT NULL,
             user_id BIGINT,
             patient_name TEXT,
+            patient_email TEXT,
+            patient_mobile TEXT,
             age INTEGER,
             gender TEXT,
             bmi DOUBLE PRECISION,
@@ -154,6 +162,8 @@ def _init_postgres_db(conn: DBConnection) -> None:
         )
         """
     )
+    conn.execute("ALTER TABLE assessments ADD COLUMN IF NOT EXISTS patient_email TEXT")
+    conn.execute("ALTER TABLE assessments ADD COLUMN IF NOT EXISTS patient_mobile TEXT")
 
     conn.execute(
         """

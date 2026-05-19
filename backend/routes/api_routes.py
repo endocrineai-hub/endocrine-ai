@@ -112,6 +112,8 @@ def assess_profile():
         result,
         payload.get("patient_name", "Anonymous"),
         user_id=session.get("user_id"),
+        patient_email=str(payload.get("patient_email", "") or ""),
+        patient_mobile=str(payload.get("patient_mobile", "") or ""),
     )
 
     return jsonify(

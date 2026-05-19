@@ -23,6 +23,11 @@ def contact():
     return render_template("contact.html")
 
 
+@public_bp.route("/start-assessment")
+def start_assessment():
+    return render_template("public_assessment.html")
+
+
 @public_bp.route("/services")
 def services():
     return render_template("services.html")

@@ -120,6 +120,8 @@ if (form) {
 
     const payload = {
       patient_name: fd.get("patient_name") || "Anonymous",
+      patient_email: fd.get("patient_email") || "",
+      patient_mobile: fd.get("patient_mobile") || "",
       profile,
       lab_report_text: fd.get("lab_report_text") || "",
       use_ml: Boolean(fd.get("use_ml")),

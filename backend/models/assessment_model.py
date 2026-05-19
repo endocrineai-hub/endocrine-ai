@@ -4,7 +4,14 @@ from datetime import datetime
 from .db import get_connection
 
 
-def save_assessment(profile: dict, result: dict, patient_name: str, user_id: int | None = None) -> None:
+def save_assessment(
+    profile: dict,
+    result: dict,
+    patient_name: str,
+    user_id: int | None = None,
+    patient_email: str = "",
+    patient_mobile: str = "",
+) -> None:
     risk_scores = result.get("risk_scores", {})
     symptoms = profile.get("Symptoms", [])
     if isinstance(symptoms, list):
@@ -23,16 +30,18 @@ def save_assessment(profile: dict, result: dict, patient_name: str, user_id: int
     conn.execute(
         """
         INSERT INTO assessments (
-            created_at, user_id, patient_name, age, gender, bmi, symptoms,
+            created_at, user_id, patient_name, patient_email, patient_mobile, age, gender, bmi, symptoms,
             thyroid_risk, diabetes_risk, pcos_risk, adrenal_risk, metabolic_risk,
             risk_score, profile_json, result_json
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             datetime.utcnow().isoformat(timespec="seconds") + "Z",
             user_id,
             patient_name,
+            patient_email.strip(),
+            patient_mobile.strip(),
             profile.get("Age"),
             profile.get("Gender"),
             profile.get("BMI"),
@@ -54,7 +63,7 @@ def save_assessment(profile: dict, result: dict, patient_name: str, user_id: int
 def get_dashboard_assessments(limit: int | None = None):
     conn = get_connection()
     query = (
-        "SELECT id, created_at, user_id, patient_name, age, gender, bmi, symptoms, "
+        "SELECT id, created_at, user_id, patient_name, patient_email, patient_mobile, age, gender, bmi, symptoms, "
         "thyroid_risk, diabetes_risk, pcos_risk, adrenal_risk, metabolic_risk, "
         "risk_score, result_json FROM assessments ORDER BY id DESC"
     )
@@ -85,6 +94,7 @@ def get_all_assessment_rows():
     rows = conn.execute(
         """
         SELECT id, created_at, user_id, patient_name, age, gender, bmi, symptoms,
+               patient_email, patient_mobile,
                thyroid_risk, diabetes_risk, pcos_risk, adrenal_risk, metabolic_risk, risk_score
         FROM assessments
         ORDER BY id DESC
@@ -115,6 +125,7 @@ def get_user_assessment_rows(user_id: int) -> list[dict]:
     rows = conn.execute(
         """
         SELECT id, created_at, user_id, patient_name, age, gender, bmi, symptoms,
+               patient_email, patient_mobile,
                thyroid_risk, diabetes_risk, pcos_risk, adrenal_risk, metabolic_risk, risk_score
         FROM assessments
         WHERE user_id = ?
