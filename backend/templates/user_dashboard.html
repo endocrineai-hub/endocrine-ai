@@ -11,7 +11,7 @@
 
 {% block top_actions %}
 <a class="btn" href="/dashboard/new">Run Assessment</a>
-<a class="btn btn-ghost" href="/about">About Project</a>
+<a class="btn btn-ghost" href="/dashboard/history">View History</a>
 {% endblock %}
 
 {% block portal_content %}
@@ -69,6 +69,11 @@
         <li>Diabetes: <strong>{{ latest.diabetes_risk if latest else '0%' }}</strong></li>
         <li>Metabolic: <strong>{{ latest.metabolic_risk if latest else '0%' }}</strong></li>
       </ul>
+    </section>
+    <section class="portal-panel side-note">
+      <h3>Next Best Step</h3>
+      <p class="muted">Run a fresh assessment after adding latest lab values for more reliable trend tracking.</p>
+      <a class="btn" href="/dashboard/new">Start New Assessment</a>
     </section>
     <section class="portal-panel side-note">
       <h3>Compliance</h3>
