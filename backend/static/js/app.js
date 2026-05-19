@@ -11,8 +11,33 @@ const previewName = document.getElementById("preview-name");
 const previewAge = document.getElementById("preview-age-text");
 const previewGender = document.getElementById("preview-gender-text");
 const previewBmi = document.getElementById("preview-bmi-text");
+const bmiHeightInput = document.getElementById("bmi-height");
+const bmiWeightInput = document.getElementById("bmi-weight");
+const bmiCalcBtn = document.getElementById("bmi-calc-btn");
+const bmiCalcResult = document.getElementById("bmi-calc-result");
 let riskChart = null;
 let latestAssessment = null;
+
+function initBmiCalculator() {
+  if (!form || !bmiCalcBtn || !bmiHeightInput || !bmiWeightInput) return;
+  bmiCalcBtn.addEventListener("click", () => {
+    const heightCm = Number(bmiHeightInput.value);
+    const weightKg = Number(bmiWeightInput.value);
+    if (!heightCm || !weightKg || heightCm <= 0 || weightKg <= 0) {
+      if (bmiCalcResult) bmiCalcResult.textContent = "Enter valid height and weight values.";
+      return;
+    }
+    const heightM = heightCm / 100;
+    const bmi = weightKg / (heightM * heightM);
+    const roundedBmi = Number(bmi.toFixed(1));
+    const bmiInput = form.querySelector('input[name="bmi"]');
+    if (bmiInput) {
+      bmiInput.value = String(roundedBmi);
+      bmiInput.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+    if (bmiCalcResult) bmiCalcResult.textContent = `Calculated BMI: ${roundedBmi}`;
+  });
+}
 
 function toListItems(targetId, items) {
   const el = document.getElementById(targetId);
@@ -87,6 +112,7 @@ function syncPreviewFields() {
 if (form) {
   syncAssessmentMode();
   syncPreviewFields();
+  initBmiCalculator();
 
   if (assessmentFor) {
     assessmentFor.addEventListener("change", syncAssessmentMode);
