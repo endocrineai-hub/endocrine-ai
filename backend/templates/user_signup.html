@@ -1,29 +1,64 @@
-{% extends "public_base.html" %}
-{% set title = "User Registration" %}
-{% block content %}
-<section class="auth-hero">
-  <div class="container auth-grid">
-    <div class="auth-copy">
-      <p class="pill">Create Account</p>
-      <h1>Start your personalized endocrine tracking.</h1>
-      <p class="lead">Secure login, private dashboards, and AI-enhanced summaries.</p>
-      <ul>
-        <li><strong>Fast onboarding</strong> in under 1 minute.</li>
-        <li><strong>Export-ready</strong> data for your care team.</li>
-        <li><strong>Continuous monitoring</strong> of risk signals.</li>
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Sign Up | EndocrineAI</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    body { font-family: Inter, sans-serif; }
+    h1, h2, .brand { font-family: "Plus Jakarta Sans", sans-serif; }
+    .bg-gradient-mesh {
+      background: radial-gradient(at 0% 0%, rgba(14, 116, 144, 0.08) 0px, transparent 50%),
+                  radial-gradient(at 100% 0%, rgba(14, 116, 144, 0.12) 0px, transparent 50%),
+                  radial-gradient(at 100% 100%, rgba(14, 116, 144, 0.08) 0px, transparent 50%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 bg-gradient-mesh">
+  <header class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/85 backdrop-blur-md">
+    <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
+      <a class="brand text-2xl font-extrabold text-cyan-800" href="/">EndocrineAI</a>
+      <div class="flex items-center gap-3">
+        <a class="rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 hover:text-cyan-800" href="/login">Login</a>
+        <a class="rounded-lg bg-cyan-700 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-800" href="/start-assessment">Start Assessment</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto grid min-h-[calc(100vh-80px)] w-full max-w-7xl gap-10 px-6 py-12 md:grid-cols-2 md:items-center">
+    <section>
+      <p class="mb-3 inline-flex rounded-full bg-cyan-100 px-4 py-1 text-sm font-semibold text-cyan-800">Create Account</p>
+      <h1 class="text-4xl font-extrabold leading-tight text-cyan-900 md:text-5xl">Join EndocrineAI dashboard</h1>
+      <p class="mt-4 max-w-xl text-lg text-slate-600">Create your account to save assessment history, track trends over time, and access your personalized endocrine risk insights.</p>
+      <ul class="mt-6 space-y-3 text-slate-700">
+        <li>Secure patient-friendly portal access</li>
+        <li>Personal endocrine risk history</li>
+        <li>Follow-up trend monitoring</li>
       </ul>
-    </div>
-    <div class="auth-card">
-      <h2>Register</h2>
-      {% if error %}<p class="error">{{ error }}</p>{% endif %}
-      <form method="post">
-        <label>Name <input name="name" required /></label>
-        <label>Email <input name="email" type="email" required /></label>
-        <label>Password <input name="password" type="password" required /></label>
-        <button class="btn" type="submit">Create Account</button>
-        <a class="link" href="/login">Already have an account? Login</a>
+    </section>
+
+    <section class="rounded-2xl border border-slate-200 bg-white/90 p-8 shadow-xl backdrop-blur">
+      <h2 class="text-2xl font-bold text-cyan-900">Sign Up</h2>
+      <p class="mt-2 text-sm text-slate-500">Register your account to continue.</p>
+      {% if error %}
+      <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error }}</div>
+      {% endif %}
+      <form class="mt-6 space-y-4" method="post">
+        <label class="block text-sm font-medium text-slate-700">Full Name
+          <input class="mt-1 w-full rounded-xl border-slate-300 px-4 py-3 focus:border-cyan-700 focus:ring-cyan-700" name="name" required />
+        </label>
+        <label class="block text-sm font-medium text-slate-700">Email
+          <input class="mt-1 w-full rounded-xl border-slate-300 px-4 py-3 focus:border-cyan-700 focus:ring-cyan-700" name="email" type="email" required />
+        </label>
+        <label class="block text-sm font-medium text-slate-700">Password
+          <input class="mt-1 w-full rounded-xl border-slate-300 px-4 py-3 focus:border-cyan-700 focus:ring-cyan-700" name="password" type="password" required />
+        </label>
+        <button class="w-full rounded-xl bg-cyan-700 px-4 py-3 font-semibold text-white hover:bg-cyan-800" type="submit">Create Account</button>
       </form>
-    </div>
-  </div>
-</section>
-{% endblock %}
+      <p class="mt-5 text-sm text-slate-600">Already have an account? <a class="font-semibold text-cyan-800 hover:underline" href="/login">Login</a></p>
+    </section>
+  </main>
+</body>
+</html>
