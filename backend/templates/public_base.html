@@ -20,9 +20,7 @@
       <a class="logo" href="{{ url_for('public.index') }}">Endocrine<span>AI</span></a>
       <nav class="nav-links">
         <a href="{{ url_for('public.index') }}">Home</a>
-        <a href="/services">Services</a>
-        <a href="{{ url_for('public.methodology') }}">Methodology</a>
-        <a href="{{ url_for('public.contact') }}">Contact</a>
+        <a href="/start-assessment">Start Assessment</a>
         {% if is_user_logged_in %}
           <a href="/dashboard">Dashboard</a>
           <a href="/logout">Logout ({{ user_name }})</a>
@@ -45,9 +43,9 @@
         <p class="muted">AI-powered endocrine risk analysis. Not a medical diagnosis.</p>
       </div>
       <div class="footer-links">
-        <a href="/services">Services</a>
-        <a href="/methodology">Methodology</a>
-        <a href="/contact">Contact</a>
+        <a href="{{ url_for('public.index') }}">Home</a>
+        <a href="/start-assessment">Start Assessment</a>
+        <a href="/login">Login</a>
       </div>
     </div>
   </footer>

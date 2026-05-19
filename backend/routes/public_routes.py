@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, redirect, render_template, url_for
 
 public_bp = Blueprint("public", __name__)
 
@@ -10,17 +10,17 @@ def index():
 
 @public_bp.route("/about")
 def about():
-    return render_template("about.html")
+    return redirect(url_for("public.index"))
 
 
 @public_bp.route("/methodology")
 def methodology():
-    return render_template("methodology.html")
+    return redirect(url_for("public.index"))
 
 
 @public_bp.route("/contact")
 def contact():
-    return render_template("contact.html")
+    return redirect(url_for("public.index"))
 
 
 @public_bp.route("/start-assessment")
@@ -30,4 +30,4 @@ def start_assessment():
 
 @public_bp.route("/services")
 def services():
-    return render_template("services.html")
+    return redirect(url_for("public.index"))
