@@ -117,22 +117,67 @@
   }
 
   function printAssessmentReport(assessment) {
-    const risk = [
-      ["Overall", assessment.risk_score],
-      ["Thyroid", assessment.thyroid_risk],
-      ["Diabetes", assessment.diabetes_risk],
-      ["PCOS", assessment.pcos_risk],
-      ["Adrenal", assessment.adrenal_risk],
-      ["Metabolic", assessment.metabolic_risk],
-    ];
-    const rows = risk
-      .map(([k, v]) => `<tr><td style="padding:8px;border:1px solid #ddd;">${k}</td><td style="padding:8px;border:1px solid #ddd;">${v || "-"}</td></tr>`)
+    const profile = assessment.profile || {};
+    const result = assessment.result || {};
+    const riskScores = result.risk_scores || {
+      thyroid: assessment.thyroid_risk,
+      diabetes: assessment.diabetes_risk,
+      pcos: assessment.pcos_risk,
+      adrenal: assessment.adrenal_risk,
+      metabolic: assessment.metabolic_risk,
+    };
+    const riskLevels = result.risk_level || {};
+    const keyTriggers = result.key_triggers || [];
+    const recommendedActions = result.recommended_actions || [];
+    const suggestedTests = result.suggested_tests || [];
+    const aiSummary = result.ai_summary || assessment.ai_summary || "-";
+
+    const riskRows = Object.entries(riskScores)
+      .map(([k, v]) => {
+        const level = riskLevels[k] || "-";
+        return `<tr>
+          <td style="padding:8px;border:1px solid #ddd;text-transform:capitalize;">${k}</td>
+          <td style="padding:8px;border:1px solid #ddd;">${v || "-"}</td>
+          <td style="padding:8px;border:1px solid #ddd;">${level}</td>
+        </tr>`;
+      })
       .join("");
+
+    const profileRows = Object.entries(profile)
+      .map(([k, v]) => {
+        const value = Array.isArray(v) ? v.join(", ") : (v ?? "-");
+        return `<tr><td style="padding:8px;border:1px solid #ddd;">${k}</td><td style="padding:8px;border:1px solid #ddd;">${value}</td></tr>`;
+      })
+      .join("");
+
+    const triggerItems = keyTriggers.length
+      ? keyTriggers.map((x) => `<li>${x}</li>`).join("")
+      : "<li>-</li>";
+    const actionItems = recommendedActions.length
+      ? recommendedActions.map((x) => `<li>${x}</li>`).join("")
+      : "<li>-</li>";
+    const testItems = suggestedTests.length
+      ? suggestedTests.map((x) => `<li>${x}</li>`).join("")
+      : "<li>-</li>";
+
     const html = `
       <html>
-      <head><title>Assessment Report #${assessment.id}</title></head>
-      <body style="font-family: Arial, sans-serif; padding: 20px; color: #111;">
+      <head>
+        <title>Assessment Report #${assessment.id}</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; color: #111; line-height: 1.45; }
+          h1,h2,h3 { margin: 0 0 8px; }
+          h2 { margin-top: 20px; }
+          table { border-collapse: collapse; width: 100%; margin-top: 8px; }
+          td, th { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: top; }
+          th { background: #f5f7fb; }
+          .muted { color: #475569; }
+          .section { margin-top: 18px; page-break-inside: avoid; }
+        </style>
+      </head>
+      <body>
         <h1>EndocrineAI Assessment Report</h1>
+        <p class="muted">Generated for admin review and printing.</p>
         <p><strong>Record ID:</strong> ${assessment.id || "-"}</p>
         <p><strong>Date:</strong> ${assessment.created_at || "-"}</p>
         <p><strong>Patient:</strong> ${assessment.patient_name || "-"}</p>
@@ -140,8 +185,46 @@
         <p><strong>Mobile:</strong> ${assessment.patient_mobile || "-"}</p>
         <p><strong>Age/Gender/BMI:</strong> ${assessment.age || "-"} / ${assessment.gender || "-"} / ${assessment.bmi || "-"}</p>
         <p><strong>Symptoms:</strong> ${assessment.symptoms || "-"}</p>
-        <h3>Risk Scores</h3>
-        <table style="border-collapse:collapse;min-width:360px;">${rows}</table>
+
+        <div class="section">
+          <h2>Risk Scores</h2>
+          <table>
+            <thead><tr><th>Domain</th><th>Score</th><th>Level</th></tr></thead>
+            <tbody>${riskRows}</tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Profile Inputs</h2>
+          <table>
+            <tbody>${profileRows || '<tr><td colspan="2">-</td></tr>'}</tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Key Triggers</h2>
+          <ul>${triggerItems}</ul>
+        </div>
+
+        <div class="section">
+          <h2>Recommended Actions</h2>
+          <ul>${actionItems}</ul>
+        </div>
+
+        <div class="section">
+          <h2>Suggested Tests</h2>
+          <ul>${testItems}</ul>
+        </div>
+
+        <div class="section">
+          <h2>AI Summary</h2>
+          <p>${aiSummary}</p>
+        </div>
+
+        <div class="section">
+          <h2>Raw Assessment JSON</h2>
+          <pre style="white-space:pre-wrap;word-break:break-word;background:#f8fafc;border:1px solid #e2e8f0;padding:10px;border-radius:8px;">${JSON.stringify(result, null, 2)}</pre>
+        </div>
       </body>
       </html>
     `;
