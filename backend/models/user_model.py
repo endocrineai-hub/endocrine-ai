@@ -68,7 +68,7 @@ def get_all_users_with_stats() -> list[dict]:
                 user_id,
                 COUNT(*) AS total_assessments,
                 MAX(created_at) AS latest_assessment_at,
-                ROUND(AVG(risk_score), 2) AS avg_risk_score
+                ROUND(CAST(AVG(risk_score) AS numeric), 2) AS avg_risk_score
             FROM assessments
             WHERE user_id IS NOT NULL
             GROUP BY user_id
@@ -98,7 +98,7 @@ def get_user_with_stats(user_id: int) -> dict | None:
                 user_id,
                 COUNT(*) AS total_assessments,
                 MAX(created_at) AS latest_assessment_at,
-                ROUND(AVG(risk_score), 2) AS avg_risk_score
+                ROUND(CAST(AVG(risk_score) AS numeric), 2) AS avg_risk_score
             FROM assessments
             WHERE user_id IS NOT NULL
             GROUP BY user_id
