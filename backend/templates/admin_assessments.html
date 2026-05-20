@@ -154,12 +154,45 @@
     w.print();
   }
 
+  function parseMaybeJson(value) {
+    if (typeof value !== "string") return value;
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  }
+
+  function buildDetailPayload(raw) {
+    return {
+      id: raw.id,
+      created_at: raw.created_at,
+      patient_name: raw.patient_name,
+      patient_email: raw.patient_email || "",
+      patient_mobile: raw.patient_mobile || "",
+      age: raw.age,
+      gender: raw.gender,
+      bmi: raw.bmi,
+      symptoms: raw.symptoms,
+      prediction_source: raw.prediction_source,
+      risk_score: raw.risk_score,
+      thyroid_risk: raw.thyroid_risk,
+      diabetes_risk: raw.diabetes_risk,
+      pcos_risk: raw.pcos_risk,
+      adrenal_risk: raw.adrenal_risk,
+      metabolic_risk: raw.metabolic_risk,
+      profile: parseMaybeJson(raw.profile_json),
+      result: parseMaybeJson(raw.result_json),
+    };
+  }
+
   if (table && detailBox) {
     table.querySelectorAll("tbody tr.row-click").forEach((row) => {
       row.addEventListener("click", () => {
         const id = Number(row.getAttribute("data-id"));
-        const assessment = assessments.find((x) => Number(x.id) === id);
-        if (!assessment) return;
+        const raw = assessments.find((x) => Number(x.id) === id);
+        if (!raw) return;
+        const assessment = buildDetailPayload(raw);
         detailBox.textContent = JSON.stringify(assessment, null, 2);
         openModal(assessment);
       });

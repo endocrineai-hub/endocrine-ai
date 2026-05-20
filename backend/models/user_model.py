@@ -52,61 +52,94 @@ def get_all_users() -> list[dict]:
 
 def get_all_users_with_stats() -> list[dict]:
     conn = get_connection()
-    rows = conn.execute(
-        """
-        SELECT
-            u.id,
-            u.name,
-            u.email,
-            u.created_at,
-            COALESCE(a.total_assessments, 0) AS total_assessments,
-            a.latest_assessment_at,
-            a.avg_risk_score
-        FROM users u
-        LEFT JOIN (
+    try:
+        rows = conn.execute(
+            """
             SELECT
-                user_id,
-                COUNT(*) AS total_assessments,
-                MAX(created_at) AS latest_assessment_at,
-                ROUND(CAST(AVG(risk_score) AS numeric), 2) AS avg_risk_score
-            FROM assessments
-            WHERE user_id IS NOT NULL
-            GROUP BY user_id
-        ) a ON a.user_id = u.id
-        ORDER BY u.id DESC
-        """
-    ).fetchall()
+                u.id,
+                u.name,
+                u.email,
+                u.created_at,
+                COALESCE(a.total_assessments, 0) AS total_assessments,
+                a.latest_assessment_at,
+                a.avg_risk_score
+            FROM users u
+            LEFT JOIN (
+                SELECT
+                    user_id,
+                    COUNT(*) AS total_assessments,
+                    MAX(created_at) AS latest_assessment_at,
+                    ROUND(CAST(AVG(risk_score) AS numeric), 2) AS avg_risk_score
+                FROM assessments
+                WHERE user_id IS NOT NULL
+                GROUP BY user_id
+            ) a ON a.user_id = u.id
+            ORDER BY u.id DESC
+            """
+        ).fetchall()
+    except Exception:
+        rows = conn.execute(
+            """
+            SELECT
+                u.id,
+                u.name,
+                u.email,
+                u.created_at,
+                0 AS total_assessments,
+                NULL AS latest_assessment_at,
+                NULL AS avg_risk_score
+            FROM users u
+            ORDER BY u.id DESC
+            """
+        ).fetchall()
     conn.close()
     return [dict(r) for r in rows]
 
 
 def get_user_with_stats(user_id: int) -> dict | None:
     conn = get_connection()
-    row = conn.execute(
-        """
-        SELECT
-            u.id,
-            u.name,
-            u.email,
-            u.created_at,
-            COALESCE(a.total_assessments, 0) AS total_assessments,
-            a.latest_assessment_at,
-            a.avg_risk_score
-        FROM users u
-        LEFT JOIN (
+    try:
+        row = conn.execute(
+            """
             SELECT
-                user_id,
-                COUNT(*) AS total_assessments,
-                MAX(created_at) AS latest_assessment_at,
-                ROUND(CAST(AVG(risk_score) AS numeric), 2) AS avg_risk_score
-            FROM assessments
-            WHERE user_id IS NOT NULL
-            GROUP BY user_id
-        ) a ON a.user_id = u.id
-        WHERE u.id = ?
-        """,
-        (int(user_id),),
-    ).fetchone()
+                u.id,
+                u.name,
+                u.email,
+                u.created_at,
+                COALESCE(a.total_assessments, 0) AS total_assessments,
+                a.latest_assessment_at,
+                a.avg_risk_score
+            FROM users u
+            LEFT JOIN (
+                SELECT
+                    user_id,
+                    COUNT(*) AS total_assessments,
+                    MAX(created_at) AS latest_assessment_at,
+                    ROUND(CAST(AVG(risk_score) AS numeric), 2) AS avg_risk_score
+                FROM assessments
+                WHERE user_id IS NOT NULL
+                GROUP BY user_id
+            ) a ON a.user_id = u.id
+            WHERE u.id = ?
+            """,
+            (int(user_id),),
+        ).fetchone()
+    except Exception:
+        row = conn.execute(
+            """
+            SELECT
+                u.id,
+                u.name,
+                u.email,
+                u.created_at,
+                0 AS total_assessments,
+                NULL AS latest_assessment_at,
+                NULL AS avg_risk_score
+            FROM users u
+            WHERE u.id = ?
+            """,
+            (int(user_id),),
+        ).fetchone()
     conn.close()
     return dict(row) if row else None
 

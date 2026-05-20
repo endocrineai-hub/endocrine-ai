@@ -764,6 +764,12 @@ input:focus, select:focus, textarea:focus {
 .row-click { cursor: pointer; }
 .row-click:hover td { background: #f4f9ff; }
 #detail-card pre { min-height: 180px; }
+#detail-card pre,
+.ea-modal-body pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
 .ea-modal {
   position: fixed;
   inset: 0;
