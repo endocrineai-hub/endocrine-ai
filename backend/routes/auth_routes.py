@@ -90,7 +90,7 @@ def user_dashboard_trends():
 @auth_bp.route("/dashboard/history")
 @user_required
 def user_dashboard_history():
-    assessments = get_user_assessments(session["user_id"])
+    assessments = get_user_assessment_rows(session["user_id"])
     return render_template("user_dashboard_history.html", assessments=assessments)
 
 

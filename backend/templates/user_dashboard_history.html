@@ -24,7 +24,7 @@
   {% endif %}
 
   <div class="table-wrap">
-    <table>
+    <table id="history-table">
       <thead>
         <tr>
           <th>ID</th><th>Date</th><th>Patient</th><th>Thyroid</th><th>Diabetes</th><th>PCOS</th><th>Adrenal</th><th>Metabolic</th><th>Overall</th>
@@ -32,7 +32,7 @@
       </thead>
       <tbody>
         {% for a in assessments %}
-        <tr>
+        <tr class="row-click" data-id="{{ a.id }}">
           <td>{{ a.id }}</td><td>{{ a.created_at }}</td><td>{{ a.patient_name }}</td>
           <td>{{ a.thyroid_risk }}</td><td>{{ a.diabetes_risk }}</td><td>{{ a.pcos_risk }}</td>
           <td>{{ a.adrenal_risk }}</td><td>{{ a.metabolic_risk }}</td><td>{{ a.risk_score }}%</td>
@@ -42,4 +42,118 @@
     </table>
   </div>
 </section>
+
+<div id="history-modal" class="ea-modal hidden" role="dialog" aria-modal="true" aria-labelledby="history-modal-title">
+  <div class="ea-modal-backdrop" data-close-history-modal></div>
+  <div class="ea-modal-card">
+    <div class="ea-modal-head">
+      <div>
+        <h2 id="history-modal-title">My Assessment Report</h2>
+        <p class="muted" id="history-modal-subtitle">Selected record details</p>
+      </div>
+      <button type="button" class="btn btn-ghost" data-close-history-modal>Close</button>
+    </div>
+    <div class="ea-modal-body">
+      <pre id="history-modal-json"></pre>
+    </div>
+    <div class="ea-modal-actions">
+      <button type="button" class="btn btn-ghost" data-close-history-modal>Cancel</button>
+      <button type="button" class="btn" id="history-print-btn">Print Report</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+  const assessments = {{ assessments | tojson | safe }};
+  const historyTable = document.getElementById("history-table");
+  const historyModal = document.getElementById("history-modal");
+  const historyModalJson = document.getElementById("history-modal-json");
+  const historyModalSubtitle = document.getElementById("history-modal-subtitle");
+  const historyPrintBtn = document.getElementById("history-print-btn");
+  let selectedAssessment = null;
+
+  function openHistoryModal(assessment) {
+    if (!historyModal || !historyModalJson) return;
+    selectedAssessment = assessment;
+    historyModalJson.textContent = JSON.stringify(assessment, null, 2);
+    if (historyModalSubtitle) {
+      historyModalSubtitle.textContent = `${assessment.patient_name || "Unknown"} | ${assessment.created_at || "-"}`;
+    }
+    historyModal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeHistoryModal() {
+    if (!historyModal) return;
+    historyModal.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  function printHistoryReport(assessment) {
+    const risk = [
+      ["Overall", assessment.risk_score ? `${assessment.risk_score}%` : "-"],
+      ["Thyroid", assessment.thyroid_risk || "-"],
+      ["Diabetes", assessment.diabetes_risk || "-"],
+      ["PCOS", assessment.pcos_risk || "-"],
+      ["Adrenal", assessment.adrenal_risk || "-"],
+      ["Metabolic", assessment.metabolic_risk || "-"],
+    ];
+    const rows = risk
+      .map(([k, v]) => `<tr><td style="padding:8px;border:1px solid #ddd;">${k}</td><td style="padding:8px;border:1px solid #ddd;">${v}</td></tr>`)
+      .join("");
+
+    const html = `
+      <html>
+      <head><title>User Assessment Report #${assessment.id}</title></head>
+      <body style="font-family: Arial, sans-serif; padding: 20px; color: #111;">
+        <h1>EndocrineAI User Assessment Report</h1>
+        <p><strong>Record ID:</strong> ${assessment.id || "-"}</p>
+        <p><strong>Date:</strong> ${assessment.created_at || "-"}</p>
+        <p><strong>Patient:</strong> ${assessment.patient_name || "-"}</p>
+        <p><strong>Email:</strong> ${assessment.patient_email || "-"}</p>
+        <p><strong>Mobile:</strong> ${assessment.patient_mobile || "-"}</p>
+        <p><strong>Age/Gender/BMI:</strong> ${assessment.age || "-"} / ${assessment.gender || "-"} / ${assessment.bmi || "-"}</p>
+        <p><strong>Symptoms:</strong> ${assessment.symptoms || "-"}</p>
+        <h3>Risk Scores</h3>
+        <table style="border-collapse:collapse;min-width:360px;">${rows}</table>
+      </body>
+      </html>
+    `;
+    const w = window.open("", "_blank");
+    if (!w) return;
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+    w.print();
+  }
+
+  if (historyTable) {
+    historyTable.querySelectorAll("tbody tr.row-click").forEach((row) => {
+      row.addEventListener("click", () => {
+        const id = Number(row.getAttribute("data-id"));
+        const assessment = assessments.find((x) => Number(x.id) === id);
+        if (!assessment) return;
+        openHistoryModal(assessment);
+      });
+    });
+  }
+
+  if (historyModal) {
+    historyModal.querySelectorAll("[data-close-history-modal]").forEach((el) => {
+      el.addEventListener("click", closeHistoryModal);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !historyModal.classList.contains("hidden")) closeHistoryModal();
+    });
+  }
+  if (historyPrintBtn) {
+    historyPrintBtn.addEventListener("click", () => {
+      if (!selectedAssessment) return;
+      printHistoryReport(selectedAssessment);
+    });
+  }
+</script>
 {% endblock %}
