@@ -28,7 +28,7 @@
       </thead>
       <tbody>
         {% for a in assessments %}
-        <tr class="row-click" data-row='{{ a | tojson | safe }}'>
+        <tr class="row-click" data-id="{{ a.id }}">
           <td>{{ a.id }}</td><td>{{ a.created_at }}</td><td>{{ a.patient_name }}</td><td>{{ a.age }}</td>
           <td>{{ a.gender }}</td><td>{{ a.bmi }}</td>
           <td><span class="source-pill {{ 'source-ml' if a.prediction_source == 'ml_model' else 'source-rule' }}">{{ a.prediction_source }}</span></td>
@@ -56,13 +56,39 @@
   </div>
   <pre id="detail-json">Click a table row to inspect complete record JSON.</pre>
 </section>
+
+<div id="assessment-modal" class="ea-modal hidden" role="dialog" aria-modal="true" aria-labelledby="assessment-modal-title">
+  <div class="ea-modal-backdrop" data-close-modal></div>
+  <div class="ea-modal-card">
+    <div class="ea-modal-head">
+      <div>
+        <h2 id="assessment-modal-title">Assessment Detail</h2>
+        <p class="muted" id="assessment-modal-subtitle">Selected record details</p>
+      </div>
+      <button type="button" class="btn btn-ghost" data-close-modal>Close</button>
+    </div>
+    <div class="ea-modal-body">
+      <pre id="modal-detail-json"></pre>
+    </div>
+    <div class="ea-modal-actions">
+      <button type="button" class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button type="button" class="btn" id="print-report-btn">Print Report</button>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block page_scripts %}
 <script>
+  const assessments = {{ assessments | tojson | safe }};
   const searchInput = document.getElementById("table-search");
   const table = document.getElementById("assessments-table");
   const detailBox = document.getElementById("detail-json");
+  const modal = document.getElementById("assessment-modal");
+  const modalDetailBox = document.getElementById("modal-detail-json");
+  const modalSubtitle = document.getElementById("assessment-modal-subtitle");
+  const printReportBtn = document.getElementById("print-report-btn");
+  let selectedAssessment = null;
 
   if (searchInput && table) {
     searchInput.addEventListener("input", () => {
@@ -73,16 +99,85 @@
     });
   }
 
+  function openModal(assessment) {
+    if (!modal || !modalDetailBox) return;
+    selectedAssessment = assessment;
+    modalDetailBox.textContent = JSON.stringify(assessment, null, 2);
+    if (modalSubtitle) {
+      modalSubtitle.textContent = `${assessment.patient_name || "Unknown"} | ${assessment.created_at || "-"}`;
+    }
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal() {
+    if (!modal) return;
+    modal.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  function printAssessmentReport(assessment) {
+    const risk = [
+      ["Overall", assessment.risk_score],
+      ["Thyroid", assessment.thyroid_risk],
+      ["Diabetes", assessment.diabetes_risk],
+      ["PCOS", assessment.pcos_risk],
+      ["Adrenal", assessment.adrenal_risk],
+      ["Metabolic", assessment.metabolic_risk],
+    ];
+    const rows = risk
+      .map(([k, v]) => `<tr><td style="padding:8px;border:1px solid #ddd;">${k}</td><td style="padding:8px;border:1px solid #ddd;">${v || "-"}</td></tr>`)
+      .join("");
+    const html = `
+      <html>
+      <head><title>Assessment Report #${assessment.id}</title></head>
+      <body style="font-family: Arial, sans-serif; padding: 20px; color: #111;">
+        <h1>EndocrineAI Assessment Report</h1>
+        <p><strong>Record ID:</strong> ${assessment.id || "-"}</p>
+        <p><strong>Date:</strong> ${assessment.created_at || "-"}</p>
+        <p><strong>Patient:</strong> ${assessment.patient_name || "-"}</p>
+        <p><strong>Email:</strong> ${assessment.patient_email || "-"}</p>
+        <p><strong>Mobile:</strong> ${assessment.patient_mobile || "-"}</p>
+        <p><strong>Age/Gender/BMI:</strong> ${assessment.age || "-"} / ${assessment.gender || "-"} / ${assessment.bmi || "-"}</p>
+        <p><strong>Symptoms:</strong> ${assessment.symptoms || "-"}</p>
+        <h3>Risk Scores</h3>
+        <table style="border-collapse:collapse;min-width:360px;">${rows}</table>
+      </body>
+      </html>
+    `;
+    const w = window.open("", "_blank");
+    if (!w) return;
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+    w.print();
+  }
+
   if (table && detailBox) {
     table.querySelectorAll("tbody tr.row-click").forEach((row) => {
       row.addEventListener("click", () => {
-        const payload = row.getAttribute("data-row");
-        try {
-          detailBox.textContent = JSON.stringify(JSON.parse(payload), null, 2);
-        } catch {
-          detailBox.textContent = payload || "No data";
-        }
+        const id = Number(row.getAttribute("data-id"));
+        const assessment = assessments.find((x) => Number(x.id) === id);
+        if (!assessment) return;
+        detailBox.textContent = JSON.stringify(assessment, null, 2);
+        openModal(assessment);
       });
+    });
+  }
+
+  if (modal) {
+    modal.querySelectorAll("[data-close-modal]").forEach((el) => {
+      el.addEventListener("click", closeModal);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.classList.contains("hidden")) closeModal();
+    });
+  }
+  if (printReportBtn) {
+    printReportBtn.addEventListener("click", () => {
+      if (!selectedAssessment) return;
+      printAssessmentReport(selectedAssessment);
     });
   }
 </script>
